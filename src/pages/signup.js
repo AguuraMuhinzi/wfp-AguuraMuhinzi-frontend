@@ -128,7 +128,6 @@ function Signup() {
                                     <span className="ml-2">Sign Up</span>
                                 </button>
 
-                                {/* Already have an account? */}
                                 <p className="mt-4 text-sm text-center text-gray-600">
                                     Already have an account? <a href="#" className="text-green-600 font-medium hover:underline">Log In</a>
                                 </p>
