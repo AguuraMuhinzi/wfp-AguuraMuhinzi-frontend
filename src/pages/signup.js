@@ -1,12 +1,15 @@
+
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { signupUser } from '../Redux/Slices/user_slice';
+import { signupUser,clearSuccessMessage } from '../Redux/Slices/user_slice';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import debounce from 'lodash.debounce';
 
 function Signup() {
     const dispatch = useDispatch();
-    const { isLoading, error, isRegistered } = useSelector((state) => state.user);
+    const navigate = useNavigate();
+    const { isLoading, error, isRegistered, otpSent, successMessage } = useSelector((state) => state.user);
 
     const [formData, setFormData] = useState({
         username: '',
@@ -17,24 +20,30 @@ function Signup() {
     });
     const [availabilityErrors, setAvailabilityErrors] = useState({});
     const [showPasswordHint, setShowPasswordHint] = useState(false);
-    const [successMessage, setSuccessMessage] = useState('');
+    const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
     useEffect(() => {
-        if (isRegistered) {
-            setSuccessMessage("Account created successfully!");  
+        if (isRegistered && otpSent) {
+            // Show success message for a few seconds before redirecting
+            setShowSuccessMessage(true);
             setFormData({
                 username: '',
                 email: '',
                 password: '',
                 role: '',
                 contact_phone: '',
-            });  // Clear form fields
+            });
 
-            // Clear success message after 3 seconds
-            const timer = setTimeout(() => setSuccessMessage(''), 3000);
+            
+            const timer = setTimeout(() => {
+                setShowSuccessMessage(false);
+                dispatch(clearSuccessMessage());
+                navigate('/EmailVerification');
+            }, 1400);
+
             return () => clearTimeout(timer);
         }
-    }, [isRegistered]);
+    }, [isRegistered, otpSent, navigate]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -101,9 +110,9 @@ function Signup() {
                     </div>
 
                     {/* Success Message */}
-                    {successMessage && (
+                    {showSuccessMessage && (
                         <div className="mb-6 p-4 text-green-700 bg-green-100 border border-green-400 rounded">
-                            {successMessage}
+                            We sent you a verification code on your email.
                         </div>
                     )}
 
@@ -162,13 +171,13 @@ function Signup() {
                                 name="contact_phone"
                                 required
                                 className="w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-5"
-                                type="text"  // Set to text to allow pattern validation
-                                pattern="\d{10}" // Pattern ensures exactly 10 digits
+                                type="text"
+                                pattern="\d{10}"
                                 maxLength="10"
                                 placeholder="Contact Phone"
                                 onChange={(e) => {
                                     const { value } = e.target;
-                                    if (/^\d{0,10}$/.test(value)) {  // Only allow up to 10 digits
+                                    if (/^\d{0,10}$/.test(value)) {
                                         handleChange(e);
                                     }
                                 }}
@@ -225,7 +234,7 @@ function Signup() {
 
                             <p className="mt-4 text-sm text-center text-gray-600">
                                 Already have an account?{' '}
-                                <a href="#" className="text-green-600 font-medium hover:underline">
+                                <a href="/login" className="text-green-600 font-medium hover:underline">
                                     Log In
                                 </a>
                             </p>
@@ -238,3 +247,4 @@ function Signup() {
 }
 
 export default Signup;
+
