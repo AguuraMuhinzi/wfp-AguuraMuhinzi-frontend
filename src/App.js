@@ -3,22 +3,31 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Login from './pages/login';
 import Signup from './pages/signup';
 import EmailVerification from './pages/EmailVerification';
-import Academy_details from './pages/academy_details';
-
-import  Cooperative_details from './pages/cooperative_details';
+import AcademyDetails from './pages/academy_details';
+import CooperativeDetails from './pages/cooperative_details';
+import CopDashboard from './pages/cop_dashboard';
+import DashboardLayout from './components/navbar';
+import NewProduct from './pages/product/newProduct'; 
 
 function App() {
     return (
         <Router>
             <div className="App">
                 <Routes>
+                    {/* Public Routes */}
                     <Route path="/" element={<Login />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/signup" element={<Signup />} />
-                  
-                    <Route path="/EmailVerification" element={<EmailVerification /> } />
-                    <Route path="/cooperative_details" element={<Cooperative_details />} />
-                    <Route path='/academy_details' element={<Academy_details />} />
+                    <Route path="/EmailVerification" element={<EmailVerification />} />
+                    <Route path="/cooperative_details" element={<CooperativeDetails />} />
+                    <Route path="/academy_details" element={<AcademyDetails />} />
+
+                   
+                    <Route path="/dashboard" element={<DashboardLayout />}>
+                      
+                        <Route path="newProduct" element={<NewProduct />} />
+                        {/* Add other dashboard-related routes as needed */}
+                    </Route>
 
                     {/* Fallback route */}
                     <Route path="*" element={<Login />} />
