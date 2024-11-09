@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Outlet } from 'react-router-dom';
 import {
   FiHome,
   FiBox,
@@ -16,7 +16,7 @@ import {
   FiSearch
 } from 'react-icons/fi';
 
-const DashboardLayout = ({ children }) => {
+const DashboardLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const sidebarRef = useRef(null);
 
@@ -101,8 +101,10 @@ const DashboardLayout = ({ children }) => {
             </button>
           </nav>
         </header>
+
+        {/* Content Placeholder */}
         <div className="pt-[80px] p-6 bg-gray-100 flex-1 overflow-auto">
-          {children}
+          <Outlet />
         </div>
       </div>
     </div>
