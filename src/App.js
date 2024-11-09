@@ -8,6 +8,8 @@ import CooperativeDetails from './pages/cooperative_details';
 import CopDashboard from './pages/cop_dashboard';
 import DashboardLayout from './components/navbar';
 import NewProduct from './pages/product/newProduct'; 
+import AllProducts from './pages/product/Allproducts';
+import StockPage from './pages/product/stockpage';
 
 function App() {
     return (
@@ -24,8 +26,9 @@ function App() {
 
                    
                     <Route path="/dashboard" element={<DashboardLayout />}>
-                      
+                        <Route path="stock" element={<StockPage />} />
                         <Route path="newProduct" element={<NewProduct />} />
+                        <Route  path="allProducts" element={<AllProducts />} />
                         {/* Add other dashboard-related routes as needed */}
                     </Route>
 

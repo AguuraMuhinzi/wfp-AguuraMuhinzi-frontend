@@ -1,10 +1,19 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { addProduct } from '../../Redux/Slices/product/product';
 
-const InsertProductForm = () => {
+const InsertProductForm = ({ onClose }) => {
+  const dispatch = useDispatch();
+
+  // Retrieve user ID from localStorage if available
+  const userData = JSON.parse(localStorage.getItem('userData'));
+  const userId = userData ? userData.id : ''; // Adjust the key if necessary
+  const { userInfo } = useSelector((state) => state.user);
+
   const [formData, setFormData] = useState({
-    user: '',
+    user: userInfo?.id || localStorage.getItem('user_id') || '',
     product_name: '',
     description: '',
     price: '',
@@ -21,27 +30,21 @@ const InsertProductForm = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch('/api/products/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formData)
-      });
-
-      if (response.ok) {
+      // Dispatch Redux action to add product
+      dispatch(addProduct(formData)).unwrap().then(() => {
         alert('Product added successfully');
         setFormData({
-          user: '',
+          user: userId || '',
           product_name: '',
           description: '',
           price: '',
           stock: '',
           harvest_date: ''
         });
-      } else {
-        alert('Failed to add product');
-      }
+        onClose(); // Close the modal after submission
+      }).catch((error) => {
+        alert(`Failed to add product: ${error}`);
+      });
     } catch (error) {
       console.error('Error:', error);
       alert('An error occurred. Please try again later.');
@@ -49,101 +52,93 @@ const InsertProductForm = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen p-8">
-      <div className="bg-white p-10 rounded-lg shadow-lg w-full max-w-2xl">
-        <h2 className="text-3xl font-bold mb-6 text-center text-green-700">Insert New Product</h2>
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="block text-gray-700 mb-2" htmlFor="user">
-              User ID:
-            </label>
-            <input
-              type="text"
-              id="user"
-              name="user"
-              value={formData.user}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring focus:ring-green-300"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700 mb-2" htmlFor="product_name">
-              Product Name:
-            </label>
-            <input
-              type="text"
-              id="product_name"
-              name="product_name"
-              value={formData.product_name}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring focus:ring-green-300"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700 mb-2" htmlFor="description">
-              Description:
-            </label>
-            <textarea
-              id="description"
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring focus:ring-green-300"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700 mb-2" htmlFor="price">
-              Price:
-            </label>
-            <input
-              type="number"
-              id="price"
-              name="price"
-              value={formData.price}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring focus:ring-green-300"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700 mb-2" htmlFor="stock">
-              Stock:
-            </label>
-            <input
-              type="number"
-              id="stock"
-              name="stock"
-              value={formData.stock}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring focus:ring-green-300"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700 mb-2" htmlFor="harvest_date">
-              Harvest Date:
-            </label>
-            <input
-              type="date"
-              id="harvest_date"
-              name="harvest_date"
-              value={formData.harvest_date}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring focus:ring-green-300"
-              required
-            />
-          </div>
-          <button
-            type="submit"
-            className="w-full py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition duration-300"
-          >
-            Submit
-          </button>
-        </form>
-      </div>
+    <div className="w-full max-w-md mx-auto">
+      <h2 className="text-xl font-bold mb-4 text-center text-green-700">Insert Product</h2>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="hidden"
+          id="user"
+          name="user"
+          value={formData.user}
+          readOnly // Make it read-only since it's retrieved from local storage
+        />
+        <div className="mb-3">
+          <label className="block text-gray-700 mb-1" htmlFor="product_name">
+            Product Name:
+          </label>
+          <input
+            type="text"
+            id="product_name"
+            name="product_name"
+            value={formData.product_name}
+            onChange={handleChange}
+            className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring focus:ring-green-200"
+            required
+          />
+        </div>
+        <div className="mb-3">
+          <label className="block text-gray-700 mb-1" htmlFor="description">
+            Description:
+          </label>
+          <textarea
+            id="description"
+            name="description"
+            value={formData.description}
+            onChange={handleChange}
+            className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring focus:ring-green-200"
+            required
+            rows="3"
+          />
+        </div>
+        <div className="mb-3">
+          <label className="block text-gray-700 mb-1" htmlFor="price">
+            Price:
+          </label>
+          <input
+            type="number"
+            id="price"
+            name="price"
+            value={formData.price}
+            onChange={handleChange}
+            className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring focus:ring-green-200"
+            required
+          />
+        </div>
+        <div className="mb-3">
+          <label className="block text-gray-700 mb-1" htmlFor="stock">
+            Stock:
+          </label>
+          <input
+            type="number"
+            id="stock"
+            name="stock"
+            value={formData.stock}
+            onChange={handleChange}
+            className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring focus:ring-green-200"
+            required
+          />
+        </div>
+        <div className="mb-3">
+          <label className="block text-gray-700 mb-1" htmlFor="harvest_date">
+            Harvest Date:
+          </label>
+          <input
+            type="date"
+            id="harvest_date"
+            name="harvest_date"
+            value={formData.harvest_date}
+            onChange={handleChange}
+            className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring focus:ring-green-200"
+            required
+          />
+        </div>
+        <button
+          type="submit"
+          className="w-full py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition duration-200"
+        >
+          Submit
+        </button>
+      </form>
     </div>
   );
 };

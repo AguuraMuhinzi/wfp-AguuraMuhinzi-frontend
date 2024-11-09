@@ -48,7 +48,7 @@ const DashboardLayout = () => {
         <div className="flex flex-col h-full">
           <ul className="space-y-4 px-2">
             <SidebarItem name="Dashboard" icon={<FiHome />} path="/dashboard" />
-            <SidebarItem name="Stock" icon={<FiBox />} path="/dashboard/newProduct" />
+            <SidebarItem name="Stock" icon={<FiBox />} path="/dashboard/stock" />
             <SidebarItem name="Orders" icon={<FiClipboard />} path="/dashboard/orders" />
             <SidebarItem name="Report" icon={<FiBarChart2 />} path="/dashboard/report" />
             <SidebarItem name="Price Trends" icon={<FiTrendingUp />} path="/dashboard/price-trends" />
