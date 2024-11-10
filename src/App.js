@@ -10,6 +10,7 @@ import DashboardLayout from './components/navbar';
 import NewProduct from './pages/product/newProduct'; 
 import AllProducts from './pages/product/Allproducts';
 import StockPage from './pages/product/stockpage';
+import OrdersPage from './pages/orders/orderpage';
 
 function App() {
     return (
@@ -27,6 +28,7 @@ function App() {
                    
                     <Route path="/dashboard" element={<DashboardLayout />}>
                         <Route path="stock" element={<StockPage />} />
+                        <Route path="Orders" element={<OrdersPage />} />
                         <Route path="newProduct" element={<NewProduct />} />
                         <Route  path="allProducts" element={<AllProducts />} />
                         {/* Add other dashboard-related routes as needed */}
