@@ -6,11 +6,12 @@ import EmailVerification from './pages/EmailVerification';
 import AcademyDetails from './pages/academy_details';
 import CooperativeDetails from './pages/cooperative_details';
 import CopDashboard from './pages/cop_dashboard';
-import DashboardLayout from './components/navbar';
+import DashboardLayout from './components/dashboard';
 import NewProduct from './pages/product/newProduct'; 
 import AllProducts from './pages/product/Allproducts';
 import StockPage from './pages/product/stockpage';
 import OrdersPage from './pages/orders/orderpage';
+import Home from './pages/product/productDisplay';
 
 function App() {
     return (
@@ -24,6 +25,7 @@ function App() {
                     <Route path="/EmailVerification" element={<EmailVerification />} />
                     <Route path="/cooperative_details" element={<CooperativeDetails />} />
                     <Route path="/academy_details" element={<AcademyDetails />} />
+                    <Route path="/home" element={<Home />} />
 
                    
                     <Route path="/dashboard" element={<DashboardLayout />}>

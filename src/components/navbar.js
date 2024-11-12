@@ -81,14 +81,14 @@ const DashboardLayout = () => {
               <FiMenu size={24} />
             </button>
           </div>
-          <div className="flex items-center border border-gray-300 rounded-full px-3 py-1 w-full max-w-md">
+          {/* <div className="flex items-center border border-gray-300 rounded-full px-3 py-1 w-full max-w-md">
             <FiSearch className="text-gray-500" />
             <input
               type="text"
               placeholder="Search..."
               className="ml-2 flex-grow outline-none text-sm"
             />
-          </div>
+          </div> */}
           <nav className="flex flex-col md:flex-row items-center mt-4 md:mt-0 space-y-2 md:space-y-0 md:space-x-3 w-full md:w-auto">
             <a href="#" className="text-gray-600 hover:text-green-600">
               Home
