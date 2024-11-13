@@ -215,45 +215,6 @@
 //                     type="date"
 //                     name="harvest_date"
 //                     value={formData.harvest_date}
-//                     onChange={handleInputChange}
-//                     className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-//                     required
-//                   />
-//                 </div>
-//                 <div className="flex justify-end space-x-2">
-//                   <button type="button" onClick={closeModals} className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Cancel</button>
-//                   <button type="submit" className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">Save Changes</button>
-//                 </div>
-//               </form>
-//             </div>
-//           </div>
-//         )}
-
-//         <div className="p-4 bg-gray-100 border-t mt-4 rounded-lg">
-//           <p className="text-sm text-gray-600">Showing 1 to {products.length} of {products.length} entries</p>
-//           <div className="flex justify-between mt-2">
-//             <div className="flex items-center">
-//               <label className="text-sm text-gray-600 mr-2">Display</label>
-//               <select className="text-sm border border-gray-400 rounded px-2 py-1 outline-none">
-//                 <option>5</option>
-//                 <option>10</option>
-//                 <option>20</option>
-//                 <option>50</option>
-//                 <option>100</option>
-//               </select>
-//             </div>
-//             <div className="flex">
-//               <button className="px-4 py-2 border text-sm text-gray-600 hover:bg-gray-200">Previous</button>
-//               <button className="px-4 py-2 border text-sm text-gray-600 hover:bg-gray-200">Next</button>
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default ProductTable;
 
 
 'use client';
