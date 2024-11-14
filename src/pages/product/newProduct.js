@@ -1,8 +1,10 @@
+
+
 // 'use client';
 
 // import React, { useState } from 'react';
 // import { useDispatch, useSelector } from 'react-redux';
-// import { addProduct } from '../../Redux/Slices/product/product';
+// import { addProduct,listProducts } from '../../Redux/Slices/product/product';
 
 // const InsertProductForm = ({ onClose }) => {
 //   const dispatch = useDispatch();
@@ -37,11 +39,13 @@
 //         setFormData({
 //           user: userId || '',
 //           product_name: '',
+//           category: '',
 //           description: '',
 //           price: '',
 //           stock: '',
 //           harvest_date: ''
 //         });
+//         dispatch(listProducts());
 //         onClose(); // Close the modal after submission
 //       }).catch((error) => {
 //         alert(`Failed to add product: ${error}`);
@@ -76,6 +80,27 @@
 //             className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring focus:ring-green-200"
 //             required
 //           />
+//         </div>
+//         <div className="mb-3">
+//           <label className="block text-gray-700 mb-1" htmlFor="category">
+//             Category:
+//           </label>
+//           <select
+//             id="category"
+//             name="category"
+//             value={formData.category}
+//             onChange={handleChange}
+//             className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring focus:ring-green-200"
+//             required
+//           >
+//             <option value="" disabled>Select a category</option>
+//             <option value="Vegetables">Vegetables</option>
+//             <option value="Fruits">Fruits</option>
+//             <option value="Dairy">Dairy</option>
+//             <option value="Grain">Grain</option>
+//             <option value="Processed Grains">Processed Grains</option>
+//             <option value="Meat">Meat</option>
+//           </select>
 //         </div>
 //         <div className="mb-3">
 //           <label className="block text-gray-700 mb-1" htmlFor="description">
@@ -146,18 +171,16 @@
 
 // export default InsertProductForm;
 
-'use client';
 
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addProduct } from '../../Redux/Slices/product/product';
+import { addProduct,listProducts} from '../../Redux/Slices/product/product';
 
 const InsertProductForm = ({ onClose }) => {
   const dispatch = useDispatch();
 
-  // Retrieve user ID from localStorage if available
   const userData = JSON.parse(localStorage.getItem('userData'));
-  const userId = userData ? userData.id : ''; // Adjust the key if necessary
+  const userId = userData ? userData.id : '';
   const { userInfo } = useSelector((state) => state.user);
 
   const [formData, setFormData] = useState({
@@ -167,7 +190,8 @@ const InsertProductForm = ({ onClose }) => {
     description: '',
     price: '',
     stock: '',
-    harvest_date: ''
+    harvest_date: '',
+    image: null // Adding image field to store the uploaded image
   });
 
   const handleChange = (e) => {
@@ -175,12 +199,19 @@ const InsertProductForm = ({ onClose }) => {
     setFormData({ ...formData, [name]: value });
   };
 
+  const handleImageChange = (e) => {
+    setFormData({ ...formData, image: e.target.files[0] });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const productData = new FormData();
+    Object.keys(formData).forEach(key => {
+      productData.append(key, formData[key]);
+    });
 
     try {
-      // Dispatch Redux action to add product
-      dispatch(addProduct(formData)).unwrap().then(() => {
+      dispatch(addProduct(productData)).unwrap().then(() => {
         alert('Product added successfully');
         setFormData({
           user: userId || '',
@@ -189,9 +220,12 @@ const InsertProductForm = ({ onClose }) => {
           description: '',
           price: '',
           stock: '',
-          harvest_date: ''
+          harvest_date: '',
+          image: null
         });
-        onClose(); // Close the modal after submission
+        dispatch(listProducts());
+
+        onClose();
       }).catch((error) => {
         alert(`Failed to add product: ${error}`);
       });
@@ -204,18 +238,10 @@ const InsertProductForm = ({ onClose }) => {
   return (
     <div className="w-full max-w-md mx-auto">
       <h2 className="text-xl font-bold mb-4 text-center text-green-700">Insert Product</h2>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="hidden"
-          id="user"
-          name="user"
-          value={formData.user}
-          readOnly // Make it read-only since it's retrieved from local storage
-        />
+      <form onSubmit={handleSubmit} encType="multipart/form-data">
+        <input type="hidden" id="user" name="user" value={formData.user} readOnly />
         <div className="mb-3">
-          <label className="block text-gray-700 mb-1" htmlFor="product_name">
-            Product Name:
-          </label>
+          <label className="block text-gray-700 mb-1" htmlFor="product_name">Product Name:</label>
           <input
             type="text"
             id="product_name"
@@ -227,9 +253,7 @@ const InsertProductForm = ({ onClose }) => {
           />
         </div>
         <div className="mb-3">
-          <label className="block text-gray-700 mb-1" htmlFor="category">
-            Category:
-          </label>
+          <label className="block text-gray-700 mb-1" htmlFor="category">Category:</label>
           <select
             id="category"
             name="category"
@@ -248,9 +272,7 @@ const InsertProductForm = ({ onClose }) => {
           </select>
         </div>
         <div className="mb-3">
-          <label className="block text-gray-700 mb-1" htmlFor="description">
-            Description:
-          </label>
+          <label className="block text-gray-700 mb-1" htmlFor="description">Description:</label>
           <textarea
             id="description"
             name="description"
@@ -262,9 +284,7 @@ const InsertProductForm = ({ onClose }) => {
           />
         </div>
         <div className="mb-3">
-          <label className="block text-gray-700 mb-1" htmlFor="price">
-            Price:
-          </label>
+          <label className="block text-gray-700 mb-1" htmlFor="price">Price:</label>
           <input
             type="number"
             id="price"
@@ -276,9 +296,7 @@ const InsertProductForm = ({ onClose }) => {
           />
         </div>
         <div className="mb-3">
-          <label className="block text-gray-700 mb-1" htmlFor="stock">
-            Stock:
-          </label>
+          <label className="block text-gray-700 mb-1" htmlFor="stock">Stock:</label>
           <input
             type="number"
             id="stock"
@@ -290,9 +308,7 @@ const InsertProductForm = ({ onClose }) => {
           />
         </div>
         <div className="mb-3">
-          <label className="block text-gray-700 mb-1" htmlFor="harvest_date">
-            Harvest Date:
-          </label>
+          <label className="block text-gray-700 mb-1" htmlFor="harvest_date">Harvest Date:</label>
           <input
             type="date"
             id="harvest_date"
@@ -301,6 +317,17 @@ const InsertProductForm = ({ onClose }) => {
             onChange={handleChange}
             className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring focus:ring-green-200"
             required
+          />
+        </div>
+        <div className="mb-3">
+          <label className="block text-gray-700 mb-1" htmlFor="image">Product Image:</label>
+          <input
+            type="file"
+            id="image"
+            name="image"
+            onChange={handleImageChange}
+            className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring focus:ring-green-200"
+            accept="image/*"
           />
         </div>
         <button
