@@ -15,9 +15,9 @@ const FilterComponent = ({
   const categories = ['Fruits', 'Vegetables', 'Grain', 'Dairy', 'Processed Grains'];
 
   return (
-    <div className="w-60 bg-green-50 rounded-lg shadow-md p-4 fixed top-4">
+    <div className="w-full sm:w-60 bg-green-50 rounded-lg shadow-md p-4 mb-6">
       <h2 className="text-lg font-semibold mb-4 text-center text-green-700">Filters</h2>
-      
+
       {/* Search Bar */}
       <div className="mb-4">
         <input

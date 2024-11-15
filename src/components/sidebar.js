@@ -1,140 +1,104 @@
-'use client'
+import React, { useState } from 'react';
 
-import React, { useState, useEffect, useRef } from 'react'
-import {
-  FiHome,
-  FiBox,
-  FiClipboard,
-  FiBarChart2,
-  FiTrendingUp,
-  FiUser,
-  FiSettings,
-  FiMessageCircle,
-  FiMenu,
-  FiBell,
-  FiSearch
-} from 'react-icons/fi'
-
-const DashboardLayout = ({ children }) => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true)
-  const sidebarRef = useRef(null)
-
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen)
-  }
-
-  // Close sidebar when clicking outside of it
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (sidebarRef.current && !sidebarRef.current.contains(event.target) && isSidebarOpen) {
-        setIsSidebarOpen(false)
-      }
-    }
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [isSidebarOpen])
+const Navbar = () => {
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="flex h-screen">
-      {/* Sidebar */}
-      <nav
-        ref={sidebarRef}
-        className={`bg-white shadow-xl h-[calc(100vh-80px)] fixed top-[80px] left-0 min-w-[250px] py-6 px-4 font-[sans-serif] overflow-auto transition-transform transform z-50 rounded-br-lg ${
-          isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        } md:translate-x-0`}
-      >
-        <div className="flex flex-col h-full">
-          {/* Sidebar Navigation Links */}
-          <ul className="space-y-4 px-2">
-            <SidebarItem name="Dashboard" icon={<FiHome />} />
-            <SidebarItem name="Stock" icon={<FiBox />} />
-            <SidebarItem name="Orders" icon={<FiClipboard />} />
-            <SidebarItem name="Report" icon={<FiBarChart2 />} />
-            <SidebarItem name="Price Trends" icon={<FiTrendingUp />} />
-            <SidebarItem name="Profile Settings" icon={<FiUser />} />
-            <SidebarItem name="Chat" icon={<FiMessageCircle />} />
-          </ul>
+    <nav className="bg-white shadow-md dark:bg-gray-800">
+      <div className="container mx-auto px-6 py-3 md:flex md:justify-between md:items-center">
+        {/* Logo Section */}
+        <div className="flex justify-between items-center">
+          <a href="#" className="text-2xl font-bold text-green-600 dark:text-white">
+            MyApp
+          </a>
 
-          {/* Footer Links */}
-          <div className="mt-auto">
-            <hr className="my-4 border-gray-300" />
-            <ul className="space-y-4 px-2">
-              <SidebarItem name="Help" icon={<FiSettings />} />
-              <SidebarItem name="Profile" icon={<FiUser />} />
-            </ul>
-          </div>
-        </div>
-      </nav>
-
-      {/* Main Content with Header */}
-      <div className="flex-1 flex flex-col">
-        <header className="flex flex-col md:flex-row items-center justify-between p-4 bg-white shadow-md font-[sans-serif] md:h-[80px] h-auto z-40 border-b border-gray-300 w-full fixed top-0 left-0 right-0">
-          <div className="flex items-center justify-between w-full md:w-auto mb-4 md:mb-0">
-            {/* Logo */}
-            <h1 className="text-2xl font-bold text-green-600 flex items-center space-x-1">
-              <img
-                src={`${process.env.PUBLIC_URL}/imgs/plant.png`}
-                alt="Leaf Icon"
-                className="w-6 h-6 text-green-500"
-              />
-              <span>AguuraMuhinzi</span>
-            </h1>
-
-            {/* Hamburger Button for Mobile */}
-            <button className="md:hidden text-gray-600" onClick={toggleSidebar}>
-              <FiMenu size={24} />
+          {/* Mobile menu button */}
+          <div className="flex md:hidden">
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              type="button"
+              className="text-gray-500 hover:text-gray-600 focus:outline-none focus:text-gray-600 dark:text-gray-200 dark:hover:text-gray-400 dark:focus:text-gray-400"
+              aria-label="toggle menu"
+            >
+              {isOpen ? (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              ) : (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 8h16M4 16h16" />
+                </svg>
+              )}
             </button>
           </div>
+        </div>
 
-          {/* Search Bar */}
-          <div className="flex items-center border border-gray-300 rounded-full px-3 py-1 w-full max-w-md">
-            <FiSearch className="text-gray-500" />
-            <input
-              type="text"
-              placeholder="Search..."
-              className="ml-2 flex-grow outline-none text-sm"
-            />
-          </div>
-
-          {/* Right-side Navigation and Buttons */}
-          <nav className="flex flex-col md:flex-row items-center mt-4 md:mt-0 space-y-2 md:space-y-0 md:space-x-3 w-full md:w-auto">
-            <a href="#" className="text-gray-600 hover:text-green-600">
+        {/* Menu Items */}
+        <div
+          className={`${
+            isOpen ? 'block' : 'hidden'
+          } md:flex md:items-center md:justify-between w-full md:w-auto`}
+        >
+          <div className="flex flex-col md:flex-row md:mx-6">
+            <a
+              href="#"
+              className="my-2 text-gray-700 transition-colors duration-300 transform dark:text-gray-200 hover:text-green-500 dark:hover:text-green-400 md:mx-4 md:my-0"
+            >
               Home
             </a>
-            <a href="#" className="text-gray-600 hover:text-green-600">
-              Bids
+            <a
+              href="#dashboard"
+              className="my-2 text-gray-700 transition-colors duration-300 transform dark:text-gray-200 hover:text-green-500 dark:hover:text-green-400 md:mx-4 md:my-0"
+            >
+              Dashboard
             </a>
-           
-            <button className="px-4 py-2 text-sm rounded-full font-bold text-white border-2 border-[#007bff] bg-[#007bff] transition-all ease-in-out duration-300 hover:bg-transparent hover:text-[#007bff]">
+            <a
+              href="#logout"
+              className="my-2 text-gray-700 transition-colors duration-300 transform dark:text-gray-200 hover:text-green-500 dark:hover:text-green-400 md:mx-4 md:my-0"
+            >
               Logout
-            </button>
-           
-          </nav>
-        </header>
+            </a>
+          </div>
 
-        {/* Content Placeholder */}
-        <div className="pt-[80px] p-6 bg-gray-100 flex-1 overflow-auto">
-          {children}
+          {/* Notification Icon */}
+          <div className="relative flex items-center justify-center md:mx-4">
+            <a
+              href="#notifications"
+              className="relative text-gray-700 dark:text-gray-200 hover:text-green-500 dark:hover:text-green-400"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V4a2 2 0 10-4 0v1.341C7.67 7.165 6 9.388 6 12v2.159c0 .538-.214 1.055-.595 1.437L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                />
+              </svg>
+              <span className="absolute top-0 right-0 inline-block w-2.5 h-2.5 bg-red-600 border-2 border-white dark:border-gray-800 rounded-full"></span>
+            </a>
+          </div>
         </div>
       </div>
-    </div>
-  )
-}
+    </nav>
+  );
+};
 
-const SidebarItem = ({ name, icon }) => {
-  return (
-    <li>
-      <a
-        href="#"
-        className="text-[#333] text-sm flex items-center p-2 rounded-lg transition-all hover:bg-green-600 hover:text-white"
-      >
-        <span className="mr-3">{icon}</span>
-        <span>{name}</span>
-      </a>
-    </li>
-  )
-}
-
-export default DashboardLayout
+export default Navbar;
