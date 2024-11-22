@@ -219,7 +219,7 @@ const DashboardLayout = () => {
           </div>
           <div className="h-full overflow-y-auto p-3 mt-8">
             <nav className="space-y-1">
-              <SidebarItem name="Dashboard" icon={<FiHome />} path="/overview" />
+              <SidebarItem name="Dashboard" icon={<FiHome />} path="/dashboard/overview" />
               <SidebarItem name="Stock" icon={<FiBox />} path="/dashboard/stock" />
               <SidebarItem name="Orders" icon={<FiClipboard />} path="/dashboard/orders" />
               <SidebarItem name="Report" icon={<FiBarChart2 />} path="/dashboard/report" />

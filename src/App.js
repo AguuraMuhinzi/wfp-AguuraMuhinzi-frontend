@@ -13,6 +13,7 @@ import StockPage from './pages/product/stockpage';
 import OrdersPage from './pages/orders/orderpage';
 import Home from './pages/product/productDisplay';
 import CoopProfile from './pages/cooperative/profile';
+import Overview from './pages/cooperative/overview';
 
 function App() {
     return (
@@ -30,6 +31,7 @@ function App() {
 
                    
                     <Route path="/dashboard" element={<DashboardLayout />}>
+                        <Route path="overview" element={<Overview />} />
                         <Route path="stock" element={<StockPage />} />
                         <Route path="Orders" element={<OrdersPage />} />
                         <Route path="newProduct" element={<NewProduct />} />
