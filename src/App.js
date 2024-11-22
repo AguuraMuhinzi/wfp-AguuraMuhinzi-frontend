@@ -12,6 +12,7 @@ import AllProducts from './pages/product/Allproducts';
 import StockPage from './pages/product/stockpage';
 import OrdersPage from './pages/orders/orderpage';
 import Home from './pages/product/productDisplay';
+import CoopProfile from './pages/cooperative/profile';
 
 function App() {
     return (
@@ -33,6 +34,7 @@ function App() {
                         <Route path="Orders" element={<OrdersPage />} />
                         <Route path="newProduct" element={<NewProduct />} />
                         <Route  path="allProducts" element={<AllProducts />} />
+                        <Route path="coopProfile" element={<CoopProfile />} />
                         {/* Add other dashboard-related routes as needed */}
                     </Route>
 

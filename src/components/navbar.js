@@ -52,7 +52,7 @@ const DashboardLayout = () => {
             <SidebarItem name="Orders" icon={<FiClipboard />} path="/dashboard/Orders" />
             <SidebarItem name="Report" icon={<FiBarChart2 />} path="/dashboard/report" />
             <SidebarItem name="Price Trends" icon={<FiTrendingUp />} path="/dashboard/price-trends" />
-            <SidebarItem name="Profile Settings" icon={<FiUser />} path="/dashboard/profile-settings" />
+            <SidebarItem name="Profile " icon={<FiUser />} path="/dashboard/coopProfile" />
             <SidebarItem name="Chat" icon={<FiMessageCircle />} path="/dashboard/chat" />
           </ul>
           <div className="mt-auto">

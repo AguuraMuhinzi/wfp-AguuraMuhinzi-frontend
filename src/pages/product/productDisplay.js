@@ -122,7 +122,8 @@ const ProductListingPage = () => {
   };
 
   const filteredProducts = products.filter((product) => {
-    const matchesLocation = selectedLocation === 'All' || product.location === selectedLocation;
+    const cooperative = cooperativeDetails[product.user] || {};
+    const matchesLocation = selectedLocation === 'All' || cooperative.province === selectedLocation;
     const matchesDate = selectedDate === '' || product.harvest_date >= selectedDate;
     const matchesPrice =
       selectedPriceRange === 'All' || (selectedPriceRange === 'Low' ? product.price <= 1000 : product.price > 1000);
@@ -201,6 +202,7 @@ const ProductListingPage = () => {
                   className="w-full border border-green-300 rounded-md p-2 text-sm"
                 >
                   <option value="All">All</option>
+                  <option value="Eastern Province"> kigali</option>
                   <option value="Eastern Province">Eastern Province</option>
                   <option value="Western Province">Western Province</option>
                   <option value="Northern Province">Northern Province</option>
