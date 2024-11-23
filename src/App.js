@@ -31,6 +31,7 @@ function App() {
 
                    
                     <Route path="/dashboard" element={<DashboardLayout />}>
+                        <Route index element={<Overview />} />
                         <Route path="overview" element={<Overview />} />
                         <Route path="stock" element={<StockPage />} />
                         <Route path="Orders" element={<OrdersPage />} />
