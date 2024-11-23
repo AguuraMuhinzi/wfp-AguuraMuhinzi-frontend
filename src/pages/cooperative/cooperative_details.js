@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { createCooperativeDetails, clearMessages } from '../Redux/Slices/cooperative/coop_details';
-import locations from '../components/location';
+import { createCooperativeDetails, clearMessages } from '../../Redux/Slices/cooperative/coop_details';
+import locations from '../../components/location';
 
 function CooperativeDetailsForm() {
     const dispatch = useDispatch();

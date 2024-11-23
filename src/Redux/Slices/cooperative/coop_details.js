@@ -110,7 +110,7 @@ const cooperativeDetailsSlice = createSlice({
         isLoading: false,
         successMessage: '',
         error: null,
-        cooperativeDetails: null, // Add state for cooperative details
+        cooperativeDetails: null, 
     },
     reducers: {
         clearMessages: (state) => {

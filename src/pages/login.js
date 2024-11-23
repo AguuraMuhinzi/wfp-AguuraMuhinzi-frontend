@@ -26,7 +26,7 @@ function Login() {
             if (role === 'academy') {
                 navigate('/academy_details');
             } else if (role === 'cooperative') {
-                navigate('/cooperative_details');
+                navigate('/dashboard');
             } else if (role === 'admin') {
                 navigate('/admin-dashboard');
             }
@@ -94,3 +94,4 @@ function Login() {
 }
 
 export default Login;
+

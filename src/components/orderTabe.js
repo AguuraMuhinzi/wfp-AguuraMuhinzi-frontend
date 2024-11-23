@@ -1,38 +1,47 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchOrders } from './../Redux/Slices/order/orderSlice';
 import { FiEye } from 'react-icons/fi';
 
 const OrdersTable = () => {
   const dispatch = useDispatch();
-  const { orders, loading, error } = useSelector((state) => state.order);
+  const { orders = [], loading, error } = useSelector((state) => state.order || {});
 
-  const [filteredOrders, setFilteredOrders] = useState([]);
   const [filterStatus, setFilterStatus] = useState('all');
   const [filterDate, setFilterDate] = useState('');
 
+  // Get the user ID from localStorage (assuming it's stored there)
+  const userId = parseInt(localStorage.getItem('user_id'), 10);
+
   useEffect(() => {
+    // Fetch all orders
     dispatch(fetchOrders());
   }, [dispatch]);
 
-  useEffect(() => {
-    let filtered = orders;
+  // Filter orders based on the cooperative field, status, and date
+  const filteredOrders = useMemo(() => {
+    if (!orders || !Array.isArray(orders)) return [];
 
+    // Filter by cooperative
+    let userOrders = orders.filter((order) => order.cooperative === userId);
+
+    // Apply status filter
     if (filterStatus !== 'all') {
-      filtered = filtered.filter((order) => order.status === filterStatus);
+      userOrders = userOrders.filter((order) => order.status === filterStatus);
     }
 
+    // Apply date filter
     if (filterDate) {
-      filtered = filtered.filter((order) => {
+      userOrders = userOrders.filter((order) => {
         const orderDate = new Date(order.created_at).toISOString().split('T')[0];
         return orderDate === filterDate;
       });
     }
 
-    setFilteredOrders(filtered);
-  }, [orders, filterStatus, filterDate]);
+    return userOrders;
+  }, [orders, filterStatus, filterDate, userId]);
 
   const handleFilterChange = (status) => {
     setFilterStatus(status);
@@ -97,10 +106,7 @@ const OrdersTable = () => {
                     {new Date(order.created_at).toLocaleDateString()}
                   </td>
                   <td className="p-2 flex justify-center space-x-2 border border-gray-300">
-                    <button
-                      className="text-green-500 hover:text-green-700"
-                      title="View"
-                    >
+                    <button className="text-green-500 hover:text-green-700" title="View">
                       <FiEye size={16} />
                     </button>
                   </td>

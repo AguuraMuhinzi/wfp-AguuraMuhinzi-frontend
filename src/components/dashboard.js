@@ -1,7 +1,8 @@
 
+
 // import React, { useState } from 'react';
 // import { NavLink, Outlet, useLocation, Link } from 'react-router-dom';
-// import { FiHome, FiBox, FiClipboard, FiBarChart2, FiTrendingUp, FiUser, FiMessageCircle } from 'react-icons/fi';
+// import { FiHome, FiBox, FiClipboard, FiBarChart2, FiTrendingUp, FiUser, FiMessageCircle, FiBell, FiUser as FiUserIcon } from 'react-icons/fi';
 
 // const SidebarItem = ({ name, icon, path }) => (
 //   <NavLink
@@ -27,7 +28,6 @@
 //     setSidebarOpen(!isSidebarOpen);
 //   };
 
-//   // Generate breadcrumb items based on the current path
 //   const generateBreadcrumbs = () => {
 //     const pathnames = location.pathname.split('/').filter((x) => x);
 //     return pathnames.map((value, index) => {
@@ -80,12 +80,12 @@
 //           </div>
 //           <div className="h-full overflow-y-auto p-3 mt-8">
 //             <nav className="space-y-1">
-//               <SidebarItem name="Dashboard" icon={<FiHome />} path="/overview" />
+//               <SidebarItem name="Dashboard" icon={<FiHome />} path="/dashboard/overview" />
 //               <SidebarItem name="Stock" icon={<FiBox />} path="/dashboard/stock" />
 //               <SidebarItem name="Orders" icon={<FiClipboard />} path="/dashboard/orders" />
 //               <SidebarItem name="Report" icon={<FiBarChart2 />} path="/dashboard/report" />
 //               <SidebarItem name="Price Trends" icon={<FiTrendingUp />} path="/dashboard/price-trends" />
-//               <SidebarItem name="Profile Settings" icon={<FiUser />} path="/dashboard/profile-settings" />
+//               <SidebarItem name="Profile" icon={<FiUser />} path="/dashboard/coopProfile" />
 //               <SidebarItem name="Chat" icon={<FiMessageCircle />} path="/dashboard/chat" />
 //             </nav>
 //           </div>
@@ -95,20 +95,29 @@
 //       {/* Main content */}
 //       <div className="flex flex-col flex-1 lg:pl-[260px] overflow-y-auto">
 //         {/* Header */}
-//         <header className="sticky top-0 z-50 flex items-center bg-white border-b dark:bg-neutral-800 dark:border-neutral-700 px-4 py-2">
-//           <div className="flex items-center justify-between w-full">
-//             <button onClick={toggleSidebar} className="text-gray-500 dark:text-white lg:hidden">
-//               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-//                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
-//               </svg>
+//         <header className="sticky top-0 z-50 flex items-center justify-between bg-white border-b dark:bg-neutral-800 dark:border-neutral-700 px-4 py-2">
+//           <button onClick={toggleSidebar} className="text-gray-500 dark:text-white lg:hidden">
+//             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+//               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+//             </svg>
+//           </button>
+//           <div className="relative w-full max-w-xs">
+//             <input type="text" placeholder="Search" className="w-full py-2 pl-10 pr-4 bg-white border rounded-lg dark:bg-neutral-800 dark:text-neutral-400 focus:border-blue-500 focus:outline-none" />
+//             <svg className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+//               <circle cx="11" cy="11" r="8" />
+//               <path d="m21 21-4.3-4.3" />
+//             </svg>
+//           </div>
+//           <div className="flex items-center space-x-4">
+//             <Link to="/overview" className="text-gray-500 dark:text-white hover:text-green-600">
+//               <FiHome className="w-6 h-6" />
+//             </Link>
+//             <button className="text-gray-500 dark:text-white hover:text-green-600">
+//               <FiBell className="w-6 h-6" />
 //             </button>
-//             <div className="relative w-full max-w-xs">
-//               <input type="text" placeholder="Search" className="w-full py-2 pl-10 pr-4 bg-white border rounded-lg dark:bg-neutral-800 dark:text-neutral-400 focus:border-blue-500 focus:outline-none" />
-//               <svg className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-//                 <circle cx="11" cy="11" r="8" />
-//                 <path d="m21 21-4.3-4.3" />
-//               </svg>
-//             </div>
+//             <Link to="/dashboard/profile-settings" className="text-gray-500 dark:text-white hover:text-green-600">
+//               <FiUserIcon className="w-6 h-6" />
+//             </Link>
 //           </div>
 //         </header>
 
@@ -139,8 +148,12 @@
 // export default DashboardLayout;
 
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavLink, Outlet, useLocation, Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchCooperativeDetails } from './../Redux/Slices/cooperative/coop_details';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { FiHome, FiBox, FiClipboard, FiBarChart2, FiTrendingUp, FiUser, FiMessageCircle, FiBell, FiUser as FiUserIcon } from 'react-icons/fi';
 
 const SidebarItem = ({ name, icon, path }) => (
@@ -160,8 +173,32 @@ const SidebarItem = ({ name, icon, path }) => (
 );
 
 const DashboardLayout = () => {
+  const dispatch = useDispatch();
+  const { cooperativeDetails, isLoading } = useSelector((state) => state.cooperative);
+
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
+
+  const userId = localStorage.getItem('user_id'); // Get user ID from local storage
+
+  useEffect(() => {
+    // Fetch cooperative details when the dashboard loads
+    if (userId) {
+      dispatch(fetchCooperativeDetails(userId));
+    }
+  }, [dispatch, userId]);
+
+  useEffect(() => {
+     
+      if (!cooperativeDetails || !cooperativeDetails.name) {
+        toast.warning('Your cooperative profile is incomplete. Please set it up.', {
+          position: 'top-right',
+          autoClose: 5000,
+          hideProgressBar: true,
+        });
+      
+    }
+  }, [cooperativeDetails, isLoading]);
 
   const toggleSidebar = () => {
     setSidebarOpen(!isSidebarOpen);
@@ -199,6 +236,9 @@ const DashboardLayout = () => {
 
   return (
     <div className="flex h-screen bg-gray-100 dark:bg-neutral-800 overflow-hidden">
+      {/* Toast Container */}
+      <ToastContainer />
+
       {/* Sidebar */}
       <div
         id="hs-application-sidebar"

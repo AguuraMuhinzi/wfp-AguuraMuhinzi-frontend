@@ -4,7 +4,7 @@ import Login from './pages/login';
 import Signup from './pages/signup';
 import EmailVerification from './pages/EmailVerification';
 import AcademyDetails from './pages/academy_details';
-import CooperativeDetails from './pages/cooperative_details';
+import CooperativeDetails from './pages/cooperative/cooperative_details';
 import CopDashboard from './pages/cop_dashboard';
 import DashboardLayout from './components/dashboard';
 import NewProduct from './pages/product/newProduct'; 
