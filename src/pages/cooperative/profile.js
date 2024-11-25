@@ -145,7 +145,6 @@ const CooperativeProfilePage = () => {
       dispatch(fetchCooperativeDetails(userId));
     }
 
-    // Load location data (replace with actual data fetching logic)
     setLocations({
       provinces: [
         { name: 'Province1', districts: [{ name: 'District1', sectors: ['Sector1', 'Sector2'] }] },
