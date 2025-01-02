@@ -62,7 +62,7 @@ function OtpPage() {
             const timer = setTimeout(() => {
                 setOtp(new Array(otpLength).fill(""));
                 setCustomError('');
-            }, 2500); // Clear after 3 seconds
+            }, 2500); 
 
             return () => clearTimeout(timer);
         }
