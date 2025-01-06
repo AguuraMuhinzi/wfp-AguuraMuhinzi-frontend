@@ -111,8 +111,9 @@
 // export default academyDetailsSlice.reducer;
 
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import axios from 'axios';
 import axiosInstance from '../../axioInstance';
-
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 // Async thunk for creating academy details
 export const createAcademyDetails = createAsyncThunk(
   'academy/createAcademyDetails',
@@ -147,6 +148,18 @@ export const getAcademyDetails = createAsyncThunk(
     }
   }
 );
+export const fetchAcademyDetails = createAsyncThunk(
+  'cooperative/fetchAcademyDetails',
+  async (user_id, { rejectWithValue }) => {
+      try {
+          const response = await axios.get(`${API_BASE_URL}/api/v1/academy-details/${user_id}/`);
+          return response.data;
+      } catch (error) {
+          return rejectWithValue(error.response?.data?.message || 'Failed to fetch cooperative details.');
+      }
+  }
+);
+
 
 // Async thunk for updating academy details
 export const updateAcademyDetails = createAsyncThunk(
@@ -210,6 +223,18 @@ const academyDetailsSlice = createSlice({
         state.error = action.payload;  // Set custom error message
       })
 
+      .addCase(fetchAcademyDetails.pending, (state) => {
+          state.isLoading = true;
+          state.error = null;
+      })
+      .addCase(fetchAcademyDetails.fulfilled, (state, action) => {
+          state.isLoading = false;
+          state.academyDetails = action.payload;
+      })
+      .addCase(fetchAcademyDetails.rejected, (state, action) => {
+          state.isLoading = false;
+          state.error = action.payload;
+      })
       // Update academy details
       .addCase(updateAcademyDetails.pending, (state) => {
         state.isLoading = true;

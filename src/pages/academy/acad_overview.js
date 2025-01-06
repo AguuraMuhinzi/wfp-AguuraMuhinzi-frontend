@@ -1,9 +1,9 @@
 'use client';
 
 import React from 'react';
-import DashboardCards from './../../components/DashboardCards';
-import GraphComponent from './../../components/price_graph';
-import OrdersTable from './../../components/orderTabe';
+import DashboardCards from '../../components/DashboardCards';
+import GraphComponent from '../../components/price_graph';
+import OrdersTable from '../../components/orderTabe';
 
 const DashboardPage = () => {
   // Example price data for the graph (can be fetched from API)

@@ -24,7 +24,7 @@ function Login() {
     useEffect(() => {
         if (isAuthenticated) {
             if (role === 'academy') {
-                navigate('/academy_details');
+                navigate('/aca_dashboard');
             } else if (role === 'cooperative') {
                 navigate('/dashboard');
             } else if (role === 'admin') {
