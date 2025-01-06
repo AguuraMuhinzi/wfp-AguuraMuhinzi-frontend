@@ -237,7 +237,7 @@ const ProductListingPage = () => {
         </div>
 
         {/* Product Section */}
-        <div className="flex-1 p-6 overflow-y-auto">
+        {/* <div className="flex-1 p-6 overflow-y-auto">
           <h2 className="text-lg font-bold text-green-700 mb-6 text-center">Fresh Products</h2>
           <div className="flex flex-wrap gap-4 justify-center sm:justify-start">
             {filteredProducts.map((product) => (
@@ -278,7 +278,51 @@ const ProductListingPage = () => {
               </div>
             ))}
           </div>
+        </div> */}
+        {/* Product Section */}
+<div className="flex-1 p-6 overflow-y-auto">
+  <h2 className="text-lg font-bold text-green-700 mb-6 text-center">Fresh Products</h2>
+  <div className="flex flex-wrap gap-4 justify-center sm:justify-start">
+    {filteredProducts.map((product) => (
+      <div
+        key={product.id}
+        className="bg-white shadow-md rounded-lg w-full max-w-lg flex border border-green-200 overflow-hidden"
+      >
+        {/* Image Section */}
+        <div
+          className="w-48 h-48 bg-gray-300 bg-center bg-cover flex-shrink-0"
+          style={{ backgroundImage: `url(${BASE_URL}${product.image})` }}
+        />
+
+        {/* Text Section */}
+        <div className="flex-1 p-4 flex flex-col justify-between">
+          {/* Product Details */}
+          <div>
+            <h3 className="text-lg font-bold text-green-700">{product.product_name}</h3>
+            <p className="text-sm text-gray-700 mt-2">
+              <strong>Cooperative:</strong> {cooperativeNames[product.user] || 'Loading...'}
+            </p>
+            <p className="text-sm text-gray-700">
+              <strong>Harvest Date:</strong> {new Date(product.harvest_date).toLocaleDateString()}
+            </p>
+            <p className="text-sm text-gray-700">
+              <strong>Price:</strong> {product.price} RWF
+            </p>
+          </div>
+
+          {/* Action Button */}
+          <button
+            className="mt-4 px-4 py-2 bg-green-600 text-white text-sm font-semibold rounded-lg hover:bg-green-700"
+            onClick={() => openModal(product)}
+          >
+            View More
+          </button>
         </div>
+      </div>
+    ))}
+  </div>
+</div>
+
       </div>
 
       {/* Modal */}
@@ -294,3 +338,5 @@ const ProductListingPage = () => {
 };
 
 export default ProductListingPage;
+
+
