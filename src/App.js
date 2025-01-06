@@ -14,6 +14,8 @@ import OrdersPage from './pages/orders/orderpage';
 import Home from './pages/product/productDisplay';
 import CoopProfile from './pages/cooperative/profile';
 import Overview from './pages/cooperative/overview';
+import DashboardLayout_aca from './pages/academy/acad_dashboard';
+import Overview_aca from './pages/academy/acad_overview';
 
 function App() {
     return (
@@ -29,7 +31,7 @@ function App() {
                     <Route path="/academy_details" element={<AcademyDetails />} />
                     <Route path="/home" element={<Home />} />
 
-                   
+                     {/* cooperative dashboard-related routes  */}
                     <Route path="/dashboard" element={<DashboardLayout />}>
                         <Route index element={<Overview />} />
                         <Route path="overview" element={<Overview />} />
@@ -38,9 +40,12 @@ function App() {
                         <Route path="newProduct" element={<NewProduct />} />
                         <Route  path="allProducts" element={<AllProducts />} />
                         <Route path="coopProfile" element={<CoopProfile />} />
-                        {/* Add other dashboard-related routes as needed */}
                     </Route>
-
+                      {/* academy dashboard-related routes  */}
+                      <Route path="/aca_dashboard" element={<DashboardLayout_aca />}>
+                      <Route index element={<Overview_aca />} />
+                      
+                      </Route>
                     {/* Fallback route */}
                     <Route path="*" element={<Login />} />
                 </Routes>
