@@ -279,6 +279,7 @@ const ProductListingPage = () => {
             ))}
           </div>
         </div> */}
+        
         {/* Product Section */}
 <div className="flex-1 p-6 overflow-y-auto">
   <h2 className="text-lg font-bold text-green-700 mb-6 text-center">Fresh Products</h2>
