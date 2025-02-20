@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { verifyOtp } from '../Redux/Slices/user_slice';
+import { verifyOtp } from '../../Redux/Slices/user_slice';
 
 function OtpPage() {
     const dispatch = useDispatch();

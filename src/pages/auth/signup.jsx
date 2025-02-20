@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { signupUser,clearSuccessMessage } from '../Redux/Slices/user_slice';
+import { signupUser,clearSuccessMessage } from '../../Redux/Slices/user_slice';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import debounce from 'lodash.debounce';

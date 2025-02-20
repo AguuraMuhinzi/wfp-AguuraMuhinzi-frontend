@@ -1,8 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Login from './pages/login';
-import Signup from './pages/signup';
-import EmailVerification from './pages/EmailVerification';
+import Login from './pages/auth/login';
+import Signup from './pages/auth/signup';
+import EmailVerification from './pages/auth/EmailVerification';
 import AcademyDetails from './pages/academy_details';
 import CooperativeDetails from './pages/cooperative/cooperative_details';
 import CopDashboard from './pages/cop_dashboard';
@@ -17,6 +17,7 @@ import Overview from './pages/cooperative/overview';
 import DashboardLayout_aca from './pages/academy/acad_dashboard';
 import Overview_acad from './pages/academy/acad_overview';
 import Acad_profile from './pages/academy/profile';
+import HomePage from './pages/home';
 
 function App() {
     return (
@@ -24,7 +25,8 @@ function App() {
             <div className="App">
                 <Routes>
                     {/* Public Routes */}
-                    <Route path="/" element={<Login />} />
+                    
+                    <Route path="/" element={<HomePage />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/signup" element={<Signup />} />
                     <Route path="/EmailVerification" element={<EmailVerification />} />
