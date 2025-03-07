@@ -151,7 +151,7 @@
 import React, { useEffect, useState } from 'react';
 import { NavLink, Outlet, useLocation, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchCooperativeDetails } from './../Redux/Slices/cooperative/coop_details';
+import { fetchCooperativeDetails } from '../Redux/Slices/cooperative/coop_details';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { FiHome, FiBox, FiClipboard, FiBarChart2, FiTrendingUp, FiUser, FiMessageCircle, FiBell, FiUser as FiUserIcon } from 'react-icons/fi';

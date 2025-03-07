@@ -231,7 +231,7 @@ const AcademyDashboard = () => {
         <div 
           className="h-72 bg-cover bg-center"
           style={{ 
-            backgroundImage: "linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/imgs/dashboard-collage.jpg')" 
+            backgroundImage: "linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/images/child.jpg')" 
           }}
         >
           <div className="container mx-auto px-4 pt-16 text-center">
