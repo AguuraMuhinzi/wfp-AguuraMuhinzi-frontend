@@ -17,6 +17,7 @@ import Overview from './pages/cooperative/overview';
 import DashboardLayout_aca from './pages/academy/acad_dashboard';
 import Overview_acad from './pages/academy/acad_overview';
 import Acad_profile from './pages/academy/profile';
+import Acad_orders from './pages/academy/acad_orders';
 import HomePage from './pages/home';
 
 function App() {
@@ -46,8 +47,9 @@ function App() {
                     </Route>
                       {/* academy dashboard-related routes  */}
                       <Route path="/aca_dashboard" element={<DashboardLayout_aca />}>
-                      <Route index element={<Overview_acad />} />
+                      {/* <Route index element={<Overview_acad />} /> */}
                       <Route path="acad_profile" element={<Acad_profile />} />
+                      <Route path="acad_orders" element={<Acad_orders />} />
                       
                       </Route>
                     {/* Fallback route */}
