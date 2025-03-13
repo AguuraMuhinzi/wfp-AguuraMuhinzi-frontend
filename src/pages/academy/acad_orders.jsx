@@ -22,7 +22,7 @@ const AcademyOrders = () => {
   // Use useMemo to filter orders efficiently
   const filteredOrders = useMemo(() => {
     if (!orders || !Array.isArray(orders)) return [];
-    let academyOrders = orders.filter((order) => order.cooperative !== userId);
+    let academyOrders = orders.filter((order) => order.user.id === userId);
     
     // Apply status filter
     if (filterStatus !== 'all') {
@@ -200,11 +200,11 @@ const AcademyOrders = () => {
                   <thead className="bg-gray-50">
                     <tr>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order ID</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cooperative</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order Made To</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Amount</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">More</th>
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
@@ -212,9 +212,9 @@ const AcademyOrders = () => {
                       filteredOrders.map((order) => (
                         <tr key={order.id}>
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#{order.id}</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{order.total_price || "N/A"}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">  {order.cooperative ? order.cooperative.username : 'N/A'}</td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatDate(order.created_at)}</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">  {order.user.role}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{order.user.id || "N/A"}</td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm">
                             <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
                               ${order.status === 'completed' ? 'bg-green-100 text-green-800' : 
@@ -266,81 +266,168 @@ const AcademyOrders = () => {
       </div>
 
       {/* Order Details Modal */}
-      {isDetailsModalVisible && selectedOrder && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6 border-b">
-              <div className="flex justify-between items-center">
-                <h3 className="text-xl font-semibold">Order Details - #{selectedOrder.id}</h3>
-                <button 
-                  onClick={handleCloseDetailsModal}
-                  className="text-gray-500 hover:text-gray-700"
-                >
-                  &times;
-                </button>
+     {/* Order Details Modal */}
+{isDetailsModalVisible && selectedOrder && (
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+      {/* Header */}
+      <div className="bg-gradient-to-r from-blue-500 to-indigo-600 rounded-t-lg">
+        <div className="p-6 flex justify-between items-center">
+          <h3 className="text-xl font-bold text-white">
+            Order #{selectedOrder.id}
+          </h3>
+          <button 
+            onClick={handleCloseDetailsModal}
+            className="text-white hover:text-gray-200 transition duration-150"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      </div>
+      
+      {/* Order Status Banner */}
+      <div className={`w-full px-6 py-2 
+        ${selectedOrder.status === 'completed' ? 'bg-green-100 text-green-800' : 
+          selectedOrder.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 
+          selectedOrder.status === 'shipped' ? 'bg-blue-100 text-blue-800' :
+          selectedOrder.status === 'delivered' ? 'bg-purple-100 text-purple-800' :
+          'bg-red-100 text-red-800'}`}
+      >
+        <div className="flex items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span className="font-medium capitalize">Status: {selectedOrder.status}</span>
+        </div>
+      </div>
+      
+      {/* Order Content */}
+      <div className="p-6">
+        {/* Order and Cooperative Information */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          {/* Order Information */}
+          <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+            <h4 className="font-semibold text-lg mb-3 text-gray-800 border-b pb-2">Order Information</h4>
+            <div className="space-y-3">
+              <div className="flex">
+                <span className="font-medium text-gray-600 w-24">Date:</span>
+                <span>{formatDate(selectedOrder.created_at)}</span>
+              </div>
+              <div className="flex">
+                <span className="font-medium text-gray-600 w-24">Total:</span>
+                <span className="font-bold text-emerald-600">${selectedOrder.total_price}</span>
               </div>
             </div>
-            <div className="p-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <div>
-                  <h4 className="font-medium text-lg mb-2">Order Information</h4>
-                  <div className="space-y-2">
-                    <p><span className="font-medium">Order ID:</span> #{selectedOrder.id}</p>
-                    <p><span className="font-medium">Date:</span> {formatDate(selectedOrder.created_at)}</p>
-                    <p><span className="font-medium">Status:</span> 
-                      <span className={`ml-2 px-2 py-1 text-xs font-semibold rounded-full 
-                        ${selectedOrder.status === 'completed' ? 'bg-green-100 text-green-800' : 
-                          selectedOrder.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 
-                          selectedOrder.status === 'shipped' ? 'bg-blue-100 text-blue-800' :
-                          selectedOrder.status === 'delivered' ? 'bg-purple-100 text-purple-800' :
-                          'bg-red-100 text-red-800'}`}
-                      >
-                        {selectedOrder.status}
-                      </span>
-                    </p>
-                    <p><span className="font-medium">Total Price:</span> ${selectedOrder.total_price}</p>
-                  </div>
-                </div>
-                <div>
-                  <h4 className="font-medium text-lg mb-2">Student Information</h4>
-                  <div className="space-y-2">
-                    <p><span className="font-medium">Name:</span> {selectedOrder.student?.name || "N/A"}</p>
-                    <p><span className="font-medium">Email:</span> {selectedOrder.student?.email || "N/A"}</p>
-                    <p><span className="font-medium">Phone:</span> {selectedOrder.student?.phone || "N/A"}</p>
-                  </div>
-                </div>
+          </div>
+          
+          {/* Cooperative Information */}
+          <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+            <h4 className="font-semibold text-lg mb-3 text-gray-800 border-b pb-2">Cooperative Info</h4>
+            <div className="space-y-3">
+              <div className="flex items-center">
+                <span className="font-medium text-gray-600 w-24">Name:</span>
+                <span>{selectedOrder.cooperative?.username || "N/A"}</span>
               </div>
-              
-              <h4 className="font-medium text-lg mb-2">Course Details</h4>
-              <div className="border rounded-lg overflow-hidden mb-6">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Course</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{selectedOrder.course?.title || "N/A"}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${selectedOrder.total_price}</td>
-                    </tr>
-                  </tbody>
-                </table>
+              <div className="flex items-center">
+                <span className="font-medium text-gray-600 w-24">Email:</span>
+                <span>{selectedOrder.cooperative?.email || "N/A"}</span>
               </div>
-              
-              <div className="flex justify-end">
-                <button 
-                  onClick={handleCloseDetailsModal}
-                  className="bg-gray-200 text-gray-800 px-4 py-2 rounded-md hover:bg-gray-300"
-                >
-                  Close
-                </button>
+              <div className="flex items-center">
+                <span className="font-medium text-gray-600 w-24">Phone:</span>
+                <span>{selectedOrder.cooperative?.contact_phone || "N/A"}</span>
               </div>
             </div>
           </div>
         </div>
-      )}
+        
+        {/* Order Items */}
+        <div className="mb-6">
+          <h4 className="font-semibold text-lg mb-3 text-gray-800">Order Items</h4>
+          <div className="bg-white border rounded-lg overflow-hidden">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-100">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Product</th>
+                  <th className="px-6 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Quantity</th>
+                  <th className="px-6 py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">Price</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200">
+                {selectedOrder.products && selectedOrder.products.length > 0 ? (
+                  selectedOrder.products.map((item) => (
+                    <tr key={item.id} className="hover:bg-gray-50">
+                      <td className="px-6 py-4 text-sm text-gray-800">
+                        {item.product}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-center text-gray-600">
+                        {item.quantity}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-right font-medium text-gray-900">
+                        ${item.price}
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="3" className="px-6 py-4 text-sm text-center text-gray-500">
+                      No items found in this order
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+              <tfoot className="bg-gray-50">
+                <tr>
+                  <td colSpan="2" className="px-6 py-4 text-sm font-medium text-gray-900 text-right">
+                    Total:
+                  </td>
+                  <td className="px-6 py-4 text-sm font-bold text-right text-emerald-600">
+                    ${selectedOrder.total_price}
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+        
+        {/* Academy Information (if applicable) */}
+        {selectedOrder.user && selectedOrder.user.academy_details && (
+          <div className="mb-6">
+            <h4 className="font-semibold text-lg mb-3 text-gray-800">Academy Information</h4>
+            <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+              <div className="space-y-3">
+                <div className="flex">
+                  <span className="font-medium text-gray-600 w-24">Name:</span>
+                  <span>{selectedOrder.user.academy_details.name || "N/A"}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+        
+        {/* Action Buttons */}
+        <div className="flex justify-end mt-6 space-x-3">
+          <button 
+            onClick={handleCloseDetailsModal}
+            className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition duration-150"
+          >
+            Close
+          </button>
+          {selectedOrder.status !== 'completed' && (
+            <button 
+              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-150"
+            >
+              Update Status
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+   
+    
     </div>
   );
 };

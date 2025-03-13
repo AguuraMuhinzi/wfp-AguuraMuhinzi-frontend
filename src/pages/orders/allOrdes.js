@@ -270,7 +270,7 @@ const OrdersTable = () => {
 
   const filteredOrders = useMemo(() => {
     if (!orders || !Array.isArray(orders)) return [];
-    let userOrders = orders.filter((order) => order.cooperative === userId);
+    let userOrders = orders.filter((order) => order.cooperative?.id === userId);
 
     if (filterStatus !== 'all') {
       userOrders = userOrders.filter((order) => order.status === filterStatus);
@@ -391,7 +391,7 @@ const OrdersTable = () => {
                   <tr key={order.id} className="hover:bg-gray-50 border-b border-gray-200">
                     <td className="p-3 text-sm text-gray-700 border border-gray-300">{order.id}</td>
                     <td className="p-3 text-sm text-gray-700 border border-gray-300">
-                      {order.user.academy_details ? order.user.academy_details.name : 'No Academy'}
+                      {order.user.username ? order.user.username : 'No Academy'}
                     </td>
                     <td className="p-3 text-sm text-gray-700 border border-gray-300">${order.total_price}</td>
                     <td className="p-3 text-sm text-gray-700 border border-gray-300 capitalize">{order.status}</td>
@@ -416,6 +416,7 @@ const OrdersTable = () => {
 
       {/* Modal for Viewing Order Details */}
       {isDetailsModalVisible && selectedOrder && (
+         
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
           <div className="relative bg-white rounded-lg shadow-lg p-6 max-w-xl w-full">
             <button onClick={handleCloseDetailsModal} className="absolute top-2 right-2 text-gray-500 hover:text-gray-700">
@@ -434,10 +435,13 @@ const OrdersTable = () => {
               <ul className="list-disc list-inside mb-4">
                 {selectedOrder.products.map((item) => (
                   <li key={item.id} className="mb-1">
-                    <span className="font-semibold">{item.product.product_name || item.product}</span> - 
+                    
+                    <span className="font-semibold">{item?.product?.product_name || item.product}</span> - 
                     <span> Quantity: {item.quantity}, </span> 
                     <span>Amount: ${item.price}</span>
+                    
                   </li>
+                  
                 ))}
               </ul>
 
