@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Login from './pages/auth/login';
 import Signup from './pages/auth/signup';
 import EmailVerification from './pages/auth/EmailVerification';
-import AcademyDetails from './pages/academy_details';
 import CooperativeDetails from './pages/cooperative/cooperative_details';
 import CopDashboard from './pages/cop_dashboard';
 import DashboardLayout from './components/dashboard';
@@ -16,7 +15,7 @@ import CoopProfile from './pages/cooperative/profile';
 import Overview from './pages/cooperative/overview';
 import DashboardLayout_aca from './pages/academy/acad_dashboard';
 import Overview_acad from './pages/academy/acad_overview';
-import Acad_profile from './pages/academy/profile';
+import Acad_profile from './pages/academy/academy_details';
 import Acad_orders from './pages/academy/acad_orders';
 import HomePage from './pages/home';
 
@@ -32,7 +31,7 @@ function App() {
                     <Route path="/signup" element={<Signup />} />
                     <Route path="/EmailVerification" element={<EmailVerification />} />
                     <Route path="/cooperative_details" element={<CooperativeDetails />} />
-                    <Route path="/academy_details" element={<AcademyDetails />} />
+                    {/* <Route path="/academy_details" element={<AcademyDetails />} /> */}
                     <Route path="/home" element={<Home />} />
 
                      {/* cooperative dashboard-related routes  */}
