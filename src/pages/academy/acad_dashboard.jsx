@@ -415,9 +415,10 @@
  
 
 // Modified AcademyDashboard.js
+
 import React, { useEffect, useState } from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector,useDispatch } from 'react-redux';
 import {
   FiGrid,
   FiUser,
@@ -426,9 +427,14 @@ import {
   FiBell,
   FiLogOut,
 } from 'react-icons/fi';
-
+import { getUserById } from '../../Redux/Slices/user_slice';
+import { getAcademyDetails } from '../../Redux/Slices/academy/academy_details';
 const AcademyDashboard = () => {
-  const { user } = useSelector((state) => state.auth || {});
+  const dispatch = useDispatch();
+  // const { user } = useSelector((state) => state.auth || {});
+  const { userInfo } = useSelector((state) => state.user);
+  const user = useSelector((state) => state.user.userInfo);
+  const { academyDetails, isLoading, error } = useSelector((state) => state.academy);
   const location = useLocation();
   const [stats, setStats] = useState({
     totalCourses: 104,
@@ -436,6 +442,16 @@ const AcademyDashboard = () => {
     activeClasses: 0,
     remainingClasses: 10,
   });
+   
+ 
+  const userId = localStorage.getItem('user_id'); 
+  
+  useEffect(() => {
+    if (userId) {
+      dispatch(getUserById(userId));
+      dispatch(getAcademyDetails(userId));
+    }
+  }, [dispatch, userId]);
 
   const menuItems = [
     { name: 'DASHBOARD', icon: <FiGrid />, path: '/aca_dashboard/overview' },
@@ -476,10 +492,12 @@ const AcademyDashboard = () => {
                   {user?.name?.charAt(0) || "A"}
                 </div>
                 <div className="ml-6">
-                  <h2 className="text-2xl font-semibold">{user?.name || "Academy User"}</h2>
+                  <h2 className="text-2xl font-semibold">{userInfo.username || "Academy User"}</h2>
                   <div className="flex flex-col text-sm text-gray-600 mt-1">
                     <div className="flex items-center mb-1">
-                      <span className="mr-2">✓ Verified:</span>
+                    <span className={user.isVerified ? "text-green-600" : "text-red-500"}>
+                        {user.isVerified ? "✅ Yes" : "❌ No"}
+                      </span>
                       <span className="text-green-600">✉</span>
                     </div>
                     <div className="flex items-center mb-1">
@@ -488,7 +506,13 @@ const AcademyDashboard = () => {
                     </div>
                     <div className="flex items-center">
                       <span className="mr-2">📍 Location:</span>
-                      <span>Rwanda, Kigali</span>
+                      <span>
+  {[
+    academyDetails?.province,
+    academyDetails?.district,
+    academyDetails?.sector
+  ].filter(Boolean).join(', ') || "Unknown"}
+</span>
                     </div>
                   </div>
                 </div>

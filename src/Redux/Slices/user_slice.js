@@ -229,6 +229,20 @@ export const login = createAsyncThunk(
     }
   );
 
+  export const getUserById = createAsyncThunk(
+    'user/getUserById',
+    async (userId, { rejectWithValue }) => {
+      try {
+        const response = await axios.get(`${API_BASE_URL}/api/v1/user/${userId}/`);
+        return response.data;  // This will contain user details
+      } catch (error) {
+        if (error.response && error.response.data) {
+          return rejectWithValue(error.response.data);
+        }
+        return rejectWithValue({ message: 'Failed to fetch user details.' });
+      }
+    }
+  );
 const userSlice = createSlice({
   name: 'user',
   initialState: {
@@ -328,11 +342,23 @@ const userSlice = createSlice({
         localStorage.setItem('refreshToken', action.payload.refresh);
         localStorage.setItem('user_id', action.payload.user.id);  // Store user_id separately if needed
 
-
       })
       .addCase(login.rejected, (state, action) => {
         state.isLoading = false;
         state.isAuthenticated = false;
+        state.error = action.payload;
+      })
+
+      .addCase(getUserById.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(getUserById.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.userInfo = action.payload;
+      })
+      .addCase(getUserById.rejected, (state, action) => {
+        state.isLoading = false;
         state.error = action.payload;
       });
   },
