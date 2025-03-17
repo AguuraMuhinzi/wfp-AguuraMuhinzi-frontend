@@ -458,7 +458,7 @@ const AcademyDashboard = () => {
     { name: 'PROFILE', icon: <FiUser />, path: '/aca_dashboard/acad_profile' },
     { name: 'ORDERS', icon: <FiGrid />, path: '/aca_dashboard/acad_orders' },
     { name: 'SETTINGS', icon: <FiSettings />, path: '/aca_dashboard/settings' },
-    { name: 'CHATS', icon: <FiMessageCircle />, path: '/aca_dashboard/chats' },
+    { name: 'CHATS', icon: <FiMessageCircle />, path: '/aca_dashboard/chat' },
     { name: 'NOTIFICATIONS', icon: <FiBell />, path: '/aca_dashboard/notifications' },
     { name: 'LOGOUT', icon: <FiLogOut />, path: '/aca_dashboard/logout' },
   ];

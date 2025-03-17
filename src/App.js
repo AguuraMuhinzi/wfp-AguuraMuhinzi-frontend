@@ -18,7 +18,7 @@ import Overview_acad from './pages/academy/acad_overview';
 import Acad_profile from './pages/academy/academy_details';
 import Acad_orders from './pages/academy/acad_orders';
 import HomePage from './pages/home';
-
+import Chat from './pages/chat/chatWindow';
 function App() {
     return (
         <Router>
@@ -49,6 +49,7 @@ function App() {
                       {/* <Route index element={<Overview_acad />} /> */}
                       <Route path="acad_profile" element={<Acad_profile />} />
                       <Route path="acad_orders" element={<Acad_orders />} />
+                      <Route path="chat" element={<Chat />} />
                       
                       </Route>
                     {/* Fallback route */}
