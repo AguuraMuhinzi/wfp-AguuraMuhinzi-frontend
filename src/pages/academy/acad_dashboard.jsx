@@ -502,17 +502,17 @@ const AcademyDashboard = () => {
                     </div>
                     <div className="flex items-center mb-1">
                       <span className="mr-2">📅 Joined:</span>
-                      <span>Mar 7, 2025</span>
+                      <span>{user?.date_joined || "Unknown"}</span>
                     </div>
                     <div className="flex items-center">
                       <span className="mr-2">📍 Location:</span>
                       <span>
-  {[
-    academyDetails?.province,
-    academyDetails?.district,
-    academyDetails?.sector
-  ].filter(Boolean).join(', ') || "Unknown"}
-</span>
+                        {[
+                          academyDetails?.province,
+                          academyDetails?.district,
+                          academyDetails?.sector
+                        ].filter(Boolean).join(', ') || "Unknown"}
+                    </span>
                     </div>
                   </div>
                 </div>
