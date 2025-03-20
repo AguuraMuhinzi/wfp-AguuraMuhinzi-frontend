@@ -9,7 +9,7 @@ const HomePage = () => {
   // Declared list of images
   const images = [
     "/images/person-getting.jpg",
-    "/images/hands.jpg",
+    // url,
     "/images/group-children.jpg",
     "/images/child.jpg",
   ];

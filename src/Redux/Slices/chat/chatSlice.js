@@ -15,7 +15,7 @@ export const fetchUserConversations = createAsyncThunk(
   'chat/fetchUserConversations',
   async (userId, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(`conversations/user/${userId}/`);
+      const response = await axiosInstance.get(`/users/${userId}/conversations/`);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.error || 'Failed to load conversations.');
@@ -23,31 +23,41 @@ export const fetchUserConversations = createAsyncThunk(
   }
 );
 
+
 // Fetch conversation 
 export const fetchConversationHistory = createAsyncThunk(
-  'chat/fetchConversationHistory',
-  async (conversationId, { rejectWithValue }) => {
-    try {
-      const response = await axiosInstance.get(`conversations/${conversationId}/`);
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(error.response?.data?.error || 'Failed to load messages.');
+    'chat/fetchConversationHistory',
+    async (conversation_id, { rejectWithValue }) => {
+      try {
+        // Connect to WebSocket for this conversation
+        websocketService.connect(conversation_id);
+        
+        const response = await axiosInstance.get(`conversations/${conversation_id}/`);
+        return response.data;
+      } catch (error) {
+        return rejectWithValue(error.response?.data?.error || 'Failed to load messages.');
+      }
     }
-  }
-);
+  );
 
 // Create a new conversation
 export const createConversation = createAsyncThunk(
-  'chat/createConversation',
-  async (participantIds, { rejectWithValue }) => {
-    try {
-      const response = await axiosInstance.post(`conversations/create/`, { participants: participantIds });
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(error.response?.data?.error || 'Failed to create conversation.');
+    'chat/createConversation',
+    async (participantIds, { rejectWithValue }) => {
+      try {
+        const response = await axiosInstance.post(`conversations/create/`, { participants: participantIds });
+        
+        // After successfully creating the conversation, connect the WebSocket
+        if (response.data && response.data.id) {
+          websocketService.connect(response.data.id);
+        }
+        
+        return response.data;
+      } catch (error) {
+        return rejectWithValue(error.response?.data?.error || 'Failed to create conversation.');
+      }
     }
-  }
-);
+  );
 
 const chatSlice = createSlice({
   name: 'chat',
@@ -61,6 +71,13 @@ const chatSlice = createSlice({
     clearChatError: (state) => {
       state.error = null;
     },
+    receiveMessage: (state, action) => {
+        const { conversationId, message } = action.payload;
+        if (!state.messages[conversationId]) {
+          state.messages[conversationId] = [];
+        }
+        state.messages[conversationId].push(message);
+      },
   },
   extraReducers: (builder) => {
     builder
@@ -105,5 +122,5 @@ const chatSlice = createSlice({
   },
 });
 
-export const { clearChatError } = chatSlice.actions;
+export const { clearChatError,receiveMessage } = chatSlice.actions;
 export default chatSlice.reducer;
