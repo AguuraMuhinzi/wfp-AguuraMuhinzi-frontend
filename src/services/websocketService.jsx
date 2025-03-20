@@ -53,6 +53,7 @@ class WebSocketService {
       console.error('WebSocket is not connected.');
     }
   }
+
   sendTypingIndicator(conversationId, userId, isTyping) {
     if (this.socket && this.socket.readyState === WebSocket.OPEN) {
       this.socket.send(
