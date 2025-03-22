@@ -530,7 +530,7 @@ const AcademyDashboard = () => {
               </div>
             </div>
 
-            {/* Navigation Tabs */}
+            {/* Navigation  */}
             <div className="border-t border-gray-200">
               <div className="flex overflow-x-auto">
                 {menuItems.map((item, index) => (
