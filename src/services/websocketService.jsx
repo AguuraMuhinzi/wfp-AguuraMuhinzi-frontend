@@ -3,14 +3,18 @@ import { receiveMessage } from '../Redux/Slices/chat/chatSlice';
 class WebSocketService {
   constructor() {
     this.socket = null;
-    this.callbacks = {}; // Store the callbacks
+    this.callbacks = {};
+    this.currentRoom = null;
   }
 
   connect(conversationId, dispatch) {
+    if (this.socket && this.currentRoom === conversationId) return; // prevent duplicate connection
+
     if (this.socket) {
       this.disconnect();
     }
 
+    this.currentRoom = conversationId;
     const wsUrl = `ws://localhost:8000/ws/chat/${conversationId}/`;
     this.socket = new WebSocket(wsUrl);
 
@@ -22,9 +26,8 @@ class WebSocketService {
       const data = JSON.parse(event.data);
       console.log('WebSocket Message Received:', data);
 
-      // Call the appropriate callback if registered
       if (this.callbacks[data.type]) {
-        this.callbacks[data.type](data, dispatch); // pass data and dispatch
+        this.callbacks[data.type](data, dispatch);
       }
     };
 
@@ -35,17 +38,31 @@ class WebSocketService {
     this.socket.onclose = () => {
       console.log('WebSocket Disconnected');
     };
+
+    // Register the chat_message callback
+    this.addCallback('chat_message', (data, dispatch) => {
+      dispatch(
+        receiveMessage({
+          conversationId: data.conversation_id,
+          message: {
+            id: Date.now(), // temporary ID
+            sender_id: data.user_id,
+            content: data.message,
+            timestamp: data.timestamp,
+          },
+        })
+      );
+    });
   }
 
-  // Disconnect the WebSocket connection
   disconnect() {
     if (this.socket) {
       this.socket.close();
       this.socket = null;
+      this.currentRoom = null;
     }
   }
 
-  // Send a message via WebSocket
   sendMessage(messageData) {
     if (this.socket && this.socket.readyState === WebSocket.OPEN) {
       this.socket.send(JSON.stringify(messageData));
@@ -69,9 +86,6 @@ class WebSocketService {
     }
   }
 
-
-
-  // Register a callback for a specific type of message
   addCallback(type, callback) {
     this.callbacks[type] = callback;
   }

@@ -43,6 +43,7 @@ function App() {
                         <Route path="newProduct" element={<NewProduct />} />
                         <Route  path="allProducts" element={<AllProducts />} />
                         <Route path="coopProfile" element={<CoopProfile />} />
+                        <Route path="chat" element={<Chat />} />
                     </Route>
                       {/* academy dashboard-related routes  */}
                       <Route path="/aca_dashboard" element={<DashboardLayout_aca />}>
