@@ -551,7 +551,7 @@ const ChatPage = () => {
               })()}
             </div>
 
-            
+            {/* Messages */}
             <div className="flex-1 bg-gray-50 px-6 py-4 overflow-y-auto space-y-2">
               {messages[selectedConversationId]?.map((msg) => {
                 const isMine = parseInt(userId) === msg.sender_id;
