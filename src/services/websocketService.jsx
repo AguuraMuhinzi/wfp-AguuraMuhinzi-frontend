@@ -1,30 +1,30 @@
-import { receiveMessage } from '../Redux/Slices/chat/chatSlice';
+import { addNotification } from '../Redux/Slices/notifications/notification_slice';
 
-class WebSocketService {
+class WebSocketNotificationService {
   constructor() {
     this.socket = null;
     this.callbacks = {};
-    this.currentRoom = null;
+    this.userId = null;
   }
 
-  connect(conversationId, dispatch) {
-    if (this.socket && this.currentRoom === conversationId) return; // prevent duplicate connection
+  connect(userId, dispatch) {
+    if (this.socket && this.userId === userId) return;
 
     if (this.socket) {
       this.disconnect();
     }
 
-    this.currentRoom = conversationId;
-    const wsUrl = `ws://localhost:8000/ws/chat/${conversationId}/`;
+    this.userId = userId;
+    const wsUrl = `ws://localhost:8000/ws/notifications/${userId}/`;
     this.socket = new WebSocket(wsUrl);
 
     this.socket.onopen = () => {
-      console.log('WebSocket connected');
+      console.log('🔔 Notification WebSocket connected');
     };
 
     this.socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      console.log('WebSocket Message Received:', data);
+      console.log('📩 Notification received:', data);
 
       if (this.callbacks[data.type]) {
         this.callbacks[data.type](data, dispatch);
@@ -36,22 +36,12 @@ class WebSocketService {
     };
 
     this.socket.onclose = () => {
-      console.log('WebSocket Disconnected');
+      console.log('🔌 Notification WebSocket disconnected');
     };
 
-    // Register the chat_message callback
-    this.addCallback('chat_message', (data, dispatch) => {
-      dispatch(
-        receiveMessage({
-          conversationId: data.conversation_id,
-          message: {
-            id: Date.now(), // temporary ID
-            sender_id: data.user_id,
-            content: data.message,
-            timestamp: data.timestamp,
-          },
-        })
-      );
+    // Register default notification callback
+    this.addCallback('notification', (data, dispatch) => {
+      dispatch(addNotification(data.notification));
     });
   }
 
@@ -59,30 +49,15 @@ class WebSocketService {
     if (this.socket) {
       this.socket.close();
       this.socket = null;
-      this.currentRoom = null;
+      this.userId = null;
     }
   }
 
-  sendMessage(messageData) {
+  sendNotification(notificationData) {
     if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-      this.socket.send(JSON.stringify(messageData));
+      this.socket.send(JSON.stringify(notificationData));
     } else {
-      console.error('WebSocket is not connected.');
-    }
-  }
-
-  sendTypingIndicator(conversationId, userId, isTyping) {
-    if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-      this.socket.send(
-        JSON.stringify({
-          type: 'typing_indicator',
-          conversation_id: conversationId,
-          user_id: userId,
-          is_typing: isTyping,
-        })
-      );
-    } else {
-      console.error('WebSocket is not connected.');
+      console.error('Notification WebSocket is not connected.');
     }
   }
 
@@ -91,5 +66,5 @@ class WebSocketService {
   }
 }
 
-const websocketService = new WebSocketService();
-export default websocketService;
+const websocketNotificationService = new WebSocketNotificationService();
+export default websocketNotificationService;
