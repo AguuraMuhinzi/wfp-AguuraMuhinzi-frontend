@@ -609,8 +609,8 @@ import {
   Phone, Mail, Globe, ExternalLink, Shield, CheckCircle
 } from 'lucide-react';
 import Navbar from '../../components/sidebar';
+import OrderModal from '../../pages/orders/createOrder';
 const BASE_URL = process.env.REACT_APP_API_BASE_URL;
-
 // Story-style highlights component
 const FarmStories = ({ cooperatives, onStoryClick }) => {
   return (
@@ -840,7 +840,7 @@ const WeatherWidget = () => {
 };
 
 // Enhanced Modal Component
-const Modal = ({ product, cooperative, onClose }) => {
+const Modal = ({ product, cooperative, onClose,onMakeOrder }) => {
   if (!product || !cooperative) return null;
 
   return (
@@ -971,14 +971,14 @@ const Modal = ({ product, cooperative, onClose }) => {
               <div className="flex gap-3">
                 <button
                   className="flex-1 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white py-3 px-6 rounded-xl font-medium transition-all duration-200 transform hover:scale-[1.02] shadow-lg flex items-center justify-center gap-2"
-                  onClick={() => alert('Connecting you with the farm...')}
+                   onClick={onMakeOrder}
                 >
                   <MessageSquare className="w-5 h-5" />
-                  Connect with Farm
+                  make an Order
                 </button>
                 <button className="px-6 py-3 border-2 border-green-600 text-green-600 rounded-xl font-medium hover:bg-green-50 transition-colors flex items-center justify-center gap-2">
                   <ExternalLink className="w-4 h-4" />
-                  Visit
+                  contact cooperative
                 </button>
               </div>
               <p className="text-xs text-gray-500 text-center mt-3">
@@ -1004,6 +1004,7 @@ const ProductListingPage = () => {
   const loading = useSelector((state) => state.product.loading);
   const error = useSelector((state) => state.product.error);
   const BASE_URL = process.env.REACT_APP_API_BASE_URL;
+  const [showOrderModal, setShowOrderModal] = useState(false);
 
   useEffect(() => {
     dispatch(listProducts());
@@ -1081,6 +1082,13 @@ const ProductListingPage = () => {
     );
   }
 
+//   <Modal
+//   product={selectedProduct}
+//   cooperative={selectedCooperative}
+//   onClose={handleCloseModal}
+//   onMakeOrder={() => setShowOrderModal(true)} // ✅ This is new
+// />
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -1157,12 +1165,22 @@ const ProductListingPage = () => {
         )}
       </main>
 
-      {/* Enhanced Modal */}
-      {selectedProduct && selectedCooperative && (
+    
+       {selectedProduct && selectedCooperative && (
         <Modal
           product={selectedProduct}
           cooperative={selectedCooperative}
           onClose={handleCloseModal}
+          onMakeOrder={() => setShowOrderModal(true)}
+        />
+      )}
+
+      {showOrderModal && selectedProduct && selectedCooperative && (
+        <OrderModal
+          product={selectedProduct}
+          cooperative={selectedCooperative}
+          currentUser={{ id: localStorage.getItem('user_id') }}
+          onClose={() => setShowOrderModal(false)}
         />
       )}
     </div>
