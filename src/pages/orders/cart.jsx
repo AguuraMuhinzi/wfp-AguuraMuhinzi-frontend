@@ -8,6 +8,7 @@ const EnhancedCartModal = ({
   setShowCart, 
   onUpdateQuantity, 
   onRemoveItem,
+  onCheckout,
   BASE_URL 
 }) => {
   const [isUpdating, setIsUpdating] = useState({});
@@ -203,10 +204,8 @@ const EnhancedCartModal = ({
                 {/* Action Buttons */}
                 <div className="space-y-3">
                   <button
-                    onClick={() => {
-                      alert('Proceeding to checkout...');
-                      // Here you would typically navigate to checkout
-                    }}
+                    onClick={onCheckout}
+                     
                     className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white py-4 rounded-xl font-semibold transition-all duration-200 transform hover:scale-[1.02] shadow-lg flex items-center justify-center gap-2"
                   >
                     <span>Proceed to Checkout</span>

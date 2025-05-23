@@ -611,7 +611,7 @@ import {
 import Navbar from '../../components/sidebar';
 import OrderModal from '../../pages/orders/createOrder';
 import { EnhancedCartModal, CartIcon } from '../../pages/orders/cart'
-import { addToCart,fetchCart,updateCartItem, removeFromCart   } from '../../Redux/Slices/order/cartSlice';
+import { addToCart,fetchCart,updateCartItem, removeFromCart ,checkoutCart  } from '../../Redux/Slices/order/cartSlice';
 
 const BASE_URL = process.env.REACT_APP_API_BASE_URL;
 // Story-style highlights component
@@ -1094,6 +1094,22 @@ const ProductListingPage = () => {
   }
 };
 
+  const handleCheckout = async () => {
+  const userId = localStorage.getItem('user_id');
+  const cooperativeId = selectedCooperative?.id || cart.items[0]?.product?.user;
+
+  try {
+    await dispatch(checkoutCart({ userId, cooperativeId })).unwrap();
+    await dispatch(fetchCart(userId));
+    alert('🎉 Order placed successfully!');
+    setShowCart(false);
+  } catch (error) {
+    alert('❌ Failed to place order.');
+    console.error('Checkout error:', error);
+  }
+};
+
+
 const handleCloseModal = () => {
   setSelectedProduct(null);
   setSelectedCooperative(null);
@@ -1166,6 +1182,7 @@ const handleCloseModal = () => {
         setShowCart={setShowCart}
         onUpdateQuantity={handleUpdateQuantity}
         onRemoveItem={handleRemoveItem}
+        onCheckout={handleCheckout}
         BASE_URL={BASE_URL}
       />
 
