@@ -619,10 +619,10 @@ const FarmStories = ({ cooperatives, onStoryClick }) => {
   return (
     <div className="flex gap-4 overflow-x-auto pb-4 mb-6 scrollbar-hide">
       <div className="flex-shrink-0 text-center">
-        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center mb-2 cursor-pointer hover:scale-105 transition-transform">
+        {/* <div className="w-16 h-16 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center mb-2 cursor-pointer hover:scale-105 transition-transform">
           <Camera className="w-6 h-6 text-white" />
-        </div>
-        <span className="text-xs text-gray-600">Your Story</span>
+        </div> */}
+        {/* <span className="text-xs text-gray-600">Your Story</span> */}
       </div>
       {cooperatives.slice(0, 8).map((coop, index) => (
         <div key={index} className="flex-shrink-0 text-center cursor-pointer" onClick={() => onStoryClick(coop)}>
@@ -638,7 +638,7 @@ const FarmStories = ({ cooperatives, onStoryClick }) => {
   );
 };
 
-// Instagram-style post component - Made slightly bigger
+
 const FarmPost = ({ product, cooperativeName, BASE_URL, onViewMore, onLike, onComment, onAddToCart,isLiked = false }) => {
   const [likes, setLikes] = useState(Math.floor(Math.random() * 50) + 10);
   const [comments, setComments] = useState(Math.floor(Math.random() * 20) + 3);
@@ -703,7 +703,7 @@ const FarmPost = ({ product, cooperativeName, BASE_URL, onViewMore, onLike, onCo
       <div className="p-5">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-4">
-            <button 
+            {/* <button 
               onClick={handleLike}
               className={`p-2 rounded-full transition-colors ${localLiked ? 'text-red-500' : 'text-gray-700 hover:bg-gray-100'}`}
             >
@@ -714,7 +714,7 @@ const FarmPost = ({ product, cooperativeName, BASE_URL, onViewMore, onLike, onCo
               className="p-2 rounded-full text-gray-700 hover:bg-gray-100"
             >
               <MessageSquare className="w-7 h-7" />
-            </button>
+            </button> */}
             <button 
       onClick={() => onAddToCart(product)}
       className="p-2 rounded-full text-gray-700 hover:bg-green-100 hover:text-green-600 transition-colors"
