@@ -606,10 +606,12 @@ import {
   Heart, MessageSquare, Share2, Bookmark, MoreHorizontal,
   MapPin, Calendar, Users, Sprout, Sun, Droplets, Camera,
   Search, Filter, X, ChevronDown, Star, Award, TrendingUp,
-  Phone, Mail, Globe, ExternalLink, Shield, CheckCircle
+  Phone, Mail, Globe, ExternalLink, Shield, CheckCircle,ShoppingCart 
 } from 'lucide-react';
 import Navbar from '../../components/sidebar';
 import OrderModal from '../../pages/orders/createOrder';
+import { addToCart } from '../../Redux/Slices/order/cartSlice';
+
 const BASE_URL = process.env.REACT_APP_API_BASE_URL;
 // Story-style highlights component
 const FarmStories = ({ cooperatives, onStoryClick }) => {
@@ -636,7 +638,7 @@ const FarmStories = ({ cooperatives, onStoryClick }) => {
 };
 
 // Instagram-style post component - Made slightly bigger
-const FarmPost = ({ product, cooperativeName, BASE_URL, onViewMore, onLike, onComment, isLiked = false }) => {
+const FarmPost = ({ product, cooperativeName, BASE_URL, onViewMore, onLike, onComment, onAddToCart,isLiked = false }) => {
   const [likes, setLikes] = useState(Math.floor(Math.random() * 50) + 10);
   const [comments, setComments] = useState(Math.floor(Math.random() * 20) + 3);
   const [showFullDescription, setShowFullDescription] = useState(false);
@@ -712,6 +714,13 @@ const FarmPost = ({ product, cooperativeName, BASE_URL, onViewMore, onLike, onCo
             >
               <MessageSquare className="w-7 h-7" />
             </button>
+            <button 
+      onClick={() => onAddToCart(product)}
+      className="p-2 rounded-full text-gray-700 hover:bg-green-100 hover:text-green-600 transition-colors"
+      title="Add to Cart"
+    >
+      <ShoppingCart className="w-7 h-7" />
+    </button>
             {/* <button className="p-2 rounded-full text-gray-700 hover:bg-gray-100">
               <Share2 className="w-7 h-7" />
             </button> */}
@@ -1005,6 +1014,8 @@ const ProductListingPage = () => {
   const error = useSelector((state) => state.product.error);
   const BASE_URL = process.env.REACT_APP_API_BASE_URL;
   const [showOrderModal, setShowOrderModal] = useState(false);
+const cart = useSelector((state) => state.cart);
+const [showCart, setShowCart] = useState(false);
 
   useEffect(() => {
     dispatch(listProducts());
@@ -1088,6 +1099,28 @@ const ProductListingPage = () => {
 //   onClose={handleCloseModal}
 //   onMakeOrder={() => setShowOrderModal(true)} // ✅ This is new
 // />
+ const handleAddToCart = (product) => {
+  const userId = localStorage.getItem('user_id');
+  if (!userId) return alert('Please log in first');
+
+  dispatch(addToCart({
+    userId,
+    productId: product.id,
+    quantity: 1
+  }))
+  .unwrap()
+  .then(() => {
+    alert(`${product.product_name} added to cart! 🛒`);
+  })
+  .catch((err) => {
+    if (err?.error?.includes("cooperative")) {
+      alert("You can only add products from one cooperative at a time.");
+    } else {
+      alert("Failed to add to cart.");
+      console.error("Add to cart error:", err);
+    }
+  });
+};
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -1096,7 +1129,7 @@ const ProductListingPage = () => {
         <div className="max-w-7xl mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
             <h1 className="text-xl font-bold text-gray-900">🌾 Farm Feed</h1>
-            <div className="flex items-center gap-3">
+            {/* <div className="flex items-center gap-3">
               <button 
                 onClick={() => setShowSearch(!showSearch)}
                 className="p-2 hover:bg-gray-100 rounded-full transition-colors"
@@ -1106,7 +1139,35 @@ const ProductListingPage = () => {
               <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
                 <Filter className="w-5 h-5 text-gray-600" />
               </button>
-            </div>
+            </div> */}
+            <div className="flex items-center gap-3 relative">
+  {/* Search Button */}
+  <button 
+    onClick={() => setShowSearch(!showSearch)}
+    className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+  >
+    <Search className="w-5 h-5 text-gray-600" />
+  </button>
+
+  {/* Cart Icon Button */}
+  <button
+    onClick={() => setShowCart(true)}
+    className="relative p-2 hover:bg-green-100 rounded-full transition-colors"
+  >
+    <ShoppingCart className="w-6 h-6 text-green-600" />
+    {cart.total_items > 0 && (
+      <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">
+        {cart.total_items}
+      </span>
+    )}
+  </button>
+
+  {/* Filter Icon */}
+  <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+    <Filter className="w-5 h-5 text-gray-600" />
+  </button>
+</div>
+
           </div>
           
           {showSearch && (
@@ -1122,6 +1183,52 @@ const ProductListingPage = () => {
             </div>
           )}
         </div>
+
+        {showCart && (
+  <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
+    <div className="bg-white rounded-2xl shadow-lg w-full max-w-lg p-6 relative">
+      <button
+        onClick={() => setShowCart(false)}
+        className="absolute top-3 right-3 text-gray-400 hover:text-gray-600"
+      >
+        <X className="w-5 h-5" />
+      </button>
+
+      <h2 className="text-xl font-bold text-green-700 mb-4">🛒 Your Cart</h2>
+
+      {cart.items.length === 0 ? (
+        <p className="text-gray-500 text-center">Your cart is empty.</p>
+      ) : (
+        <ul className="divide-y divide-gray-200 max-h-64 overflow-y-auto">
+          {cart.items.map((item) => (
+            <li key={item.id} className="py-3 flex justify-between items-center">
+              <div>
+                <p className="font-medium text-gray-900">{item.product.product_name}</p>
+                <p className="text-sm text-gray-500">Qty: {item.quantity}</p>
+              </div>
+              <span className="text-green-600 font-semibold">{item.total_price} RWF</span>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {cart.items.length > 0 && (
+        <div className="mt-6 text-right">
+          <p className="text-gray-600 mb-2">
+            Total: <span className="text-green-700 font-bold">{cart.total_price} RWF</span>
+          </p>
+          <button
+            onClick={() => alert('Checkout coming soon...')}
+            className="bg-green-600 text-white px-4 py-2 rounded-xl hover:bg-green-700 transition-all"
+          >
+            Proceed to Order
+          </button>
+        </div>
+      )}
+    </div>
+  </div>
+)}
+
       </div>
 
       <main className="max-w-7xl mx-auto px-4 py-6">
@@ -1149,6 +1256,7 @@ const ProductListingPage = () => {
                 onViewMore={handleViewProduct}
                 onLike={(id) => console.log('Liked product:', id)}
                 onComment={(id) => console.log('Comment on product:', id)}
+                onAddToCart={handleAddToCart}
               />
             </div>
           ))}
