@@ -26,7 +26,7 @@ export const addToCart = createAsyncThunk('cart/addToCart', async ({ userId, pro
 
 export const updateCartItem = createAsyncThunk('cart/updateCartItem', async ({ itemId, quantity }, { rejectWithValue }) => {
   try {
-    const res = await axiosInstance.put(`/cart/item/${itemId}/`, { quantity });
+    const res = await axiosInstance.put(`/cart/item/${itemId}/update/`, { quantity });
     return { ...res.data, itemId };
   } catch (err) {
     return rejectWithValue(err.response?.data || err.message);
@@ -36,7 +36,7 @@ export const updateCartItem = createAsyncThunk('cart/updateCartItem', async ({ i
 // Thunk: Remove from cart
 export const removeFromCart = createAsyncThunk('cart/removeFromCart', async (itemId, { rejectWithValue }) => {
   try {
-    await axiosInstance.delete(`/cart/item/${itemId}/`);
+    await axiosInstance.delete(`/cart/item/${itemId}/remove/`);
     return itemId;
   } catch (err) {
     return rejectWithValue(err.response?.data || err.message);

@@ -610,7 +610,8 @@ import {
 } from 'lucide-react';
 import Navbar from '../../components/sidebar';
 import OrderModal from '../../pages/orders/createOrder';
-import { addToCart } from '../../Redux/Slices/order/cartSlice';
+import { EnhancedCartModal, CartIcon } from '../../pages/orders/cart'
+import { addToCart,fetchCart,updateCartItem, removeFromCart   } from '../../Redux/Slices/order/cartSlice';
 
 const BASE_URL = process.env.REACT_APP_API_BASE_URL;
 // Story-style highlights component
@@ -1001,6 +1002,7 @@ const Modal = ({ product, cooperative, onClose,onMakeOrder }) => {
   );
 };
 
+
 const ProductListingPage = () => {
   const dispatch = useDispatch();
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -1008,17 +1010,20 @@ const ProductListingPage = () => {
   const [cooperativeNames, setCooperativeNames] = useState({});
   const [searchTerm, setSearchTerm] = useState('');
   const [showSearch, setShowSearch] = useState(false);
+  const [showOrderModal, setShowOrderModal] = useState(false);
+  const [showCart, setShowCart] = useState(false);
 
   const products = useSelector((state) => state.product.products);
   const loading = useSelector((state) => state.product.loading);
   const error = useSelector((state) => state.product.error);
-  const BASE_URL = process.env.REACT_APP_API_BASE_URL;
-  const [showOrderModal, setShowOrderModal] = useState(false);
-const cart = useSelector((state) => state.cart);
-const [showCart, setShowCart] = useState(false);
+  const cart = useSelector((state) => state.cart);
 
   useEffect(() => {
     dispatch(listProducts());
+    const userId = localStorage.getItem('user_id');
+    if (userId) {
+      dispatch(fetchCart(userId));
+    }
   }, [dispatch]);
 
   useEffect(() => {
@@ -1052,16 +1057,53 @@ const [showCart, setShowCart] = useState(false);
     }
   };
 
-  const handleCloseModal = () => {
-    setSelectedProduct(null);
-    setSelectedCooperative(null);
-  };
+  const handleAddToCart = async (product) => {
+  const userId = localStorage.getItem('user_id');
+  if (!userId) return alert('Please log in first');
 
-  const filteredProducts = products.filter(product => 
+  try {
+    await dispatch(addToCart({ userId, productId: product.id, quantity: 1 })).unwrap();
+    await dispatch(fetchCart(userId));
+    alert(`${product.product_name} added to cart! 🛒`);
+  } catch (err) {
+    if (err?.error?.includes('cooperative')) {
+      alert('You can only add products from one cooperative at a time.');
+    } else {
+      alert('Failed to add to cart.');
+      console.error('Add to cart error:', err);
+    }
+  }
+};
+  const handleUpdateQuantity = async (itemId, quantity) => {
+  const userId = localStorage.getItem('user_id');
+  try {
+    await dispatch(updateCartItem({ itemId, quantity })).unwrap();
+    await dispatch(fetchCart(userId));
+  } catch (error) {
+    console.error('Update quantity error:', error);
+  }
+};
+
+  const handleRemoveItem = async (itemId) => {
+  const userId = localStorage.getItem('user_id');
+  try {
+    await dispatch(removeFromCart(itemId)).unwrap();
+    await dispatch(fetchCart(userId));
+  } catch (error) {
+    console.error('Remove item error:', error);
+  }
+};
+
+const handleCloseModal = () => {
+  setSelectedProduct(null);
+  setSelectedCooperative(null);
+  setShowOrderModal(false);
+};
+
+  const filteredProducts = products.filter(product =>
     !searchTerm || product.product_name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Get unique cooperatives for stories
   const uniqueCooperatives = Array.from(
     new Map(products.map(p => [p.user, { name: cooperativeNames[p.user], id: p.user }])).values()
   );
@@ -1069,10 +1111,7 @@ const [showCart, setShowCart] = useState(false);
   if (loading === 'loading') {
     return (
       <div className="flex items-center justify-center h-screen bg-gray-50">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-4 border-green-500 border-t-transparent mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading fresh harvests...</p>
-        </div>
+        <p className="text-gray-600">Loading fresh harvests...</p>
       </div>
     );
   }
@@ -1082,10 +1121,7 @@ const [showCart, setShowCart] = useState(false);
       <div className="text-center p-8 bg-gray-50 min-h-screen flex items-center justify-center">
         <div className="bg-white rounded-2xl shadow-lg p-8">
           <p className="text-red-600 mb-4">Oops! Couldn't load the farm feed.</p>
-          <button 
-            onClick={() => dispatch(listProducts())}
-            className="bg-green-600 text-white px-6 py-2 rounded-xl hover:bg-green-700 transition-colors"
-          >
+          <button onClick={() => dispatch(listProducts())} className="bg-green-600 text-white px-6 py-2 rounded-xl hover:bg-green-700">
             Try Again
           </button>
         </div>
@@ -1093,188 +1129,72 @@ const [showCart, setShowCart] = useState(false);
     );
   }
 
-//   <Modal
-//   product={selectedProduct}
-//   cooperative={selectedCooperative}
-//   onClose={handleCloseModal}
-//   onMakeOrder={() => setShowOrderModal(true)} // ✅ This is new
-// />
- const handleAddToCart = (product) => {
-  const userId = localStorage.getItem('user_id');
-  if (!userId) return alert('Please log in first');
-
-  dispatch(addToCart({
-    userId,
-    productId: product.id,
-    quantity: 1
-  }))
-  .unwrap()
-  .then(() => {
-    alert(`${product.product_name} added to cart! 🛒`);
-  })
-  .catch((err) => {
-    if (err?.error?.includes("cooperative")) {
-      alert("You can only add products from one cooperative at a time.");
-    } else {
-      alert("Failed to add to cart.");
-      console.error("Add to cart error:", err);
-    }
-  });
-};
-
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <div className="sticky top-0 bg-white shadow-sm border-b border-gray-200 z-30">
-        <div className="max-w-7xl mx-auto px-4 py-3">
-          <div className="flex items-center justify-between">
-            <h1 className="text-xl font-bold text-gray-900">🌾 Farm Feed</h1>
-            {/* <div className="flex items-center gap-3">
-              <button 
-                onClick={() => setShowSearch(!showSearch)}
-                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-              >
-                <Search className="w-5 h-5 text-gray-600" />
-              </button>
-              <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-                <Filter className="w-5 h-5 text-gray-600" />
-              </button>
-            </div> */}
-            <div className="flex items-center gap-3 relative">
-  {/* Search Button */}
-  <button 
-    onClick={() => setShowSearch(!showSearch)}
-    className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-  >
-    <Search className="w-5 h-5 text-gray-600" />
-  </button>
-
-  {/* Cart Icon Button */}
-  <button
-    onClick={() => setShowCart(true)}
-    className="relative p-2 hover:bg-green-100 rounded-full transition-colors"
-  >
-    <ShoppingCart className="w-6 h-6 text-green-600" />
-    {cart.total_items > 0 && (
-      <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">
-        {cart.total_items}
-      </span>
-    )}
-  </button>
-
-  {/* Filter Icon */}
-  <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-    <Filter className="w-5 h-5 text-gray-600" />
-  </button>
-</div>
-
+        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+          <h1 className="text-xl font-bold text-gray-900">🌾 Farm Feed</h1>
+          <div className="flex items-center gap-3">
+            <button onClick={() => setShowSearch(!showSearch)} className="p-2 hover:bg-gray-100 rounded-full">
+              <Search className="w-5 h-5 text-gray-600" />
+            </button>
+            <CartIcon cart={cart} onClick={() => setShowCart(true)} />
+            <button className="p-2 hover:bg-gray-100 rounded-full">
+              <Filter className="w-5 h-5 text-gray-600" />
+            </button>
           </div>
-          
-          {showSearch && (
-            <div className="mt-3 max-w-md">
-              <input
-                type="text"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Search fresh harvests..."
-                className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                autoFocus
-              />
-            </div>
-          )}
         </div>
-
-        {showCart && (
-  <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
-    <div className="bg-white rounded-2xl shadow-lg w-full max-w-lg p-6 relative">
-      <button
-        onClick={() => setShowCart(false)}
-        className="absolute top-3 right-3 text-gray-400 hover:text-gray-600"
-      >
-        <X className="w-5 h-5" />
-      </button>
-
-      <h2 className="text-xl font-bold text-green-700 mb-4">🛒 Your Cart</h2>
-
-      {cart.items.length === 0 ? (
-        <p className="text-gray-500 text-center">Your cart is empty.</p>
-      ) : (
-        <ul className="divide-y divide-gray-200 max-h-64 overflow-y-auto">
-          {cart.items.map((item) => (
-            <li key={item.id} className="py-3 flex justify-between items-center">
-              <div>
-                <p className="font-medium text-gray-900">{item.product.product_name}</p>
-                <p className="text-sm text-gray-500">Qty: {item.quantity}</p>
-              </div>
-              <span className="text-green-600 font-semibold">{item.total_price} RWF</span>
-            </li>
-          ))}
-        </ul>
-      )}
-
-      {cart.items.length > 0 && (
-        <div className="mt-6 text-right">
-          <p className="text-gray-600 mb-2">
-            Total: <span className="text-green-700 font-bold">{cart.total_price} RWF</span>
-          </p>
-          <button
-            onClick={() => alert('Checkout coming soon...')}
-            className="bg-green-600 text-white px-4 py-2 rounded-xl hover:bg-green-700 transition-all"
-          >
-            Proceed to Order
-          </button>
-        </div>
-      )}
-    </div>
-  </div>
-)}
-
+        {showSearch && (
+          <div className="max-w-md mx-auto mt-3">
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search fresh harvests..."
+              className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500"
+              autoFocus
+            />
+          </div>
+        )}
       </div>
 
+      {/* Enhanced Cart Modal */}
+      <EnhancedCartModal
+        cart={cart}
+        showCart={showCart}
+        setShowCart={setShowCart}
+        onUpdateQuantity={handleUpdateQuantity}
+        onRemoveItem={handleRemoveItem}
+        BASE_URL={BASE_URL}
+      />
+
       <main className="max-w-7xl mx-auto px-4 py-6">
-        {/* Farm Stories */}
-        <div className="mb-6">
-          <FarmStories cooperatives={uniqueCooperatives} onStoryClick={(coop) => console.log('Story clicked:', coop)} />
-        </div>
-
-        {/* Trending Section - Full Width at Top */}
+        <FarmStories cooperatives={uniqueCooperatives} onStoryClick={() => {}} />
         <TrendingSection products={products} onViewMore={handleViewProduct} />
+        <WeatherWidget />
 
-        {/* Weather Widget - Standalone */}
-        <div className="mb-8">
-          <WeatherWidget />
-        </div>
-
-        {/* Product Feed - Responsive Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredProducts.map((product, index) => (
-            <div key={product.id}>
-              <FarmPost
-                product={product}
-                cooperativeName={cooperativeNames[product.user]}
-                BASE_URL={BASE_URL}
-                onViewMore={handleViewProduct}
-                onLike={(id) => console.log('Liked product:', id)}
-                onComment={(id) => console.log('Comment on product:', id)}
-                onAddToCart={handleAddToCart}
-              />
-            </div>
+          {filteredProducts.map((product) => (
+            <FarmPost
+              key={product.id}
+              product={product}
+              cooperativeName={cooperativeNames[product.user]}
+              BASE_URL={BASE_URL}
+              onViewMore={handleViewProduct}
+              onAddToCart={handleAddToCart}
+            />
           ))}
         </div>
-        
+
         {filteredProducts.length === 0 && (
           <div className="text-center py-12">
-            <div className="bg-white rounded-2xl shadow-lg p-8 max-w-md mx-auto">
-              <Sprout className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-500 text-lg mb-2">No fresh harvests found</p>
-              <p className="text-gray-400">Try adjusting your search</p>
-            </div>
+            <p className="text-gray-500 text-lg">No fresh harvests found. Try adjusting your search.</p>
           </div>
         )}
       </main>
 
-    
-       {selectedProduct && selectedCooperative && (
+      {selectedProduct && selectedCooperative && (
         <Modal
           product={selectedProduct}
           cooperative={selectedCooperative}
@@ -1294,5 +1214,8 @@ const [showCart, setShowCart] = useState(false);
     </div>
   );
 };
+
+
+
 
 export default ProductListingPage;
