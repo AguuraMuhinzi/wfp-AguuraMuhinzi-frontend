@@ -6,6 +6,7 @@ import productReducer from './Slices/product/product';
 import OrderReducer from './Slices/order/orderSlice';
 import ChatReducer from './Slices/chat/chatSlice';
 import CartReducer from './Slices/order/cartSlice';
+import PredictionReducer from './Slices/predictions/price_prediction';
 const store = configureStore({
   reducer: {
     user: userReducer,
@@ -15,6 +16,7 @@ const store = configureStore({
     order : OrderReducer,
     chat : ChatReducer,
     cart :CartReducer,
+    prediction:PredictionReducer,
   },
 });
 

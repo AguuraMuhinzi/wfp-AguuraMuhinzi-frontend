@@ -178,16 +178,7 @@ const OrderModal = ({ product, cooperative, onClose, currentUser }) => {
     {errors.address && <p className="text-red-500 text-sm mt-1">{errors.address}</p>}
   </div>
 
-  {/* Notes Input */}
-  <div className="mb-4">
-    <label className="block text-sm font-medium text-gray-700 mb-1">Additional Notes (optional)</label>
-    <textarea
-      value={customerInfo.notes}
-      onChange={(e) => handleInputChange('notes', e.target.value)}
-      className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500"
-      placeholder="Any special instructions?"
-    />
-  </div>
+  
 
   {/* Total and Submit */}
   <div className="flex justify-between items-center mt-6">
