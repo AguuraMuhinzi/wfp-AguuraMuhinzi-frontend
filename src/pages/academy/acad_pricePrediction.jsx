@@ -60,14 +60,15 @@ const AcademyPricePredictionDashboard = () => {
       'Southern Province': ['Gisagara', 'Huye', 'Kamonyi', 'Muhanga'],
       'Western Province': ['Karongi', 'Ngororero', 'Nyabihu', 'Rusizi']
     },
-    categories: ['cereals and tubers', 'vegetables', 'meat, fish and eggs', 'milk and dairy products', 'fruits', 'pulses and nuts'],
+    categories: ['cereals and tubers', 'vegetables', 'meat, fish and eggs', 'milk and dairy products', 'fruits', 'pulses and nuts','oil and fats'],
     commodities: {
-      'cereals and tubers': ['Rice', 'Maize', 'Sweet potato', 'Irish potato', 'Beans'],
+      'cereals and tubers': ['Rice', 'Maize','Maize_flour', 'Sweet potato', 'Irish potato', 'Beans'],
       'vegetables': ['Tomatoes', 'Onions', 'Cabbage', 'Carrots', 'Spinach'],
       'meat, fish and eggs': ['Beef', 'Chicken', 'Fish', 'Eggs'],
       'milk and dairy products': ['Milk', 'Cheese', 'Yogurt'],
       'fruits': ['Bananas', 'Oranges', 'Avocado'],
-      'pulses and nuts': ['Beans', 'Groundnuts', 'Peas']
+      'pulses and nuts': ['Beans', 'Groundnuts', 'Peas'],
+      'oil and fats': ['Oil']
     },
     units: ['KG', 'Litre', 'Piece', 'Bundle'],
     pricetypes: ['Retail', 'Wholesale']
@@ -369,8 +370,11 @@ const AcademyPricePredictionDashboard = () => {
                       <DollarSign className="w-8 h-8 text-green-600" />
                     </div>
                     <h3 className="text-lg font-semibold text-gray-800 mb-2">Predicted Price</h3>
-                    <div className="text-4xl font-bold text-green-600 mb-2">
-                      {prediction.predicted_price.toLocaleString()} RWF
+                    <div className="text-2xl font-semibold text-green-600 mb-2">
+                        Estimated Price: {prediction.predicted_price.toLocaleString()} RWF
+                    </div>
+                    <div className="text-sm text-gray-500 mb-2">
+                        Price Range: {prediction.lower_bound.toLocaleString()} – {prediction.upper_bound.toLocaleString()} RWF
                     </div>
                     <p className="text-gray-600">per {prediction.unit}</p>
                   </div>
