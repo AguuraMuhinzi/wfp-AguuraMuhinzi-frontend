@@ -1,344 +1,86 @@
 
 
-// import React, { useState, useEffect } from 'react';
-// import { useDispatch, useSelector } from 'react-redux';
-// import { fetchCooperativeDetails, createCooperativeDetails } from '../../Redux/Slices/cooperative/coop_details';
-
-// const CooperativeProfilePage = () => {
-//   const dispatch = useDispatch();
-//   const { cooperativeDetails, isLoading } = useSelector((state) => state.cooperative);
-
-//   const userId = localStorage.getItem('user_id');
-
-//   const [formData, setFormData] = useState({
-//     name: '',
-//     user_id: userId,
-//     specialization: '',
-//     description: '',
-//     street: '',
-//     province: '',
-//     district: '',
-//     sector: '',
-//     document: null,
-//   });
-
-//   const [locations, setLocations] = useState({
-//     provinces: [],
-//     districts: [],
-//     sectors: [],
-//   });
-
-//   const [selectedProvince, setSelectedProvince] = useState('');
-//   const [selectedDistrict, setSelectedDistrict] = useState('');
-
-//   useEffect(() => {
-//     if (userId) {
-//       dispatch(fetchCooperativeDetails(userId));
-//     }
-
-//     setLocations({
-//       provinces: [
-//         { name: 'Province1', districts: [{ name: 'District1', sectors: ['Sector1', 'Sector2'] }] },
-//         { name: 'Province2', districts: [{ name: 'District2', sectors: ['Sector3', 'Sector4'] }] },
-//       ],
-//     });
-//   }, [dispatch, userId]);
-
-//   const handleChange = (e) => {
-//     const { name, value } = e.target;
-//     setFormData((prev) => ({ ...prev, [name]: value }));
-//   };
-
-//   const handleDocumentChange = (e) => {
-//     setFormData((prev) => ({ ...prev, document: e.target.files[0] }));
-//   };
-
-//   const handleProvinceChange = (e) => {
-//     const provinceName = e.target.value;
-//     const province = locations.provinces.find((prov) => prov.name === provinceName);
-//     setSelectedProvince(provinceName);
-//     setFormData((prev) => ({ ...prev, province: provinceName, district: '', sector: '' }));
-//     setLocations((prev) => ({ ...prev, districts: province?.districts || [] }));
-//   };
-
-//   const handleDistrictChange = (e) => {
-//     const districtName = e.target.value;
-//     const district = locations.districts.find((dist) => dist.name === districtName);
-//     setSelectedDistrict(districtName);
-//     setFormData((prev) => ({ ...prev, district: districtName, sector: '' }));
-//     setLocations((prev) => ({ ...prev, sectors: district?.sectors || [] }));
-//   };
-
-//   const handleSubmit = (e) => {
-//     e.preventDefault();
-
-//     // Create a FormData object for the request
-//     const data = new FormData();
-//     Object.keys(formData).forEach((key) => {
-//       data.append(key, formData[key]);
-//     });
-
-//     dispatch(createCooperativeDetails(data));
-//   };
-
-//   if (isLoading) {
-//     return <p className="text-center text-green-700 font-bold">Loading...</p>;
-//   }
-
-//   if (!cooperativeDetails) {
-//     return (
-//       <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-//         <div className="w-full max-w-3xl bg-white p-6 rounded-lg shadow-lg">
-//           <h2 className="text-2xl font-bold text-green-600 text-center mb-6">Set Up Your Cooperative Profile</h2>
-//           <form onSubmit={handleSubmit} className="space-y-5 max-w-lg mx-auto">
-//             <input
-//               type="text"
-//               name="name"
-//               placeholder="Cooperative Name"
-//               required
-//               className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:border-green-500"
-//               onChange={handleChange}
-//               value={formData.name}
-//             />
-//             <input
-//               type="hidden"
-//               name="user_id"
-//               value={formData.user_id}
-//               readOnly
-//               className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:border-green-500 bg-gray-100"
-//             />
-//             <input
-//               type="text"
-//               name="specialization"
-//               placeholder="Specialization (e.g., Dairy, Coffee)"
-//               required
-//               className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:border-green-500"
-//               onChange={handleChange}
-//               value={formData.specialization}
-//             />
-//             <textarea
-//               name="description"
-//               placeholder="Description of your Cooperative"
-//               rows="4"
-//               className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:border-green-500"
-//               onChange={handleChange}
-//               value={formData.description}
-//             ></textarea>
-//             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-//               <input
-//                 type="text"
-//                 name="street"
-//                 placeholder="Street Address"
-//                 className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:border-green-500"
-//                 onChange={handleChange}
-//                 value={formData.street}
-//               />
-
-//               <select
-//   name="province"
-//   value={selectedProvince}
-//   onChange={handleProvinceChange}
-//   required
-//   className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:border-green-500"
-// >
-//   <option value="">Select Province</option>
-//   {locations.provinces?.map((province) => (
-//     <option key={province.name} value={province.name}>
-//       {province.name}
-//     </option>
-//   ))}
-// </select>
-
-// <select
-//   name="district"
-//   value={selectedDistrict}
-//   onChange={handleDistrictChange}
-//   required
-//   className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:border-green-500"
-//   disabled={!selectedProvince}
-// >
-//   <option value="">Select District</option>
-//   {locations.districts?.map((district) => (
-//     <option key={district.name} value={district.name}>
-//       {district.name}
-//     </option>
-//   ))}
-// </select>
-
-// <select
-//   name="sector"
-//   required
-//   className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:border-green-500"
-//   disabled={!selectedDistrict}
-//   onChange={handleChange}
-//   value={formData.sector}
-// >
-//   <option value="">Select Sector</option>
-//   {locations.sectors?.map((sector) => (
-//     <option key={sector} value={sector}>
-//       {sector}
-//     </option>
-//   ))}
-// </select>
-
-//             </div>
-//             <div>
-//               <label className="block text-sm font-medium text-gray-700">
-//                 Upload Supporting Documents
-//               </label>
-//               <input
-//                 type="file"
-//                 name="document"
-//                 onChange={handleDocumentChange}
-//                 accept=".pdf,.doc,.docx,.jpg,.png"
-//                 className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:border-green-500 mt-2"
-//               />
-//               <p className="text-xs text-gray-500 mt-1">
-//                 Accepted formats: .pdf, .doc, .docx, .jpg, .png
-//               </p>
-//             </div>
-//             <button
-//               type="submit"
-//               className="w-full py-3 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-700 transition-all duration-300"
-//             >
-//               Save Profile
-//             </button>
-//           </form>
-//         </div>
-//       </div>
-//     );
-//   }
-
-//   return (
-//     <div className="min-h-screen bg-gray-100">
-//       <div className="bg-green-600 text-white py-10">
-//         <div className="container mx-auto text-center">
-//           <div className="inline-block w-32 h-32 rounded-full bg-white overflow-hidden mb-4">
-//             <img
-//               src={cooperativeDetails.logo || `${process.env.PUBLIC_URL}/imgs/default-logo.png`}
-//               alt="Cooperative Logo"
-//               className="w-full h-full object-cover"
-//             />
-//           </div>
-//           <h1 className="text-3xl font-bold">{cooperativeDetails.name}</h1>
-//           <p className="text-lg font-semibold">{cooperativeDetails.specialization}</p>
-//         </div>
-//       </div>
-//       <div className="container mx-auto mt-10 p-6">
-//         <div className="bg-white shadow-lg rounded-lg p-6 border">
-//           <h2 className="text-2xl font-bold text-green-700 mb-6">About the Cooperative</h2>
-//           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-//             <div>
-//               <h3 className="text-lg font-semibold text-green-600 mb-2">Description</h3>
-//               <p className="text-gray-700">{cooperativeDetails.description}</p>
-//             </div>
-//             {cooperativeDetails.document && (
-//               <div>
-//                 <h3 className="text-lg font-semibold text-green-600 mb-2">Supporting Document</h3>
-//                 <a
-//                   href={cooperativeDetails.document}
-//                   target="_blank"
-//                   rel="noopener noreferrer"
-//                   className="text-blue-600 hover:underline"
-//                 >
-//                   View Document
-//                 </a>
-//               </div>
-//             )}
-//           </div>
-//           <div className="mt-8">
-//             <h3 className="text-lg font-semibold text-green-600 mb-2">Location</h3>
-//             <p className="text-gray-700">
-//               <strong>Street:</strong> {cooperativeDetails.street}
-//             </p>
-//             <p className="text-gray-700">
-//               <strong>Province:</strong> {cooperativeDetails.province}
-//             </p>
-//             <p className="text-gray-700">
-//               <strong>District:</strong> {cooperativeDetails.district}
-//             </p>
-//             <p className="text-gray-700">
-//               <strong>Sector:</strong> {cooperativeDetails.sector}
-//             </p>
-//           </div>
-//         </div>
-//       </div>
-//       <div className="container mx-auto mt-10 p-6">
-//         <div className="flex justify-center">
-//           <button
-//             className="px-6 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-all"
-//             onClick={() => alert('Edit Profile')}
-//           >
-//             Edit Profile
-//           </button>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default CooperativeProfilePage;
-
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchCooperativeDetails, createCooperativeDetails } from '../../Redux/Slices/cooperative/coop_details';
+import {
+  fetchCooperativeDetails,
+  createCooperativeDetails,
+  updateCooperativeDetails,
+} from '../../Redux/Slices/cooperative/coop_details';
+import { MapPin, Building2, Users, FileText, Award, Calendar, Edit3 } from 'lucide-react';
 
-const CooperativeProfilePage = () => {
+const CooperativeProfileSetupPage = () => {
   const dispatch = useDispatch();
-  const { cooperativeDetails, isLoading } = useSelector((state) => state.cooperative);
+  const { data, isLoading } = useSelector((state) => state.cooperative);
+  const { userInfo } = useSelector((state) => state.user);
+  const userId = userInfo?.id || localStorage.getItem('user_id');
 
-  const userId = localStorage.getItem('user_id');
-
+  const [showForm, setShowForm] = useState(false);
+  const [selectedProvince, setSelectedProvince] = useState('');
+  const [selectedDistrict, setSelectedDistrict] = useState('');
+  const [document, setDocument] = useState(null);
   const [formData, setFormData] = useState({
-    name: '',
     user_id: userId,
+    name: '',
     specialization: '',
     description: '',
     street: '',
     province: '',
     district: '',
-    sector: '',
-    document: null,
+    sector: ''
   });
 
-  const [locations, setLocations] = useState({
-    provinces: [],
-    districts: [],
-    sectors: [],
-  });
-
-  const [selectedProvince, setSelectedProvince] = useState('');
-  const [selectedDistrict, setSelectedDistrict] = useState('');
-  const [activeTab, setActiveTab] = useState('profile');
-  const [showEditForm, setShowEditForm] = useState(false); // state to toggle form visibility
+  const locations = {
+    provinces: [
+      {
+        name: 'Western Province',
+        districts: [
+          {
+            name: 'Nyabihu',
+            sectors: ['Mukamira', 'Jenda', 'Jomba', 'Karago', 'Kintoye']
+          }
+        ]
+      }
+    ]
+  };
 
   useEffect(() => {
-    if (userId) {
-      dispatch(fetchCooperativeDetails(userId));
-    }
-
-    setLocations({
-      provinces: [
-        { name: 'Province1', districts: [{ name: 'District1', sectors: ['Sector1', 'Sector2'] }] },
-        { name: 'Province2', districts: [{ name: 'District2', sectors: ['Sector3', 'Sector4'] }] },
-      ],
-    });
+    if (userId) dispatch(fetchCooperativeDetails(userId));
   }, [dispatch, userId]);
 
   useEffect(() => {
-    if (cooperativeDetails) {
+    if (data) {
       setFormData({
-        ...formData,
-        name: cooperativeDetails.name,
-        specialization: cooperativeDetails.specialization,
-        description: cooperativeDetails.description,
-        street: cooperativeDetails.street,
-        province: cooperativeDetails.province,
-        district: cooperativeDetails.district,
-        sector: cooperativeDetails.sector,
+        user_id: userId,
+        name: data.name || '',
+        specialization: data.specialization || '',
+        description: data.description || '',
+        street: data.street || '',
+        province: data.province || '',
+        district: data.district || '',
+        sector: data.sector || ''
       });
+      setSelectedProvince(data.province || '');
+      setSelectedDistrict(data.district || '');
+      setShowForm(false);
+    } else if (!isLoading && data === null) {
+      // Only show form when loading is complete and data is null
+      setShowForm(true);
     }
-  }, [cooperativeDetails]);
+  }, [data, userId, isLoading]);
+
+  const handleProvinceChange = (e) => {
+    const { value } = e.target;
+    setSelectedProvince(value);
+    setSelectedDistrict('');
+    setFormData((prev) => ({ ...prev, province: value }));
+  };
+
+  const handleDistrictChange = (e) => {
+    const { value } = e.target;
+    setSelectedDistrict(value);
+    setFormData((prev) => ({ ...prev, district: value }));
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -346,239 +88,180 @@ const CooperativeProfilePage = () => {
   };
 
   const handleDocumentChange = (e) => {
-    setFormData((prev) => ({ ...prev, document: e.target.files[0] }));
-  };
-
-  const handleProvinceChange = (e) => {
-    const provinceName = e.target.value;
-    const province = locations.provinces.find((prov) => prov.name === provinceName);
-    setSelectedProvince(provinceName);
-    setFormData((prev) => ({ ...prev, province: provinceName, district: '', sector: '' }));
-    setLocations((prev) => ({ ...prev, districts: province?.districts || [] }));
-  };
-
-  const handleDistrictChange = (e) => {
-    const districtName = e.target.value;
-    const district = locations.districts.find((dist) => dist.name === districtName);
-    setSelectedDistrict(districtName);
-    setFormData((prev) => ({ ...prev, district: districtName, sector: '' }));
-    setLocations((prev) => ({ ...prev, sectors: district?.sectors || [] }));
+    setDocument(e.target.files[0]);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const form = new FormData();
+    Object.entries(formData).forEach(([key, val]) => form.append(key, val));
+    form.append('user', userId);
+    if (document) form.append('document', document);
 
-    // Create a FormData object for the request
-    const data = new FormData();
-    Object.keys(formData).forEach((key) => {
-      data.append(key, formData[key]);
-    });
-
-    if (cooperativeDetails) {
-      dispatch(createCooperativeDetails(data)); // If profile exists, update it
+    if (data) {
+      dispatch(updateCooperativeDetails({ userId, data: form }));
     } else {
-      dispatch(createCooperativeDetails(data)); // If profile doesn't exist, create it
+      dispatch(createCooperativeDetails(form));
     }
-
-    setShowEditForm(false); // Hide the form after submitting
+    setShowForm(false);
   };
 
-  const ProfileCard = () => {
-    if (!cooperativeDetails) return null;
+  const province = locations.provinces.find((p) => p.name === selectedProvince);
+  const district = province?.districts.find((d) => d.name === selectedDistrict);
 
-    return (
-      <div className="bg-white rounded-lg shadow mb-5 p-5">
-        <div className="flex items-center">
-          <div className="w-16 h-16 bg-green-600 rounded-full text-white flex items-center justify-center text-xl font-bold mr-4">
-            {cooperativeDetails.name ? cooperativeDetails.name.charAt(0) : 'C'}
-          </div>
-          <div className="flex-grow">
-            <h2 className="text-lg font-bold">{cooperativeDetails.name}</h2>
-            <p className="text-gray-600">Member Since: {new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</p>
-          </div>
-          <button className="text-gray-400 hover:text-gray-600" onClick={() => setShowEditForm(true)}>
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-            </svg>
-          </button>
-        </div>
-      </div>
-    );
-  };
-
-  const AddNewButton = () => {
-    return (
-      <div className="bg-white rounded-lg shadow p-5">
-        <button className="w-full py-2 border border-gray-300 rounded-lg flex items-center justify-center text-gray-600 hover:bg-gray-50" onClick={() => setShowEditForm(true)}>
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-          </svg>
-          ADD NEW SHOP
-        </button>
-      </div>
-    );
-  };
-
-  const ProfileDetailsCard = () => {
-    return (
-      <div className="bg-white rounded-lg shadow p-5 mt-5">
-        <h3 className="text-xl font-semibold text-gray-700">Cooperative Details</h3>
-        <div className="mt-3">
-          <p className="text-gray-600"><strong>Specialization:</strong> {cooperativeDetails.specialization}</p>
-          <p className="text-gray-600"><strong>Description:</strong> {cooperativeDetails.description}</p>
-          <p className="text-gray-600"><strong>Address:</strong> {cooperativeDetails.street}, {cooperativeDetails.district}, {cooperativeDetails.province}, {cooperativeDetails.sector}</p>
-        </div>
-      </div>
-    );
-  };
-
+  // Show loading state
   if (isLoading) {
-    return <p className="text-center text-green-700 font-bold">Loading...</p>;
-  }
-
-  // Show the form when showEditForm is true
-  if (showEditForm) {
     return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-        <div className="w-full max-w-3xl bg-white p-6 rounded-lg shadow-lg">
-          <h2 className="text-2xl font-bold text-green-600 text-center mb-6">Edit Cooperative Profile</h2>
-          <form onSubmit={handleSubmit} className="space-y-5 max-w-lg mx-auto">
-            <input
-              type="text"
-              name="name"
-              placeholder="Cooperative Name"
-              required
-              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:border-green-500"
-              onChange={handleChange}
-              value={formData.name}
-            />
-            <input
-              type="hidden"
-              name="user_id"
-              value={formData.user_id}
-              readOnly
-              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:border-green-500 bg-gray-100"
-            />
-            <input
-              type="text"
-              name="specialization"
-              placeholder="Specialization (e.g., Dairy, Coffee)"
-              required
-              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:border-green-500"
-              onChange={handleChange}
-              value={formData.specialization}
-            />
-            <textarea
-              name="description"
-              placeholder="Description of your Cooperative"
-              rows="4"
-              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:border-green-500"
-              onChange={handleChange}
-              value={formData.description}
-            ></textarea>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-              <input
-                type="text"
-                name="street"
-                placeholder="Street Address"
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:border-green-500"
-                onChange={handleChange}
-                value={formData.street}
-              />
-
-              <select
-                name="province"
-                value={selectedProvince}
-                onChange={handleProvinceChange}
-                required
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:border-green-500"
-              >
-                <option value="">Select Province</option>
-                {locations.provinces?.map((province) => (
-                  <option key={province.name} value={province.name}>
-                    {province.name}
-                  </option>
-                ))}
-              </select>
-
-              <select
-                name="district"
-                value={selectedDistrict}
-                onChange={handleDistrictChange}
-                required
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:border-green-500"
-                disabled={!selectedProvince}
-              >
-                <option value="">Select District</option>
-                {locations.districts?.map((district) => (
-                  <option key={district.name} value={district.name}>
-                    {district.name}
-                  </option>
-                ))}
-              </select>
-
-              <select
-                name="sector"
-                required
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:border-green-500"
-                disabled={!selectedDistrict}
-                onChange={handleChange}
-                value={formData.sector}
-              >
-                <option value="">Select Sector</option>
-                {locations.sectors?.map((sector) => (
-                  <option key={sector} value={sector}>
-                    {sector}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Upload Supporting Documents
-              </label>
-              <input
-                type="file"
-                name="document"
-                onChange={handleDocumentChange}
-                accept=".pdf,.doc,.docx,.jpg,.png"
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:border-green-500 mt-2"
-              />
-              <p className="text-xs text-gray-500 mt-1">
-                Accepted formats: .pdf, .doc, .docx, .jpg, .png
-              </p>
-            </div>
-            <button
-              type="submit"
-              className="w-full py-3 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-700 transition-all duration-300"
-            >
-              Save Profile
-            </button>
-          </form>
+      <div className="min-h-screen flex bg-gradient-to-br from-green-50 to-blue-50">
+        <div className="w-full p-8 sm:p-16 bg-white flex flex-col justify-center items-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
+          <p className="mt-4 text-gray-600">Loading profile...</p>
         </div>
       </div>
     );
   }
+
+  // Show form if no data exists or user wants to edit
+  const shouldShowForm = showForm || (!data && !isLoading);
 
   return (
-    <div className="min-h-screen bg-gray-100 p-5">
-      <div className="container mx-auto max-w-6xl">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          {/* Left column */}
-          <div className="md:col-span-1">
-            <h3 className="text-lg font-bold text-gray-700 mb-2 border-b pb-2">Profiles</h3>
-            <ProfileCard />
-            <AddNewButton />
+    <div className="min-h-screen flex bg-gradient-to-br from-green-50 to-blue-50">
+      <div className="w-full p-8 sm:p-16 bg-white flex flex-col justify-center relative">
+        {shouldShowForm ? (
+          <div className="max-w-4xl mx-auto w-full">
+            <h1 className="text-4xl font-bold mb-6 text-green-600 text-center">
+              {data ? 'Edit Your Profile' : 'Set Up Your Profile'}
+            </h1>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <input name="name" type="text" placeholder="Cooperative Name" className="w-full border p-3 rounded" value={formData.name} onChange={handleChange} required />
+              <input name="specialization" type="text" placeholder="Specialization (e.g., Coffee, Dairy)" className="w-full border p-3 rounded" value={formData.specialization} onChange={handleChange} required />
+              <textarea name="description" placeholder="Describe your cooperative..." rows={4} className="w-full border p-3 rounded" value={formData.description} onChange={handleChange} required />
+              <input name="street" type="text" placeholder="Street Address" className="w-full border p-3 rounded" value={formData.street} onChange={handleChange} />
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <select name="province" value={selectedProvince} onChange={handleProvinceChange} className="border p-3 rounded" required>
+                  <option value="">Select Province</option>
+                  {locations.provinces.map((prov) => (
+                    <option key={prov.name} value={prov.name}>{prov.name}</option>
+                  ))}
+                </select>
+                <select name="district" value={selectedDistrict} onChange={handleDistrictChange} className="border p-3 rounded" required>
+                  <option value="">Select District</option>
+                  {province?.districts.map((dist) => (
+                    <option key={dist.name} value={dist.name}>{dist.name}</option>
+                  ))}
+                </select>
+                <select name="sector" value={formData.sector} onChange={handleChange} className="border p-3 rounded" required>
+                  <option value="">Select Sector</option>
+                  {district?.sectors.map((sector) => (
+                    <option key={sector} value={sector}>{sector}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block mb-1 text-sm font-medium text-gray-700">Upload Supporting Document</label>
+                <input type="file" name="document" onChange={handleDocumentChange} accept=".pdf,.doc,.docx,.jpg,.png" className="block w-full border p-2 rounded" />
+              </div>
+              <div className="flex gap-4">
+                <button type="submit" className="bg-green-600 text-white px-6 py-3 rounded hover:bg-green-700 transition">Save Profile</button>
+                {data && (
+                  <button type="button" onClick={() => setShowForm(false)} className="bg-gray-400 text-white px-6 py-3 rounded hover:bg-gray-500 transition">Cancel</button>
+                )}
+              </div>
+            </form>
           </div>
-          
-          {/* Right column */}
-          <div className="md:col-span-2">
-            <ProfileDetailsCard />
-          </div>
-        </div>
+        ) : (
+          data && (
+            <div className="max-w-4xl mx-auto w-full">
+              <div className="text-center mb-12">
+                <div className="relative inline-block mb-6">
+                  <div className="w-24 h-24 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center shadow-xl">
+                    <Building2 className="w-12 h-12 text-white" />
+                  </div>
+                  <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                    <Award className="w-4 h-4 text-white" />
+                  </div>
+                </div>
+                <h1 className="text-4xl font-bold text-gray-800 mb-3">{data.name}</h1>
+                <p className="text-xl text-green-600 font-semibold">{data.specialization}</p>
+                <div className="flex items-center justify-center mt-4 space-x-6 text-sm text-gray-600">
+                  <div className="flex items-center space-x-1">
+                    <Calendar className="w-4 h-4" />
+                    <span>Est. {data.established || 'N/A'}</span>
+                  </div>
+                  <div className="flex items-center space-x-1">
+                    <Users className="w-4 h-4" />
+                    <span>{data.members || 0} Members</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8 hover:shadow-xl">
+                  <div className="flex items-center space-x-3 mb-6">
+                    <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                      <FileText className="w-5 h-5 text-green-600" />
+                    </div>
+                    <h2 className="text-xl font-semibold text-gray-800">About Us</h2>
+                  </div>
+                  <p className="text-gray-600">{data.description}</p>
+                </div>
+                <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8 hover:shadow-xl">
+                  <div className="flex items-center space-x-3 mb-6">
+                    <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                      <MapPin className="w-5 h-5 text-blue-600" />
+                    </div>
+                    <h2 className="text-xl font-semibold text-gray-800">Location</h2>
+                  </div>
+                  <div className="space-y-3 text-gray-700">
+                    <p><strong>Street:</strong> {data.street}</p>
+                    <p><strong>Sector:</strong> {data.sector}</p>
+                    <p><strong>District:</strong> {data.district}</p>
+                    <p><strong>Province:</strong> {data.province}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl p-8 border border-gray-200 mb-8">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-4">
+                    <div className="w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center">
+                      <FileText className="w-6 h-6 text-gray-600" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-800">Supporting Documents</h3>
+                      <p className="text-gray-600">Official cooperative documentation</p>
+                    </div>
+                  </div>
+                  {data.document ? (
+                    <a 
+                      href={data.document} 
+                      className="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg font-semibold transition"
+                      target="_blank" 
+                      rel="noreferrer"
+                    >
+                      View Document
+                    </a>
+                  ) : (
+                    <span className="text-gray-500 italic">No document uploaded</span>
+                  )}
+                </div>
+              </div>
+
+              <div className="mt-4 text-center">
+                <button 
+                  onClick={() => setShowForm(true)}
+                  className="bg-gradient-to-r from-green-500 to-green-600 hover:to-green-700 text-white px-8 py-4 rounded-xl font-semibold transition shadow-lg hover:shadow-xl flex items-center space-x-2 mx-auto"
+                >
+                  <Edit3 className="w-5 h-5" />
+                  <span>Edit Profile</span>
+                </button>
+              </div>
+            </div>
+          )
+        )}
       </div>
     </div>
   );
 };
 
-export default CooperativeProfilePage;
+export default CooperativeProfileSetupPage;

@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { verifyOtp } from '../../Redux/Slices/user_slice';
+import { useNavigate } from 'react-router-dom';
 
 function OtpPage() {
     const dispatch = useDispatch();
@@ -9,6 +10,8 @@ function OtpPage() {
     const otpLength = 6;
     const [otp, setOtp] = useState(new Array(otpLength).fill(""));
     const [customError, setCustomError] = useState('');
+    const navigate = useNavigate();
+
 
     // Handle OTP input change
     const handleChange = (e, index) => {
@@ -62,6 +65,7 @@ function OtpPage() {
             const timer = setTimeout(() => {
                 setOtp(new Array(otpLength).fill(""));
                 setCustomError('');
+                navigate("/login"); 
             }, 2500); 
 
             return () => clearTimeout(timer);
