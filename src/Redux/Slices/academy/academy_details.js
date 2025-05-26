@@ -166,6 +166,21 @@ export const createAcademyDetails = createAsyncThunk(
 );
 
 // Async thunk for getting academy details
+// export const getAcademyDetails = createAsyncThunk(
+//   'academy/getAcademyDetails',
+//   async (userId, { rejectWithValue }) => {
+//     try {
+//       const response = await axiosInstance.get(`academy-details/${userId}/`);
+//       return response.data;
+//     } catch (error) {
+//       const errorMessage = 
+//         error.response?.data?.detail === 'Token is invalid or expired' ? 
+//         'Your session has expired. Please log in again.' :
+//         error.response?.data?.message || 'Failed to retrieve academy details.';
+//       return rejectWithValue(errorMessage);
+//     }
+//   }
+// );
 export const getAcademyDetails = createAsyncThunk(
   'academy/getAcademyDetails',
   async (userId, { rejectWithValue }) => {
@@ -173,6 +188,9 @@ export const getAcademyDetails = createAsyncThunk(
       const response = await axiosInstance.get(`academy-details/${userId}/`);
       return response.data;
     } catch (error) {
+      if (error.response?.status === 404) {
+        return null; // No details exist
+      }
       const errorMessage = 
         error.response?.data?.detail === 'Token is invalid or expired' ? 
         'Your session has expired. Please log in again.' :
@@ -181,6 +199,7 @@ export const getAcademyDetails = createAsyncThunk(
     }
   }
 );
+
 
 // Async thunk for updating academy details
 export const updateAcademyDetails = createAsyncThunk(

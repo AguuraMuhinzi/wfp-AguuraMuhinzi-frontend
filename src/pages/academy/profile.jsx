@@ -231,7 +231,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchAcademyDetails, createAcademyDetails } from '../../Redux/Slices/academy/academy_details';
+import { fetchAcademyDetails, createAcademyDetails,getAcademyDetails } from '../../Redux/Slices/academy/academy_details';
 
 const AcademyProfilePage = () => {
   const dispatch = useDispatch();
@@ -264,7 +264,7 @@ const AcademyProfilePage = () => {
 
   useEffect(() => {
     if (userId) {
-      dispatch(fetchAcademyDetails(userId));
+      dispatch(getAcademyDetailsDetails(userId));
     }
 
     setLocations({
@@ -296,11 +296,19 @@ const AcademyProfilePage = () => {
     setLocations((prev) => ({ ...prev, sectors: district?.sectors || [] }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    dispatch(createAcademyDetails(formData));
-  };
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   dispatch(createAcademyDetails(formData));
+  // };
+const handleSubmit = (e) => {
+  e.preventDefault();
 
+  if (academyDetails === null) {
+    dispatch(createAcademyDetails(formData)); // Create if nothing exists
+  } else {
+    dispatch(updateAcademyDetails({ userId, data: formData })); // Update
+  }
+};
   if (isLoading) {
     return <p className="text-center text-blue-700 font-bold">Loading...</p>;
   }
