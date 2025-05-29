@@ -19,7 +19,7 @@ export const fetchPredictions = createAsyncThunk(
   'prediction/fetchAll',
   async (_, { rejectWithValue }) => {
     try {
-      const res = await axiosInstance.get('v1/predictions/');
+      const res = await axiosInstance.get('predictions/');
       return res.data;
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
@@ -32,7 +32,7 @@ export const fetchPredictionById = createAsyncThunk(
   'prediction/fetchById',
   async (id, { rejectWithValue }) => {
     try {
-      const res = await axiosInstance.get(`v1/predictions/${id}/`);
+      const res = await axiosInstance.get(`predictions/${id}/`);
       return res.data;
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);

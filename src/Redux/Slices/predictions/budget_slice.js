@@ -8,7 +8,7 @@ export const createBudgetItem = createAsyncThunk(
   'budget/createBudgetItem',
   async (budgetData, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.post('v1/budget/create/', budgetData);
+      const response = await axiosInstance.post('budget/create/', budgetData);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || 'Failed to create budget item.');
@@ -21,7 +21,7 @@ export const fetchBudgetItems = createAsyncThunk(
   'budget/fetchBudgetItems',
   async (userId, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(`v1/budget/user/${userId}/`);
+      const response = await axiosInstance.get(`budget/user/${userId}/`);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || 'Failed to fetch budget items.');
