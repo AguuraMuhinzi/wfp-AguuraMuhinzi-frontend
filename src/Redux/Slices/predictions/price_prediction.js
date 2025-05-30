@@ -1,6 +1,7 @@
 // src/Redux/Slices/prediction/predictionSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '../../axioInstance';
+
 // POST - Create Prediction
 export const createPrediction = createAsyncThunk(
   'prediction/create',
@@ -14,7 +15,7 @@ export const createPrediction = createAsyncThunk(
   }
 );
 
-// GET - List Predictions
+// GET - List All Predictions (admin or debug)
 export const fetchPredictions = createAsyncThunk(
   'prediction/fetchAll',
   async (_, { rejectWithValue }) => {
@@ -27,12 +28,25 @@ export const fetchPredictions = createAsyncThunk(
   }
 );
 
-// GET - Get Prediction Detail by ID
+// GET - Prediction by ID
 export const fetchPredictionById = createAsyncThunk(
   'prediction/fetchById',
   async (id, { rejectWithValue }) => {
     try {
       const res = await axiosInstance.get(`predictions/${id}/`);
+      return res.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data || err.message);
+    }
+  }
+);
+
+// GET - Predictions by Logged-in User
+export const fetchUserPredictions = createAsyncThunk(
+  'prediction/fetchByUser',
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await axiosInstance.get('predictions/user/');
       return res.data;
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
@@ -48,7 +62,13 @@ const predictionSlice = createSlice({
     loading: false,
     error: null,
   },
-  reducers: {},
+  reducers: {
+    clearPredictionState: (state) => {
+      state.prediction = null;
+      state.error = null;
+      state.loading = false;
+    },
+  },
   extraReducers: (builder) => {
     builder
       // Create Prediction
@@ -59,7 +79,7 @@ const predictionSlice = createSlice({
       .addCase(createPrediction.fulfilled, (state, action) => {
         state.loading = false;
         state.prediction = action.payload;
-        state.predictions.unshift(action.payload);
+        state.predictions.unshift(action.payload); // Optionally include in list
       })
       .addCase(createPrediction.rejected, (state, action) => {
         state.loading = false;
@@ -92,8 +112,23 @@ const predictionSlice = createSlice({
       .addCase(fetchPredictionById.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+
+      // Fetch Predictions by User
+      .addCase(fetchUserPredictions.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchUserPredictions.fulfilled, (state, action) => {
+        state.loading = false;
+        state.predictions = action.payload;
+      })
+      .addCase(fetchUserPredictions.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       });
   },
 });
 
+export const { clearPredictionState } = predictionSlice.actions;
 export default predictionSlice.reducer;
