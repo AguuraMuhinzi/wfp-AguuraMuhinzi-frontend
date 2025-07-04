@@ -1,4 +1,3 @@
-// src/Redux/Slices/prediction/predictionSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '../../axioInstance';
 
@@ -54,10 +53,28 @@ export const fetchUserPredictions = createAsyncThunk(
   }
 );
 
+
+// GET - Commodity Trend Data
+export const fetchCommodityTrend = createAsyncThunk(
+  'prediction/fetchCommodityTrend',
+  async ({ commodity, district, year }, { rejectWithValue }) => {
+    try {
+      const res = await axiosInstance.get(
+        `predictions/trend/?commodity=${commodity}&district=${district}&year=${year}`
+      );
+      return res.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data || err.message);
+    }
+  }
+);
+
+
 const predictionSlice = createSlice({
   name: 'prediction',
   initialState: {
     predictions: [],
+    trendData: [],
     prediction: null,
     loading: false,
     error: null,
@@ -126,7 +143,21 @@ const predictionSlice = createSlice({
       .addCase(fetchUserPredictions.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+
+      .addCase(fetchCommodityTrend.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchCommodityTrend.fulfilled, (state, action) => {
+        state.loading = false;
+        state.trendData = action.payload;  // Add this to initialState too
+      })
+      .addCase(fetchCommodityTrend.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       });
+      
   },
 });
 

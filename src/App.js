@@ -20,6 +20,7 @@ import Acad_orders from './pages/academy/acad_orders';
 import Acad_prediction from './pages/academy/acad_pricePrediction';
 import HomePage from './pages/home';
 import Chat from './pages/chat/chatWindow';
+import Harvest from './pages/cooperative/harvest_plan';
 function App() {
     return (
         <Router>
@@ -45,6 +46,7 @@ function App() {
                         <Route  path="allProducts" element={<AllProducts />} />
                         <Route path="coopProfile" element={<CoopProfile />} />
                         <Route path="chat" element={<Chat />} />
+                        <Route path="harvest" element={<Harvest/>}/>
                     </Route>
                       {/* academy dashboard-related routes  */}
                       <Route path="/aca_dashboard" element={<DashboardLayout_aca />}>
