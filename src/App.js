@@ -47,7 +47,7 @@ function App() {
                         <Route  path="allProducts" element={<AllProducts />} />
                         <Route path="coopProfile" element={<CoopProfile />} />
                         <Route path="chat" element={<Chat />} />
-                        <Route path="harvest" element={<Harvest/>}/>
+                        <Route path="trends" element={<Harvest/>}/>
                         <Route path="commodity_insights" element={<CommodityInsights />} />
                     </Route>
                       {/* academy dashboard-related routes  */}
