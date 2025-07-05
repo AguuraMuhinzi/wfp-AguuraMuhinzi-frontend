@@ -57,12 +57,14 @@
 
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "../../axioInstance";
+
 export const fetchCommodityTrend = createAsyncThunk(
   "commodityTrend/fetchCommodityTrend",
-  async ({ commodity, district, year }, { rejectWithValue }) => {
+  async (formData, { rejectWithValue }) => {
     try {
+      // Send all form data as parameters instead of just commodity, district, year
       const response = await axiosInstance.get("predictions/trend/", {
-        params: { commodity, district, year },
+        params: formData, // This will send all form fields
       });
       return response.data;
     } catch (error) {
@@ -77,6 +79,9 @@ const commodityTrendSlice = createSlice({
   name: "commodityTrend",
   initialState: {
     predictions: [],
+    trend_analysis: null,
+    commodity: "",
+    location: "",
     loading: false,
     error: null,
   },
@@ -87,10 +92,16 @@ const commodityTrendSlice = createSlice({
         state.loading = true;
         state.error = null;
         state.predictions = [];
+        state.trend_analysis = null;
+        state.commodity = "";
+        state.location = "";
       })
       .addCase(fetchCommodityTrend.fulfilled, (state, action) => {
         state.loading = false;
-        state.predictions = action.payload;
+        state.predictions = action.payload.predictions;
+        state.trend_analysis = action.payload.trend_analysis;
+        state.commodity = action.payload.commodity;
+        state.location = action.payload.location;
       })
       .addCase(fetchCommodityTrend.rejected, (state, action) => {
         state.loading = false;

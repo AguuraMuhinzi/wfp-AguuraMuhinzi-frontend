@@ -624,58 +624,82 @@
 //   )
 // }
 
-// export default SmartMarketSuggestion
-import React, { useState } from "react";
+ //export default SmartMarketSuggestionimport
+ import { useState, useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux";
-import { fetchCommodityTrend } from "../../Redux/Slices/predictions/harvest_plan"
+import { fetchCommodityTrend } from "../../Redux/Slices/predictions/harvest_plan";
 
 const CommodityTrendPage = () => {
   const dispatch = useDispatch();
-  const { predictions, loading, error } = useSelector((state) => state.commodityTrend);
+  const { predictions, trend_analysis, commodity, location, loading, error } =
+    useSelector((state) => state.commodityTrend);
 
-  const [commodity, setCommodity] = useState("");
-  const [district, setDistrict] = useState("");
-  const [year, setYear] = useState(new Date().getFullYear());
+  const [form, setForm] = useState({
+    commodity: "",
+    district: "",
+    province: "",
+    market: "",
+    category: "",
+    unit: "",
+    pricetype: "",
+    year: new Date().getFullYear(), // Add default current year
+  });
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (commodity && district && year) {
-      dispatch(fetchCommodityTrend({ commodity, district, year }));
-    }
+    // Send all the form data to match what your backend expects
+    dispatch(fetchCommodityTrend(form));
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-white shadow rounded-lg mt-10">
+    <div className="max-w-5xl mx-auto p-6 bg-white rounded-lg shadow mt-10">
       <h2 className="text-2xl font-bold mb-4 text-gray-800">📈 Commodity Price Trends</h2>
 
-      <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <input
-          type="text"
-          placeholder="Commodity (e.g., Maize)"
-          value={commodity}
-          onChange={(e) => setCommodity(e.target.value)}
-          className="p-2 border rounded"
-          required
-        />
-        <input
-          type="text"
-          placeholder="District (e.g., Gasabo)"
-          value={district}
-          onChange={(e) => setDistrict(e.target.value)}
-          className="p-2 border rounded"
-          required
-        />
+      <form
+        onSubmit={handleSubmit}
+        className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6"
+      >
+        {[
+          { name: "commodity", placeholder: "Commodity (e.g., Maize)" },
+          { name: "district", placeholder: "District (e.g., Gasabo)" },
+          { name: "province", placeholder: "Province (e.g., Kigali)" },
+          { name: "market", placeholder: "Market (e.g., Kimironko Market)" },
+          { name: "category", placeholder: "Category (e.g., Grains)" },
+          { name: "unit", placeholder: "Unit (e.g., Kg)" },
+          { name: "pricetype", placeholder: "Price Type (e.g., Wholesale)" },
+        ].map(({ name, placeholder }) => (
+          <input
+            key={name}
+            type="text"
+            name={name}
+            placeholder={placeholder}
+            value={form[name]}
+            onChange={handleChange}
+            className="p-2 border rounded"
+            required
+          />
+        ))}
+
+        {/* Add year input field */}
         <input
           type="number"
+          name="year"
           placeholder="Year (e.g., 2025)"
-          value={year}
-          onChange={(e) => setYear(e.target.value)}
+          value={form.year}
+          onChange={handleChange}
           className="p-2 border rounded"
+          min="2020"
+          max="2030"
           required
         />
+
         <button
           type="submit"
-          className="col-span-1 md:col-span-3 bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition"
+          className="md:col-span-3 bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition"
         >
           View Trends
         </button>
@@ -684,21 +708,40 @@ const CommodityTrendPage = () => {
       {loading && <p className="text-blue-600">Loading predictions...</p>}
       {error && <p className="text-red-500">{error}</p>}
 
-      {predictions.length > 0 && (
-        <div>
-          <h3 className="text-lg font-semibold mb-2">📊 Monthly Predictions</h3>
-          <table className="w-full border border-gray-300 text-sm">
+      {predictions?.length > 0 && (
+        <div className="mt-6">
+          <h3 className="text-lg font-semibold mb-2">
+            📊 Predictions for {commodity} in {location}
+          </h3>
+          <p className="text-gray-700">
+            Trend: <strong>{trend_analysis?.trend}</strong> (
+            {trend_analysis?.overall_change_percent}%)
+          </p>
+          <p className="text-gray-700">
+            Volatility: {trend_analysis?.volatility} | Avg:{" "}
+            {trend_analysis?.average_price} RWF | Range:{" "}
+            {trend_analysis?.price_range?.min} –{" "}
+            {trend_analysis?.price_range?.max} RWF
+          </p>
+
+          <table className="w-full border border-gray-300 text-sm mt-4">
             <thead>
               <tr className="bg-gray-100">
                 <th className="border p-2">Month</th>
-                <th className="border p-2">Predicted Price (RWF)</th>
+                <th className="border p-2">Predicted</th>
+                <th className="border p-2">Lower</th>
+                <th className="border p-2">Upper</th>
               </tr>
             </thead>
             <tbody>
               {predictions.map((item, index) => (
                 <tr key={index} className="hover:bg-gray-50">
-                  <td className="border p-2">{item.month}</td>
-                  <td className="border p-2">{item.predicted_price}</td>
+                  <td className="border p-2">
+                    {item.month_name} {item.year}
+                  </td>
+                  <td className="border p-2">{item.predicted_price} RWF</td>
+                  <td className="border p-2">{item.lower_bound}</td>
+                  <td className="border p-2">{item.upper_bound}</td>
                 </tr>
               ))}
             </tbody>
