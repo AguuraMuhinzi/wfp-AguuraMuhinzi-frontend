@@ -9,6 +9,7 @@ import CartReducer from './Slices/order/cartSlice';
 import PredictionReducer from './Slices/predictions/price_prediction';
 import budgetReducer from './Slices/predictions/budget_slice';
 import commodityTrendReducer  from './Slices/predictions/harvest_plan';
+import reportReducer from './Slices/reports/report_slice';
 const store = configureStore({
   reducer: {
     user: userReducer,
@@ -21,6 +22,7 @@ const store = configureStore({
     prediction:PredictionReducer,
     budget :budgetReducer,
     commodityTrend: commodityTrendReducer,
+    reports: reportReducer,
     
   },
 });
