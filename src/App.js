@@ -20,8 +20,9 @@ import Acad_orders from './pages/academy/acad_orders';
 import Acad_prediction from './pages/academy/acad_pricePrediction';
 import HomePage from './pages/home';
 import Chat from './pages/chat/chatWindow';
-import Harvest from './pages/cooperative/harvest_plan';
+import Harvest from './pages/cooperative/commodity_trend';
 import CommodityInsights from './pages/cooperative/price_trend_insights';
+import Plan from './pages/cooperative/plan';
 function App() {
     return (
         <Router>
@@ -49,6 +50,7 @@ function App() {
                         <Route path="chat" element={<Chat />} />
                         <Route path="trends" element={<Harvest/>}/>
                         <Route path="commodity_insights" element={<CommodityInsights />} />
+                        <Route  path="plan" element={<Plan/>}/>
                     </Route>
                       {/* academy dashboard-related routes  */}
                       <Route path="/aca_dashboard" element={<DashboardLayout_aca />}>

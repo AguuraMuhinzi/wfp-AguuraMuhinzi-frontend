@@ -441,7 +441,7 @@ const DashboardLayout = () => {
               <SidebarItem name="Report" icon={<FiBarChart2 />} path="/dashboard/report" />
               <SidebarItem name="Price Trends" icon={<FiTrendingUp />} path="/dashboard/trends" />
               <SidebarItem name="Profile" icon={<FiUser />} path="/dashboard/coopProfile" />
-              <SidebarItem name="Chat" icon={<FiMessageCircle />} path="/dashboard/chat" />
+              <SidebarItem name="Chat" icon={<FiMessageCircle />} path="/dashboard/plan" />
             </nav>
           </div>
         </div>

@@ -21,6 +21,7 @@ const store = configureStore({
     prediction:PredictionReducer,
     budget :budgetReducer,
     commodityTrend: commodityTrendReducer,
+    
   },
 });
 

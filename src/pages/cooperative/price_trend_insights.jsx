@@ -1,78 +1,52 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchCommodityTrend } from "../../Redux/Slices/predictions/harvest_plan";
-import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from "recharts";
+// // src/pages/HarvestPlansPage.jsx
+// import React, { useEffect } from 'react';
+// import { useDispatch, useSelector } from 'react-redux';
+// import { fetchMyHarvestPlans } from '../../Redux/Slices/predictions/harvest_plan';
 
-const commodities = ["Maize", "Rice", "Beans", "Sorghum", "Cassava"];
+// const HarvestPlansPage = () => {
+//   const dispatch = useDispatch();
 
-const CommodityInsights = () => {
-  const dispatch = useDispatch();
-  const { predictions, trend_analysis, commodity, location, loading, error } = useSelector((state) => state.commodityTrend);
+//   const {
+//     plans,
+//     loading,
+//     error
+//   } = useSelector((state) => state.harvestPlan);
 
-  const [selectedCommodity, setSelectedCommodity] = useState("Maize");
+//   useEffect(() => {
+//     dispatch(fetchMyHarvestPlans());
+//   }, [dispatch]);
 
-  useEffect(() => {
-    dispatch(
-      fetchCommodityTrend({
-        commodity: selectedCommodity,
-        district: "Gasabo",
-        province: "Kigali",
-        market: "Kimironko Market",
-        category: "Grains",
-        unit: "Kg",
-        pricetype: "Wholesale"
-      })
-    );
-  }, [selectedCommodity, dispatch]);
+//   return (
+//     <div className="p-6">
+//       <h1 className="text-2xl font-semibold mb-4">📋 My Harvest Plans</h1>
 
-  return (
-    <div className="max-w-6xl mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-6 text-gray-800">📊 Commodity Price Trends & Insights</h1>
+//       {loading && <p>Loading plans...</p>}
+//       {error && <p className="text-red-500">{error}</p>}
 
-      <div className="flex flex-wrap gap-4 mb-6">
-        {commodities.map((item) => (
-          <button
-            key={item}
-            onClick={() => setSelectedCommodity(item)}
-            className={`px-4 py-2 rounded border ${
-              selectedCommodity === item ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-800"
-            } hover:bg-blue-500 hover:text-white transition`}
-          >
-            {item}
-          </button>
-        ))}
-      </div>
+//       {!loading && !error && plans.length === 0 && (
+//         <p>No harvest plans found. Start by generating a new one.</p>
+//       )}
 
-      {loading && <p className="text-blue-600">Loading predictions...</p>}
-      {error && <p className="text-red-500">{error}</p>}
+//       {!loading && !error && plans.length > 0 && (
+//         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+//           {plans.map((plan) => (
+//             <div key={plan.id} className="border rounded-xl shadow p-4 bg-white">
+//               <h2 className="text-lg font-bold mb-2">🌾 {plan.commodity}</h2>
+//               <p><strong>District:</strong> {plan.district}</p>
+//               <p><strong>Market:</strong> {plan.market}</p>
+//               <p><strong>Recommended Quantity:</strong> {plan.recommended_harvest_quantity}</p>
+//               <p><strong>Expected Revenue:</strong> {plan.expected_revenue} RWF</p>
+//               <p><strong>Profit Margin:</strong> {plan.profit_margin}%</p>
+//               <p><strong>Optimal Month:</strong> {plan.optimal_harvest_month}</p>
+//               <p><strong>Demand Trend:</strong> {plan.demand_trend}</p>
+//               <p><strong>Risk:</strong> {plan.market_saturation_risk}</p>
+//               <p className="text-xs text-gray-500 mt-2">🕐 Created: {new Date(plan.created_at).toLocaleString()}</p>
+//             </div>
+//           ))}
+//         </div>
+//       )}
+//     </div>
+//   );
+// };
 
-      {!loading && predictions?.length > 0 && (
-        <div>
-          <h2 className="text-xl font-semibold mb-4">{selectedCommodity} Price Forecast (Next 3 Months)</h2>
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={predictions} margin={{ top: 20, right: 30, left: 10, bottom: 5 }}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="month_name" />
-              <YAxis domain={['dataMin - 100', 'dataMax + 100']} />
-              <Tooltip />
-              <Line type="monotone" dataKey="predicted_price" stroke="#2563EB" strokeWidth={2} name="Predicted Price (RWF)" />
-              <Line type="monotone" dataKey="lower_bound" stroke="#10B981" strokeDasharray="4 4" name="Lower Bound" />
-              <Line type="monotone" dataKey="upper_bound" stroke="#EF4444" strokeDasharray="4 4" name="Upper Bound" />
-            </LineChart>
-          </ResponsiveContainer>
-
-          <div className="bg-white mt-6 p-4 shadow rounded-lg">
-            <h3 className="text-lg font-bold mb-2">📈 Insights</h3>
-            <p><strong>Trend:</strong> {trend_analysis?.trend}</p>
-            <p><strong>Overall Change:</strong> {trend_analysis?.overall_change_percent}%</p>
-            <p><strong>Average Price:</strong> {trend_analysis?.average_price} RWF</p>
-            <p><strong>Price Range:</strong> {trend_analysis?.price_range?.min} – {trend_analysis?.price_range?.max} RWF</p>
-            <p><strong>Volatility:</strong> {trend_analysis?.volatility}</p>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-};
-
-export default CommodityInsights;
+// export default HarvestPlansPage;
