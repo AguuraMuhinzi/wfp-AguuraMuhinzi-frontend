@@ -23,6 +23,8 @@ import Chat from './pages/chat/chatWindow';
 import Harvest from './pages/cooperative/commodity_trend';
 import CommodityInsights from './pages/cooperative/price_trend_insights';
 import Plan from './pages/cooperative/plan';
+import CoopReport from './pages/cooperative/cop_reports';
+import CopAnalytics from './pages/cooperative/cop_analytics';
 function App() {
     return (
         <Router>
@@ -51,6 +53,8 @@ function App() {
                         <Route path="trends" element={<Harvest/>}/>
                         <Route path="commodity_insights" element={<CommodityInsights />} />
                         <Route  path="plan" element={<Plan/>}/>
+                        <Route path="report" element={<CoopReport/>}/>
+                        <Route path="analytics" element={<CopAnalytics/>}/>
                     </Route>
                       {/* academy dashboard-related routes  */}
                       <Route path="/aca_dashboard" element={<DashboardLayout_aca />}>
