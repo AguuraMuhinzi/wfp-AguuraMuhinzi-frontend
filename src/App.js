@@ -25,6 +25,7 @@ import CommodityInsights from './pages/cooperative/price_trend_insights';
 import Plan from './pages/cooperative/plan';
 import CoopReport from './pages/cooperative/cop_reports';
 import CopAnalytics from './pages/cooperative/cop_analytics';
+import AcadAnalytics from './pages/academy/acad_analytics';
 function App() {
     return (
         <Router>
@@ -58,11 +59,13 @@ function App() {
                     </Route>
                       {/* academy dashboard-related routes  */}
                       <Route path="/aca_dashboard" element={<DashboardLayout_aca />}>
-                      {/* <Route index element={<Overview_acad />} /> */}
+                      <Route index element={<Overview_acad />} />
                       <Route path="acad_profile" element={<Acad_profile />} />
                       <Route path="acad_orders" element={<Acad_orders />} />
                       <Route path="acad_prediction" element={<Acad_prediction/>} />
                       <Route path="chat" element={<Chat />} />
+                      <Route path="analytics" element={<AcadAnalytics/>}/>
+                    <Route path="overview" element={<Overview_acad/>}/>
                       
                       </Route>
                     {/* Fallback route */}

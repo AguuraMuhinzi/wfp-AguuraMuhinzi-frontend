@@ -57,12 +57,23 @@ export const fetchUserPredictions = createAsyncThunk(
 // GET - Commodity Trend Data
 export const fetchCommodityTrend = createAsyncThunk(
   'prediction/fetchCommodityTrend',
-  async ({ commodity, district, year }, { rejectWithValue }) => {
+  async ({ commodity, district, province, market, category, unit, pricetype, year }, { rejectWithValue }) => {
     try {
+      // Build query string with all parameters
+      const params = [
+        ['commodity', commodity],
+        ['district', district],
+        ['province', province],
+        ['market', market],
+        ['category', category],
+        ['unit', unit],
+        ['pricetype', pricetype],
+        ['year', year]
+      ].filter(([, v]) => v !== undefined && v !== null && v !== '').map(([k, v]) => `${k}=${encodeURIComponent(v)}`).join('&');
       const res = await axiosInstance.get(
-        `predictions/trend/?commodity=${commodity}&district=${district}&year=${year}`
+        `predictions/trend/?${params}`
       );
-      return res.data;
+      return res.data; // Return the full object
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
     }

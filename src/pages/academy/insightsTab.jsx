@@ -11,15 +11,38 @@ const InsightsTab = ({ mockData }) => {
   const [selectedDistrict, setSelectedDistrict] = useState('');
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [insights, setInsights] = useState([]);
+  const [selectedProvince, setSelectedProvince] = useState('');
+  const [selectedMarket, setSelectedMarket] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedUnit, setSelectedUnit] = useState('');
+  const [selectedPriceType, setSelectedPriceType] = useState('');
 
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   const uniqueCommodities = [...new Set(Object.values(mockData.commodities).flat())];
 
   useEffect(() => {
-    if (selectedCommodity && selectedDistrict && selectedYear) {
-      dispatch(fetchCommodityTrend({ commodity: selectedCommodity, district: selectedDistrict, year: selectedYear }));
+    if (
+      selectedCommodity &&
+      selectedDistrict &&
+      selectedProvince &&
+      selectedMarket &&
+      selectedCategory &&
+      selectedUnit &&
+      selectedPriceType &&
+      selectedYear
+    ) {
+      dispatch(fetchCommodityTrend({
+        commodity: selectedCommodity,
+        district: selectedDistrict,
+        province: selectedProvince,
+        market: selectedMarket,
+        category: selectedCategory,
+        unit: selectedUnit,
+        pricetype: selectedPriceType,
+        year: selectedYear
+      }));
     }
-  }, [selectedCommodity, selectedDistrict, selectedYear, dispatch]);
+  }, [selectedCommodity, selectedDistrict, selectedProvince, selectedMarket, selectedCategory, selectedUnit, selectedPriceType, selectedYear, dispatch]);
 
   useEffect(() => {
     if (trendData?.length) generateInsights(trendData);
@@ -81,12 +104,9 @@ const InsightsTab = ({ mockData }) => {
     setInsights(messages);
   };
 
-  const formatChartData = () => trendData.map(d => ({
-    month: months[d.month - 1],
-    price: d.predicted_price,
-    lower: d.lower_bound,
-    upper: d.upper_bound
-  }));
+  // Use predictions array for chart data
+  const chartData = Array.isArray(trendData?.predictions) ? trendData.predictions : [];
+  const trendAnalysis = trendData?.trend_analysis || {};
 
   return (
     <div className="p-6 bg-white shadow rounded-xl">
@@ -96,14 +116,35 @@ const InsightsTab = ({ mockData }) => {
       </div>
 
       {/* Filters */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
         <select value={selectedCommodity} onChange={e => setSelectedCommodity(e.target.value)} className="p-3 border rounded">
           <option value="">Select Commodity</option>
           {uniqueCommodities.map(c => <option key={c} value={c}>{c}</option>)}
         </select>
+        <select value={selectedCategory} onChange={e => setSelectedCategory(e.target.value)} className="p-3 border rounded">
+          <option value="">Select Category</option>
+          {mockData.categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+        </select>
+        <select value={selectedProvince} onChange={e => setSelectedProvince(e.target.value)} className="p-3 border rounded">
+          <option value="">Select Province</option>
+          {mockData.provinces.map(p => <option key={p} value={p}>{p}</option>)}
+        </select>
         <select value={selectedDistrict} onChange={e => setSelectedDistrict(e.target.value)} className="p-3 border rounded">
           <option value="">Select District</option>
-          {Object.values(mockData.districts).flat().map(d => <option key={d} value={d}>{d}</option>)}
+          {selectedProvince && mockData.districts[selectedProvince]?.map(d => <option key={d} value={d}>{d}</option>)}
+        </select>
+        <select value={selectedMarket} onChange={e => setSelectedMarket(e.target.value)} className="p-3 border rounded">
+          <option value="">Select Market</option>
+          {/* You may need to adjust this if you have market data */}
+          <option value="Main Market">Main Market</option>
+        </select>
+        <select value={selectedUnit} onChange={e => setSelectedUnit(e.target.value)} className="p-3 border rounded">
+          <option value="">Select Unit</option>
+          {mockData.units.map(u => <option key={u} value={u}>{u}</option>)}
+        </select>
+        <select value={selectedPriceType} onChange={e => setSelectedPriceType(e.target.value)} className="p-3 border rounded">
+          <option value="">Select Price Type</option>
+          {mockData.pricetypes.map(pt => <option key={pt} value={pt}>{pt}</option>)}
         </select>
         <select value={selectedYear} onChange={e => setSelectedYear(+e.target.value)} className="p-3 border rounded">
           {[2024, 2025, 2026].map(y => <option key={y} value={y}>{y}</option>)}
@@ -115,9 +156,9 @@ const InsightsTab = ({ mockData }) => {
         <p>Loading chart...</p>
       ) : error ? (
         <p className="text-red-600">Error loading data</p>
-      ) : trendData?.length ? (
+      ) : chartData.length ? (
         <ResponsiveContainer width="100%" height={300}>
-          <AreaChart data={formatChartData()}>
+          <AreaChart data={chartData}>
             <defs>
               <linearGradient id="c1" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.4}/>
@@ -125,15 +166,29 @@ const InsightsTab = ({ mockData }) => {
               </linearGradient>
             </defs>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="month" />
+            <XAxis dataKey="month_name" />
             <YAxis />
             <Tooltip />
-            <Area type="monotone" dataKey="price" stroke="#3b82f6" fillOpacity={1} fill="url(#c1)" />
-            <Line type="monotone" dataKey="lower" stroke="#10b981" strokeDasharray="4 4" />
-            <Line type="monotone" dataKey="upper" stroke="#ef4444" strokeDasharray="4 4" />
+            <Area type="monotone" dataKey="predicted_price" stroke="#3b82f6" fillOpacity={1} fill="url(#c1)" />
+            <Line type="monotone" dataKey="lower_bound" stroke="#10b981" strokeDasharray="4 4" />
+            <Line type="monotone" dataKey="upper_bound" stroke="#ef4444" strokeDasharray="4 4" />
           </AreaChart>
         </ResponsiveContainer>
       ) : null}
+
+      {/* Trend Analysis Smart Insights */}
+      {trendAnalysis && (
+        <div className="mt-6 bg-blue-50 border border-blue-200 rounded-xl p-4">
+          <h3 className="font-semibold text-blue-800 mb-2 flex items-center gap-2"><Lightbulb /> Smart Insights</h3>
+          <ul className="list-disc pl-6 text-blue-900 space-y-1">
+            {trendAnalysis.trend && <li>Trend: <span className="font-bold">{trendAnalysis.trend}</span></li>}
+            {trendAnalysis.overall_change_percent !== undefined && <li>Overall Change: <span className="font-bold">{trendAnalysis.overall_change_percent}%</span></li>}
+            {trendAnalysis.volatility !== undefined && <li>Volatility: <span className="font-bold">{trendAnalysis.volatility}%</span></li>}
+            {trendAnalysis.average_price !== undefined && <li>Average Price: <span className="font-bold">{trendAnalysis.average_price} RWF</span></li>}
+            {trendAnalysis.price_range && <li>Price Range: <span className="font-bold">{trendAnalysis.price_range.min} - {trendAnalysis.price_range.max} RWF</span></li>}
+          </ul>
+        </div>
+      )}
 
       {/* Insights */}
       <div className="mt-6">

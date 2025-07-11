@@ -1,9 +1,10 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { FiBarChart2, FiTrendingUp, FiShoppingCart, FiCheckCircle, FiDownload, FiPackage, FiFileText } from "react-icons/fi";
+import { FiBarChart2, FiTrendingUp, FiShoppingCart, FiCheckCircle, FiDownload, FiPackage, FiFileText, FiChevronUp, FiChevronDown } from "react-icons/fi";
 import { PieChart, Pie, Cell, ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, Legend } from "recharts";
 import { listProducts } from "../../Redux/Slices/product/product";
 import { fetchUserReports } from '../../Redux/Slices/reports/report_slice';
+import { fetchSalesSummaryReport } from '../../Redux/Slices/reports/report_slice';
 import { Link } from "react-router-dom";
 
 // Helper for currency formatting
@@ -30,11 +31,37 @@ const CopAnalytics = () => {
   const userReports = useSelector(state => state.reports.userReports || []);
   const reportsLoading = useSelector(state => state.reports.loading);
   const reportsError = useSelector(state => state.reports.error);
+  const cooperative = useSelector(state => state.cooperative.data);
+  const salesSummary = useSelector(state => state.reports.salesSummary);
+  const [dateRange, setDateRange] = React.useState({ start_date: '', end_date: '' });
+  const [salesLoading, setSalesLoading] = React.useState(false);
+  const [salesError, setSalesError] = React.useState(null);
+  const [salesSummaryOpen, setSalesSummaryOpen] = React.useState(true);
 
   useEffect(() => {
     dispatch(listProducts());
     dispatch(fetchUserReports());
   }, [dispatch]);
+
+  const handleSalesSummary = async (e) => {
+    e.preventDefault();
+    if (!dateRange.start_date || !dateRange.end_date || !userId) {
+      setSalesError('Please select a date range.');
+      return;
+    }
+    setSalesError(null);
+    setSalesLoading(true);
+    try {
+      await dispatch(fetchSalesSummaryReport({
+        start_date: dateRange.start_date,
+        end_date: dateRange.end_date,
+        cooperative_id: userId
+      }));
+    } catch (err) {
+      setSalesError('Failed to fetch sales summary.');
+    }
+    setSalesLoading(false);
+  };
 
   // Filter products for the logged-in user
   const userProducts = products.filter((product) => {
@@ -130,6 +157,125 @@ const CopAnalytics = () => {
               </LineChart>
             </ResponsiveContainer>
           </div>
+        </div>
+
+        {/* Sales Summary Report */}
+        <div className="bg-white rounded-xl shadow-sm border p-6 mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
+              <FiBarChart2 className="text-blue-600" /> Sales Summary Report
+            </h3>
+            <button
+              type="button"
+              className="text-gray-500 hover:text-gray-700 focus:outline-none"
+              onClick={() => setSalesSummaryOpen((open) => !open)}
+              aria-label={salesSummaryOpen ? 'Minimize sales summary' : 'Expand sales summary'}
+            >
+              {salesSummaryOpen ? <FiChevronUp className="w-6 h-6" /> : <FiChevronDown className="w-6 h-6" />}
+            </button>
+          </div>
+          {salesSummaryOpen && (
+            <>
+              <form className="flex flex-col md:flex-row md:items-end gap-4 mb-4" onSubmit={handleSalesSummary}>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+                  <input type="date" className="border rounded px-3 py-2" value={dateRange.start_date} onChange={e => setDateRange({ ...dateRange, start_date: e.target.value })} required />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">End Date</label>
+                  <input type="date" className="border rounded px-3 py-2" value={dateRange.end_date} onChange={e => setDateRange({ ...dateRange, end_date: e.target.value })} required />
+                </div>
+                <button type="submit" className="bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-700 transition-colors" disabled={salesLoading}>
+                  {salesLoading ? 'Loading...' : 'Get Summary'}
+                </button>
+              </form>
+              {salesError && <div className="text-red-600 mb-2">{salesError}</div>}
+              {salesSummary && (
+                <div className="mt-4 space-y-6">
+                  {/* Top Products Table */}
+                  {Array.isArray(salesSummary.top_products) && salesSummary.top_products.length > 0 && (
+                    <div>
+                      <h4 className="font-semibold text-gray-800 mb-2">Top Products</h4>
+                      <table className="min-w-full text-sm border rounded">
+                        <thead className="bg-gray-100">
+                          <tr>
+                            <th className="p-2 text-left">Product</th>
+                            <th className="p-2 text-left">Quantity Sold</th>
+                            <th className="p-2 text-left">Revenue</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {salesSummary.top_products.map((prod, idx) => (
+                            <tr key={idx} className="border-b">
+                              <td className="p-2">{prod.product__product_name}</td>
+                              <td className="p-2">{prod.quantity_sold}</td>
+                              <td className="p-2">{prod.revenue}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                  {/* Sales by Cooperative Table */}
+                  {Array.isArray(salesSummary.sales_by_cooperative) && salesSummary.sales_by_cooperative.length > 0 && (
+                    <div>
+                      <h4 className="font-semibold text-gray-800 mb-2">Sales by Cooperative</h4>
+                      <table className="min-w-full text-sm border rounded">
+                        <thead className="bg-gray-100">
+                          <tr>
+                            <th className="p-2 text-left">Cooperative</th>
+                            <th className="p-2 text-left">Order Count</th>
+                            <th className="p-2 text-left">Revenue</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {salesSummary.sales_by_cooperative.map((coop, idx) => (
+                            <tr key={idx} className="border-b">
+                              <td className="p-2">{coop.cooperative__username}</td>
+                              <td className="p-2">{coop.order_count}</td>
+                              <td className="p-2">{coop.revenue}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                  {/* Sales Trend Line Chart */}
+                  {Array.isArray(salesSummary.sales_trend) && salesSummary.sales_trend.length > 0 && (
+                    <div>
+                      <h4 className="font-semibold text-gray-800 mb-2">Sales Trend</h4>
+                      <div className="bg-white rounded shadow p-4">
+                        <ResponsiveContainer width="100%" height={250}>
+                          <LineChart data={salesSummary.sales_trend.map(item => ({
+                            ...item,
+                            month: item.month ? `Month ${item.month}` : item.month
+                          }))}>
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <XAxis dataKey="month" />
+                            <YAxis />
+                            <Tooltip />
+                            <Legend />
+                            <Line type="monotone" dataKey="revenue" stroke="#2563eb" strokeWidth={3} />
+                          </LineChart>
+                        </ResponsiveContainer>
+                      </div>
+                    </div>
+                  )}
+                  {/* Other summary fields */}
+                  <table className="min-w-full text-sm">
+                    <tbody>
+                      {Object.entries(salesSummary).filter(([key]) => !['top_products','sales_by_cooperative','sales_trend'].includes(key)).map(([key, value]) => (
+                        <tr key={key}>
+                          <td className="font-medium pr-4 py-1 text-gray-700">{key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</td>
+                          <td className="py-1 text-gray-900">{typeof value === 'number' ? value.toLocaleString() : String(value)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </>
+          )}
         </div>
 
         {/* User Reports Table */}
