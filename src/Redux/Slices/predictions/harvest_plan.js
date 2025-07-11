@@ -138,18 +138,22 @@ const commodityTrendSlice = createSlice({
 
     // 🟨 Price Comparison Logic
     builder
-      .addCase(comparePricesAcrossLocations.pending, (state) => {
+      .addCase(comparePricesAcrossLocations.pending, (state, action) => {
         state.priceComparison.loading = true;
         state.priceComparison.error = null;
         state.priceComparison.predictions = [];
         state.priceComparison.comparison_reports = [];
         state.priceComparison.insights = {};
+        // Store the commodity from the request
+        state.priceComparison.commodity = action.meta.arg.commodity || "";
       })
       .addCase(comparePricesAcrossLocations.fulfilled, (state, action) => {
         state.priceComparison.loading = false;
         state.priceComparison.predictions = action.payload.predictions;
         state.priceComparison.comparison_reports = action.payload.comparison_reports;
         state.priceComparison.insights = action.payload.insights;
+        // Keep the commodity from the request
+        state.priceComparison.commodity = action.meta.arg.commodity || "";
       })
       .addCase(comparePricesAcrossLocations.rejected, (state, action) => {
         state.priceComparison.loading = false;

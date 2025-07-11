@@ -35,14 +35,17 @@ import {
   FiClock,
   FiAlertTriangle,
   FiPlus,
+  FiDownload,
 } from "react-icons/fi"
 import { fetchCommodityTrend, comparePricesAcrossLocations } from "../../Redux/Slices/predictions/harvest_plan"
+import { generatePriceComparisonReportPDF } from "../../components/export_function"
 
 const CommodityTrendPage = () => {
   const dispatch = useDispatch()
   const { predictions, trend_analysis, commodity, location, loading, error, priceComparison } = useSelector(
     (state) => state.commodityTrend,
   )
+  const user = useSelector(state => state.user.userInfo) || {}
 
   const [form, setForm] = useState({
     commodity: "",
@@ -1347,6 +1350,25 @@ const CommodityTrendPage = () => {
         {/* Price Comparison Results */}
         {comparisonChartData && comparisonChartData.length > 0 && (
           <div className="space-y-6">
+            {/* Export Button */}
+            <div className="bg-white rounded-xl shadow-sm border p-6">
+              <div className="flex justify-between items-center">
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
+                    <FiDownload className="text-blue-600" /> Export Price Comparison Report
+                  </h3>
+                  <p className="text-sm text-gray-600 mt-1">Generate a comprehensive PDF report of your price comparison analysis</p>
+                </div>
+                <button
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200 flex items-center space-x-2"
+                  onClick={() => generatePriceComparisonReportPDF(priceComparison, user, 'price_comparison_report.pdf')}
+                >
+                  <FiDownload className="w-5 h-5" />
+                  <span>Export PDF</span>
+                </button>
+              </div>
+            </div>
+
             {/* Summary Statistics */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl border border-blue-200">

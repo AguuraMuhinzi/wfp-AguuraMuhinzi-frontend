@@ -492,3 +492,208 @@ export async function generateCooperativeSalesReportPDF(salesSummary, cooperativ
     document.body.removeChild(reportDiv);
   }
 } 
+
+// Price Comparison Report PDF Generator
+export async function generatePriceComparisonReportPDF(priceComparisonData, user, filename = 'price_comparison_report.pdf') {
+  // Import jsPDF and html2canvas dynamically
+  const jsPDF = (await import('jspdf')).default;
+  const html2canvas = (await import('html2canvas')).default;
+
+  // Create a temporary div for the report content
+  const reportDiv = document.createElement('div');
+  reportDiv.style.width = '800px';
+  reportDiv.style.padding = '20px';
+  reportDiv.style.backgroundColor = 'white';
+  reportDiv.style.fontFamily = 'Arial, sans-serif';
+  reportDiv.style.position = 'absolute';
+  reportDiv.style.left = '-9999px';
+  reportDiv.style.top = '0';
+
+  // Process comparison data
+  const comparisonData = priceComparisonData.predictions || [];
+  const avgPrice = comparisonData.length > 0
+    ? comparisonData.reduce((sum, item) => sum + (item.predicted_price || item.price || 0), 0) / comparisonData.length
+    : 0;
+
+  const getPriceStatus = (price) => {
+    if (avgPrice === 0) return { status: "N/A", color: "#6b7280" };
+    const difference = ((price - avgPrice) / avgPrice) * 100;
+    if (difference > 10) return { status: "High", color: "#dc2626" };
+    if (difference < -10) return { status: "Low", color: "#059669" };
+    return { status: "Average", color: "#d97706" };
+  };
+
+  // Generate report HTML content
+  reportDiv.innerHTML = `
+    <div style="text-align: center; margin-bottom: 30px;">
+      <h1 style="color: #1f2937; margin-bottom: 10px;">Price Comparison Report</h1>
+      <p style="color: #6b7280; margin: 0;">Generated on ${new Date().toLocaleDateString()}</p>
+      <div style="margin-top: 15px; padding: 10px; background: #f0f9ff; border: 1px solid #0ea5e9; border-radius: 8px;">
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; text-align: left;">
+          <div>
+            <strong style="color: #0c4a6e;">Cooperative:</strong>
+            <span style="color: #0c4a6e; margin-left: 8px;">${user?.username || 'N/A'}</span>
+          </div>
+          <div>
+            <strong style="color: #0c4a6e;">Commodity:</strong>
+            <span style="color: #0c4a6e; margin-left: 8px;">${priceComparisonData.commodity || 'N/A'}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-bottom: 30px;">
+      <h2 style="color: #374151; border-bottom: 2px solid #3b82f6; padding-bottom: 10px;">Comparison Overview</h2>
+      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 20px;">
+        <div style="background: #f3f4f6; padding: 15px; border-radius: 8px;">
+          <h3 style="margin: 0 0 10px 0; color: #374151;">Locations Compared</h3>
+          <p style="font-size: 24px; font-weight: bold; color: #3b82f6; margin: 0;">${comparisonData.length}</p>
+        </div>
+        <div style="background: #f3f4f6; padding: 15px; border-radius: 8px;">
+          <h3 style="margin: 0 0 10px 0; color: #374151;">Average Price</h3>
+          <p style="font-size: 24px; font-weight: bold; color: #059669; margin: 0;">${avgPrice.toLocaleString()} RWF</p>
+        </div>
+        <div style="background: #f3f4f6; padding: 15px; border-radius: 8px;">
+          <h3 style="margin: 0 0 10px 0; color: #374151;">Highest Price</h3>
+          <p style="font-size: 24px; font-weight: bold; color: #dc2626; margin: 0;">${Math.max(...comparisonData.map(d => d.predicted_price || d.price || 0)).toLocaleString()} RWF</p>
+        </div>
+        <div style="background: #f3f4f6; padding: 15px; border-radius: 8px;">
+          <h3 style="margin: 0 0 10px 0; color: #374151;">Lowest Price</h3>
+          <p style="font-size: 24px; font-weight: bold; color: #059669; margin: 0;">${Math.min(...comparisonData.map(d => d.predicted_price || d.price || 0)).toLocaleString()} RWF</p>
+        </div>
+      </div>
+    </div>
+
+    ${comparisonData.length > 0 ? `
+    <div style="margin-bottom: 30px;">
+      <h2 style="color: #374151; border-bottom: 2px solid #3b82f6; padding-bottom: 10px;">Detailed Price Comparison</h2>
+      <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+        <thead>
+          <tr style="background: #f9fafb;">
+            <th style="border: 1px solid #d1d5db; padding: 12px; text-align: left;">Location</th>
+            <th style="border: 1px solid #d1d5db; padding: 12px; text-align: left;">Market</th>
+            <th style="border: 1px solid #d1d5db; padding: 12px; text-align: right;">Price (RWF)</th>
+            <th style="border: 1px solid #d1d5db; padding: 12px; text-align: center;">Status</th>
+            <th style="border: 1px solid #d1d5db; padding: 12px; text-align: right;">Difference from Avg</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${comparisonData.map((item, index) => {
+            const price = item.predicted_price || item.price || 0;
+            const priceStatus = getPriceStatus(price);
+            const difference = avgPrice > 0 ? ((price - avgPrice) / avgPrice) * 100 : 0;
+            return `
+              <tr>
+                <td style="border: 1px solid #d1d5db; padding: 12px;">${item.district}, ${item.province}</td>
+                <td style="border: 1px solid #d1d5db; padding: 12px;">${item.market}</td>
+                <td style="border: 1px solid #d1d5db; padding: 12px; text-align: right; font-weight: bold; color: #3b82f6;">${price.toLocaleString()}</td>
+                <td style="border: 1px solid #d1d5db; padding: 12px; text-align: center;">
+                  <span style="color: ${priceStatus.color}; font-weight: bold;">${priceStatus.status}</span>
+                </td>
+                <td style="border: 1px solid #d1d5db; padding: 12px; text-align: right; color: ${difference > 0 ? '#dc2626' : difference < 0 ? '#059669' : '#6b7280'};">
+                  ${difference > 0 ? '+' : ''}${difference.toFixed(1)}%
+                </td>
+              </tr>
+            `;
+          }).join('')}
+        </tbody>
+      </table>
+    </div>
+    ` : ''}
+
+    ${priceComparisonData.insights && Object.keys(priceComparisonData.insights).length > 0 ? `
+    <div style="margin-bottom: 30px;">
+      <h2 style="color: #374151; border-bottom: 2px solid #3b82f6; padding-bottom: 10px;">Market Insights</h2>
+      <div style="background: #f0f9ff; border: 1px solid #0ea5e9; border-radius: 8px; padding: 20px;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+          ${Object.entries(priceComparisonData.insights).map(([key, value]) => `
+            <div style="background: white; padding: 15px; border-radius: 8px; border: 1px solid #0ea5e9;">
+              <h4 style="margin: 0 0 10px 0; color: #0c4a6e; text-transform: capitalize;">${key.replace(/_/g, ' ')}</h4>
+              <div style="color: #0c4a6e; font-size: 14px;">
+                ${value === null || value === undefined ? 'No data available' : 
+                  typeof value === 'object' ? 
+                    Object.entries(value).map(([subKey, subValue]) => 
+                      `<div style="margin-bottom: 5px;"><strong>${subKey.replace(/_/g, ' ').toUpperCase()}:</strong> ${String(subValue)}</div>`
+                    ).join('') : 
+                    String(value)
+                }
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    </div>
+    ` : ''}
+
+    ${priceComparisonData.comparison_reports && priceComparisonData.comparison_reports.length > 0 ? `
+    <div style="margin-bottom: 30px;">
+      <h2 style="color: #374151; border-bottom: 2px solid #3b82f6; padding-bottom: 10px;">Market Analysis Reports</h2>
+      <div style="space-y: 15px;">
+        ${priceComparisonData.comparison_reports.map((report, index) => `
+          <div style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 8px; padding: 15px;">
+            <h4 style="margin: 0 0 10px 0; color: #92400e; font-weight: bold;">${report.title || `Report ${index + 1}`}</h4>
+            <p style="margin: 0 0 10px 0; color: #92400e; font-size: 14px;">${report.description || report.content}</p>
+            ${report.recommendation ? `
+              <div style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 4px; padding: 8px; margin-top: 10px;">
+                <p style="margin: 0; color: #92400e; font-size: 12px; font-weight: bold;">Recommendation: ${report.recommendation}</p>
+              </div>
+            ` : ''}
+          </div>
+        `).join('')}
+      </div>
+    </div>
+    ` : ''}
+
+    <div style="margin-bottom: 30px;">
+      <h2 style="color: #374151; border-bottom: 2px solid #3b82f6; padding-bottom: 10px;">Key Findings</h2>
+      <div style="background: #f0f9ff; border: 1px solid #0ea5e9; border-radius: 8px; padding: 20px;">
+        <ul style="margin: 0; padding-left: 20px; color: #0c4a6e;">
+          <li style="margin-bottom: 8px;">Price range: <strong>${Math.min(...comparisonData.map(d => d.predicted_price || d.price || 0)).toLocaleString()} RWF</strong> to <strong>${Math.max(...comparisonData.map(d => d.predicted_price || d.price || 0)).toLocaleString()} RWF</strong></li>
+          <li style="margin-bottom: 8px;">Average price across all locations: <strong>${avgPrice.toLocaleString()} RWF</strong></li>
+          <li style="margin-bottom: 8px;">Price variation: <strong>${((Math.max(...comparisonData.map(d => d.predicted_price || d.price || 0)) - Math.min(...comparisonData.map(d => d.predicted_price || d.price || 0))) / avgPrice * 100).toFixed(1)}%</strong></li>
+          <li style="margin-bottom: 8px;">Locations analyzed: <strong>${comparisonData.length}</strong></li>
+          ${comparisonData.length > 0 ? `
+          <li style="margin-bottom: 8px;">Best market opportunity: <strong>${comparisonData.reduce((min, item) => (item.predicted_price || item.price || 0) < (min.predicted_price || min.price || 0) ? item : min).market}</strong></li>
+          ` : ''}
+        </ul>
+      </div>
+    </div>
+
+    <div style="margin-top: 30px; padding: 15px; background: #f9fafb; border-radius: 8px; text-align: center;">
+      <p style="margin: 0; color: #6b7280; font-size: 14px;">
+        This price comparison report was generated on ${new Date().toLocaleDateString()} for ${user?.username || 'N/A'}
+      </p>
+    </div>
+  `;
+
+  // Add the report div to the document
+  document.body.appendChild(reportDiv);
+
+  try {
+    // Convert the div to canvas
+    const canvas = await html2canvas(reportDiv, {
+      scale: 2,
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: '#ffffff'
+    });
+
+    // Create PDF
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    const imgData = canvas.toDataURL('image/png');
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+    // Add image to PDF
+    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+
+    // Save the PDF
+    pdf.save(filename);
+  } catch (error) {
+    console.error('Error generating PDF:', error);
+    alert('Error generating PDF. Please try again.');
+  } finally {
+    // Clean up
+    document.body.removeChild(reportDiv);
+  }
+} 
