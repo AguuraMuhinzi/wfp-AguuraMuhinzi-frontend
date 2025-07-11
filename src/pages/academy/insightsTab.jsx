@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Line } from 'recharts';
 import { fetchCommodityTrend } from '../../Redux/Slices/predictions/price_prediction';
-import { BarChart3, Lightbulb, Clock, AlertTriangle, TrendingUp, TrendingDown, Target, ShoppingCart, DollarSign } from 'lucide-react';
+import { BarChart3, Lightbulb, Clock, AlertTriangle, TrendingUp, TrendingDown, Target, ShoppingCart, DollarSign, Download } from 'lucide-react';
+import { generatePredictionReportPDF } from '../../components/export_function';
 
 const InsightsTab = ({ mockData }) => {
   const dispatch = useDispatch();
@@ -111,8 +112,20 @@ const InsightsTab = ({ mockData }) => {
   return (
     <div className="p-6 bg-white shadow rounded-xl">
       <div className="mb-4">
-        <h2 className="text-xl font-bold mb-2 flex items-center gap-2"><BarChart3 /> Market Insight Analysis</h2>
-        <p className="text-sm text-gray-600">Select commodity and district to analyze trends</p>
+        <div className="flex justify-between items-center">
+          <div>
+            <h2 className="text-xl font-bold mb-2 flex items-center gap-2"><BarChart3 /> Market Insight Analysis</h2>
+            <p className="text-sm text-gray-600">Select commodity and district to analyze trends</p>
+          </div>
+          {trendData && (
+            <button
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm font-semibold flex items-center gap-2"
+              onClick={() => generatePredictionReportPDF(trendData, '3month_prediction_report.pdf')}
+            >
+              <Download size={16} /> Export Report PDF
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Filters */}

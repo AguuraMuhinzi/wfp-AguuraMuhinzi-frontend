@@ -6,6 +6,7 @@ import { listProducts } from "../../Redux/Slices/product/product";
 import { fetchUserReports } from '../../Redux/Slices/reports/report_slice';
 import { fetchSalesSummaryReport } from '../../Redux/Slices/reports/report_slice';
 import { Link } from "react-router-dom";
+import { generateCooperativeSalesReportPDF } from '../../components/export_function';
 
 // Helper for currency formatting
 const formatCurrency = (value) => value?.toLocaleString?.("en-US", { style: "currency", currency: "RWF" }) || value;
@@ -33,6 +34,7 @@ const CopAnalytics = () => {
   const reportsError = useSelector(state => state.reports.error);
   const cooperative = useSelector(state => state.cooperative.data);
   const salesSummary = useSelector(state => state.reports.salesSummary);
+  const user = useSelector(state => state.user.userInfo) || {};
   const [dateRange, setDateRange] = React.useState({ start_date: '', end_date: '' });
   const [salesLoading, setSalesLoading] = React.useState(false);
   const [salesError, setSalesError] = React.useState(null);
@@ -165,14 +167,24 @@ const CopAnalytics = () => {
             <h3 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
               <FiBarChart2 className="text-blue-600" /> Sales Summary Report
             </h3>
-            <button
-              type="button"
-              className="text-gray-500 hover:text-gray-700 focus:outline-none"
-              onClick={() => setSalesSummaryOpen((open) => !open)}
-              aria-label={salesSummaryOpen ? 'Minimize sales summary' : 'Expand sales summary'}
-            >
-              {salesSummaryOpen ? <FiChevronUp className="w-6 h-6" /> : <FiChevronDown className="w-6 h-6" />}
-            </button>
+            <div className="flex items-center gap-2">
+              {salesSummary && (
+                <button
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm font-semibold flex items-center gap-2"
+                  onClick={() => generateCooperativeSalesReportPDF({...salesSummary, start_date: dateRange.start_date, end_date: dateRange.end_date}, user, 'cooperative_sales_report.pdf')}
+                >
+                  <FiDownload /> Export PDF
+                </button>
+              )}
+              <button
+                type="button"
+                className="text-gray-500 hover:text-gray-700 focus:outline-none"
+                onClick={() => setSalesSummaryOpen((open) => !open)}
+                aria-label={salesSummaryOpen ? 'Minimize sales summary' : 'Expand sales summary'}
+              >
+                {salesSummaryOpen ? <FiChevronUp className="w-6 h-6" /> : <FiChevronDown className="w-6 h-6" />}
+              </button>
+            </div>
           </div>
           {salesSummaryOpen && (
             <>
@@ -192,6 +204,23 @@ const CopAnalytics = () => {
               {salesError && <div className="text-red-600 mb-2">{salesError}</div>}
               {salesSummary && (
                 <div className="mt-4 space-y-6">
+                  {/* Report Header Information */}
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                      <div>
+                        <span className="font-semibold text-blue-800">Cooperative:</span>
+                        <span className="ml-2 text-blue-700">{user.username || 'N/A'}</span>
+                      </div>
+                      <div>
+                        <span className="font-semibold text-blue-800">Report Period:</span>
+                        <span className="ml-2 text-blue-700">{dateRange.start_date} to {dateRange.end_date}</span>
+                      </div>
+                      <div>
+                        <span className="font-semibold text-blue-800">Generated:</span>
+                        <span className="ml-2 text-blue-700">{new Date().toLocaleDateString()}</span>
+                      </div>
+                    </div>
+                  </div>
                   {/* Top Products Table */}
                   {Array.isArray(salesSummary.top_products) && salesSummary.top_products.length > 0 && (
                     <div>
@@ -210,30 +239,6 @@ const CopAnalytics = () => {
                               <td className="p-2">{prod.product__product_name}</td>
                               <td className="p-2">{prod.quantity_sold}</td>
                               <td className="p-2">{prod.revenue}</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  )}
-                  {/* Sales by Cooperative Table */}
-                  {Array.isArray(salesSummary.sales_by_cooperative) && salesSummary.sales_by_cooperative.length > 0 && (
-                    <div>
-                      <h4 className="font-semibold text-gray-800 mb-2">Sales by Cooperative</h4>
-                      <table className="min-w-full text-sm border rounded">
-                        <thead className="bg-gray-100">
-                          <tr>
-                            <th className="p-2 text-left">Cooperative</th>
-                            <th className="p-2 text-left">Order Count</th>
-                            <th className="p-2 text-left">Revenue</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {salesSummary.sales_by_cooperative.map((coop, idx) => (
-                            <tr key={idx} className="border-b">
-                              <td className="p-2">{coop.cooperative__username}</td>
-                              <td className="p-2">{coop.order_count}</td>
-                              <td className="p-2">{coop.revenue}</td>
                             </tr>
                           ))}
                         </tbody>
@@ -264,7 +269,7 @@ const CopAnalytics = () => {
                   {/* Other summary fields */}
                   <table className="min-w-full text-sm">
                     <tbody>
-                      {Object.entries(salesSummary).filter(([key]) => !['top_products','sales_by_cooperative','sales_trend'].includes(key)).map(([key, value]) => (
+                      {Object.entries(salesSummary).filter(([key]) => !['top_products','sales_trend'].includes(key)).map(([key, value]) => (
                         <tr key={key}>
                           <td className="font-medium pr-4 py-1 text-gray-700">{key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</td>
                           <td className="py-1 text-gray-900">{typeof value === 'number' ? value.toLocaleString() : String(value)}</td>

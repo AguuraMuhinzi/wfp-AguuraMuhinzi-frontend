@@ -3,6 +3,24 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchOrders } from '../../Redux/Slices/order/orderSlice.js';
 import { FiSearch, FiFilter, FiDownload, FiEye, FiX, FiPackage, FiCheckCircle, FiClock, FiXCircle } from 'react-icons/fi';
+import { exportTableToCSV } from '../../components/export_function';
+
+// Helper to flatten orders for CSV export
+function flattenOrdersForCSV(orders) {
+  return orders.map(order => ({
+    id: order.id,
+    cooperative: order.cooperative?.username || 'N/A',
+    status: order.status,
+    total: order.total_price || order.total || '',
+    created_at: order.created_at,
+    products: Array.isArray(order.products)
+      ? order.products.map(p =>
+          p.product?.product_name || p.product?.name || p.product || ''
+        ).join('; ')
+      : '',
+    // Add more fields as needed
+  }));
+}
 
 const AcademyOrders = () => {
   const dispatch = useDispatch();
@@ -87,7 +105,10 @@ const AcademyOrders = () => {
       {/* Page Title */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-gray-800">Manage Orders</h1>
-        <button className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition duration-150">
+        <button
+          className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition duration-150"
+          onClick={() => exportTableToCSV(flattenOrdersForCSV(filteredOrders), 'academy_orders.csv')}
+        >
           <FiDownload size={18} />
           <span>Export Orders</span>
         </button>

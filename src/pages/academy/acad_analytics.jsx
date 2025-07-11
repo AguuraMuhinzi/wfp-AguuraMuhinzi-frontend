@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell, Legend } from 'recharts';
 import { FiTrendingUp, FiShoppingCart, FiUsers, FiPackage, FiDownload, FiPieChart, FiBarChart2 } from 'react-icons/fi';
+import { exportTableToCSV, generateAcademyFinancialReportPDF } from '../../components/export_function';
 
 const COLORS = ['#3b82f6', '#34d399', '#fbbf24', '#f87171', '#a78bfa', '#6366f1', '#f472b6'];
 
@@ -35,9 +36,14 @@ const SummaryCards = ({ totalSpend, orderCount, avgOrderValue, activeCoops, most
   </div>
 );
 
-const ExportButtons = () => (
+const ExportButtons = ({ academyFinancial, coopCollab }) => (
   <div className="flex gap-4 mb-6">
-    <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-semibold flex items-center gap-2"><FiDownload /> Export PDF</button>
+    <button 
+      className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-semibold flex items-center gap-2"
+      onClick={() => generateAcademyFinancialReportPDF(academyFinancial, coopCollab, 'academy_financial_report.pdf')}
+    >
+      <FiDownload /> Export Financial Report PDF
+    </button>
     <button className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-semibold flex items-center gap-2"><FiDownload /> Export CSV</button>
   </div>
 );
@@ -97,10 +103,20 @@ const AcadAnalytics = () => {
         activeCoops={activeCoops}
         mostOrderedProduct={mostOrderedProduct}
       />
-      <ExportButtons />
+      <ExportButtons academyFinancial={academyFinancial} coopCollab={coopCollab} />
       {/* Spend Trend Area Chart */}
       <div className="bg-white rounded-xl shadow-sm border p-6 mb-6">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2"><FiBarChart2 /> Monthly Spend Trend</h3>
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-lg font-semibold text-gray-800 flex items-center gap-2"><FiBarChart2 /> Monthly Spend Trend</h3>
+          {spendTrend.length > 0 && (
+            <button
+              className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded text-sm font-semibold"
+              onClick={() => exportTableToCSV(spendTrend, 'spend_trend.csv')}
+            >
+              Export CSV
+            </button>
+          )}
+        </div>
         {spendTrend.length > 0 ? (
           <ResponsiveContainer width="100%" height={300}>
             <AreaChart data={spendTrend} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
@@ -121,7 +137,17 @@ const AcadAnalytics = () => {
       </div>
       {/* Order Volume Bar Chart */}
       <div className="bg-white rounded-xl shadow-sm border p-6 mb-6">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2"><FiBarChart2 /> Order Volume Trend</h3>
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-lg font-semibold text-gray-800 flex items-center gap-2"><FiBarChart2 /> Order Volume Trend</h3>
+          {orderVolumeData.length > 0 && (
+            <button
+              className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded text-sm font-semibold"
+              onClick={() => exportTableToCSV(orderVolumeData, 'order_volume.csv')}
+            >
+              Export CSV
+            </button>
+          )}
+        </div>
         {orderVolumeData.length > 0 ? (
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={orderVolumeData}>
@@ -136,7 +162,17 @@ const AcadAnalytics = () => {
       </div>
       {/* Most Ordered Products Bar Chart */}
       <div className="bg-white rounded-xl shadow-sm border p-6 mb-6">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2"><FiBarChart2 /> Most Ordered Products</h3>
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-lg font-semibold text-gray-800 flex items-center gap-2"><FiBarChart2 /> Most Ordered Products</h3>
+          {productBarData.length > 0 && (
+            <button
+              className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded text-sm font-semibold"
+              onClick={() => exportTableToCSV(productBarData, 'most_ordered_products.csv')}
+            >
+              Export CSV
+            </button>
+          )}
+        </div>
         {productBarData.length > 0 ? (
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={productBarData}>
