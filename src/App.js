@@ -26,6 +26,8 @@ import Plan from './pages/cooperative/plan';
 import CoopReport from './pages/cooperative/cop_reports';
 import CopAnalytics from './pages/cooperative/cop_analytics';
 import AcadAnalytics from './pages/academy/acad_analytics';
+import AdminDashboard from './pages/admin/admin_dashboard';
+import AdminPriceUploadPage from './pages/admin/admin_price';
 function App() {
     return (
         <Router>
@@ -57,6 +59,7 @@ function App() {
                         <Route path="report" element={<CoopReport/>}/>
                         <Route path="analytics" element={<CopAnalytics/>}/>
                     </Route>
+
                       {/* academy dashboard-related routes  */}
                       <Route path="/aca_dashboard" element={<DashboardLayout_aca />}>
                       <Route index element={<Overview_acad />} />
@@ -67,6 +70,11 @@ function App() {
                       <Route path="analytics" element={<AcadAnalytics/>}/>
                     <Route path="overview" element={<Overview_acad/>}/>
                       
+
+                      
+                      </Route>
+                      <Route path="/admin-dashboard" element={<AdminDashboard />}>
+                        <Route path="price" element={<AdminPriceUploadPage />} />
                       </Route>
                     {/* Fallback route */}
                     <Route path="*" element={<Login />} />
