@@ -322,41 +322,58 @@ const UploadSection = () => {
 
 const ManageSection = () => {
   const dispatch = useDispatch();
-  const { loading, error, prices, count } = useSelector(selectReferencePrices);
+  const { loading, error, prices, count, pagination } = useSelector(selectReferencePrices);
   const [filters, setFilters] = useState({
     category: '',
     admin1: '',
     admin2: '',
     commodity: ''
   });
+  const [searchTerm, setSearchTerm] = useState('');
+  const [page, setPage] = useState(1);
+  const pageSize = 10;
+
+  // Fetch prices when filters, search, or page changes
+  useEffect(() => {
+    const params = {
+      ...filters,
+      commodity: searchTerm || filters.commodity,
+      page,
+      page_size: pageSize
+    };
+    dispatch(fetchReferencePrices(params));
+  }, [dispatch, filters, searchTerm, page]);
 
   const handleFilterChange = (key, value) => {
-    const newFilters = { ...filters, [key]: value };
-    setFilters(newFilters);
-    dispatch(setFilters(newFilters));
-    dispatch(fetchReferencePrices(newFilters));
+    setFilters((prev) => ({ ...prev, [key]: value }));
+    setPage(1); // Reset to first page on filter change
   };
 
   const handleClearFilters = () => {
-    setFilters({
-      category: '',
-      admin1: '',
-      admin2: '',
-      commodity: ''
-    });
-    dispatch(clearFilters());
-    dispatch(fetchReferencePrices());
+    setFilters({ category: '', admin1: '', admin2: '', commodity: '' });
+    setSearchTerm('');
+    setPage(1);
   };
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    setPage(1);
+    setFilters((prev) => ({ ...prev, commodity: searchTerm }));
+  };
+
+  // Pagination logic
+  const total = count || (pagination && pagination.total) || 0;
+  const totalPages = Math.ceil(total / pageSize);
 
   return (
     <div className="space-y-6">
-      {/* Filters */}
+      {/* Filters & Search */}
       <div className="bg-white rounded-lg shadow-sm border p-6">
         <h3 className="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
           <Filter className="h-5 w-5 text-blue-600" />
-          Filter Prices
+          Filter & Search Prices
         </h3>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <form className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end" onSubmit={handleSearch}>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
             <select 
@@ -371,7 +388,6 @@ const ManageSection = () => {
               <option value="fruits">Fruits</option>
             </select>
           </div>
-          
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Province</label>
             <select 
@@ -387,7 +403,6 @@ const ManageSection = () => {
               <option value="Southern Province">Southern Province</option>
             </select>
           </div>
-          
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">District</label>
             <select 
@@ -401,19 +416,25 @@ const ManageSection = () => {
               <option value="Nyarugenge">Nyarugenge</option>
             </select>
           </div>
-          
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Commodity</label>
-            <input
-              type="text"
-              placeholder="Search by commodity..."
-              value={filters.commodity}
-              onChange={(e) => handleFilterChange('commodity', e.target.value)}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+          <div className="col-span-2">
+            <label className="block text-sm font-medium text-gray-700 mb-1">Commodity Search</label>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                placeholder="Search by commodity..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <button
+                type="submit"
+                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md"
+              >
+                <Search className="h-4 w-4" />
+              </button>
+            </div>
           </div>
-        </div>
-        
+        </form>
         <div className="mt-4 flex gap-2">
           <button 
             className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md"
@@ -457,60 +478,92 @@ const ManageSection = () => {
               <p className="text-red-600">{error}</p>
             </div>
           ) : (
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Commodity</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {prices && prices.length > 0 ? (
-                  prices.map((price, index) => (
-                    <tr key={price.id || index} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {price.commodity}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {price.category}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center">
-                          <span className="text-sm font-medium text-gray-900">{price.price}</span>
-                          <span className="text-sm text-gray-500 ml-1">{price.currency}</span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {price.admin1}, {price.admin2}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {price.pricetype}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <div className="flex gap-2">
-                          <button className="text-blue-600 hover:text-blue-900">
-                            <Edit className="h-4 w-4" />
-                          </button>
-                          <button className="text-red-600 hover:text-red-900">
-                            <Trash2 className="h-4 w-4" />
-                          </button>
-                        </div>
+            <>
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Commodity</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {prices && prices.length > 0 ? (
+                    prices.map((price, index) => (
+                      <tr key={price.id || index} className="hover:bg-gray-50">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                          {price.commodity}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {price.category}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <span className="text-sm font-medium text-gray-900">{price.price}</span>
+                            <span className="text-sm text-gray-500 ml-1">{price.currency}</span>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {price.admin1}, {price.admin2}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {price.pricetype}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          <div className="flex gap-2">
+                            <button className="text-blue-600 hover:text-blue-900">
+                              <Edit className="h-4 w-4" />
+                            </button>
+                            <button className="text-red-600 hover:text-red-900">
+                              <Trash2 className="h-4 w-4" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="6" className="px-6 py-8 text-center text-gray-500">
+                        No prices found. Try adjusting your filters.
                       </td>
                     </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="6" className="px-6 py-8 text-center text-gray-500">
-                      No prices found. Try adjusting your filters.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+                  )}
+                </tbody>
+              </table>
+              {/* Pagination Controls */}
+              {totalPages > 1 && (
+                <div className="flex justify-between items-center p-4 border-t bg-gray-50">
+                  <button
+                    className="px-3 py-1 rounded bg-gray-200 text-gray-700 disabled:opacity-50"
+                    onClick={() => setPage((p) => Math.max(1, p - 1))}
+                    disabled={page === 1}
+                  >
+                    Previous
+                  </button>
+                  <div className="flex gap-2 items-center">
+                    {Array.from({ length: totalPages }, (_, i) => (
+                      <button
+                        key={i + 1}
+                        className={`px-3 py-1 rounded ${page === i + 1 ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'}`}
+                        onClick={() => setPage(i + 1)}
+                      >
+                        {i + 1}
+                      </button>
+                    ))}
+                  </div>
+                  <button
+                    className="px-3 py-1 rounded bg-gray-200 text-gray-700 disabled:opacity-50"
+                    onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                    disabled={page === totalPages}
+                  >
+                    Next
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>

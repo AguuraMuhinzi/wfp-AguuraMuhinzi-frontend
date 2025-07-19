@@ -211,9 +211,13 @@ const priceUploadSlice = createSlice({
       })
       .addCase(fetchReferencePrices.fulfilled, (state, action) => {
         state.pricesLoading = false;
-        state.referencePrices = action.payload.results || action.payload;
-        state.pricesCount = action.payload.count || action.payload.length || 0;
-        state.pagination.total = action.payload.count || action.payload.length || 0;
+        // state.referencePrices = action.payload.results || action.payload;
+        state.referencePrices = action.payload.prices || action.payload;
+        state.pricesCount = action.payload.total_count || action.payload.prices?.length || action.payload.length || 0;
+        state.pagination.total = action.payload.total_count || action.payload.prices?.length || action.payload.length || 0;
+
+        // state.pricesCount = action.payload.count || action.payload.length || 0;
+        // state.pagination.total = action.payload.count || action.payload.length || 0;
         state.pricesError = null;
       })
       .addCase(fetchReferencePrices.rejected, (state, action) => {
