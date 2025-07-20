@@ -29,6 +29,7 @@ import AcadAnalytics from './pages/academy/acad_analytics';
 import AdminDashboard from './pages/admin/admin_dashboard';
 import AdminPriceUploadPage from './pages/admin/admin_price';
 import AdminOverview from './pages/admin/admin_overview';
+import AdminUsers from './pages/admin/admin_users';
 function App() {
     return (
         <Router>
@@ -77,7 +78,7 @@ function App() {
                       <Route path="/admin-dashboard" element={<AdminDashboard />}>
                         <Route path="price" element={<AdminPriceUploadPage />} />
                         <Route index element={<AdminOverview />} />
-                    
+                        <Route path="users" element={<AdminUsers />} />
                       </Route>
                     {/* Fallback route */}
                     <Route path="*" element={<Login />} />

@@ -44,8 +44,8 @@ const menuItems = [
   {
     title: "User Management",
     icon: UserCog,
-    href: "/admin/users",
-    badge: "156",
+    href: "/admin-dashboard/users",
+    badge: null,
     description: "System users & permissions",
   },
   {
