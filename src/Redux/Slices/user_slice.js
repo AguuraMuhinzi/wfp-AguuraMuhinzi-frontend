@@ -1,156 +1,9 @@
-// import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-// import axios from 'axios';
 
-// const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
-
-// export const signupUser = createAsyncThunk(
-//   'user/signupUser',
-//   async (userData, { dispatch, rejectWithValue }) => {
-//     try {
-//       const response = await axios.post(`${API_BASE_URL}/api/register/`, userData);
-//       dispatch(sendOtp({ email: userData.email }));
-//       return { ...response.data, email: userData.email };
-//     } catch (error) {
-//       if (error.response && error.response.data) {
-//         return rejectWithValue(error.response.data);
-//       }
-//       return rejectWithValue({ message: 'Something went wrong. Please try again.' });
-//     }
-//   }
-// );
-
-// export const sendOtp = createAsyncThunk(
-//   'user/sendOtp',
-//   async ({ email }, { rejectWithValue }) => {
-//     try {
-//       const response = await axios.post(`${API_BASE_URL}/api/send-verification-email/`, { email });
-//       return response.data;
-//     } catch (error) {
-//       if (error.response && error.response.data) {
-//         return rejectWithValue(error.response.data);
-//       }
-//       return rejectWithValue({ message: 'Failed to send verification email.' });
-//     }
-//   }
-// );
-
-// export const verifyOtp = createAsyncThunk(
-//   'user/verifyOtp',
-//   async ({ email, code }, { rejectWithValue }) => {
-//     try {
-//       const response = await axios.post(`${API_BASE_URL}/api/verify-email/`, { email, code });
-//       return response.data;
-//     } catch (error) {
-//       if (error.response && error.response.data) {
-//         return rejectWithValue(error.response.data);
-//       }
-//       return rejectWithValue({ message: 'Failed to verify OTP.' });
-//     }
-//   }
-// );
-
-// export const login = createAsyncThunk(
-//   'user/login',
-//   async ({ email, password }, { rejectWithValue }) => {
-//     try {
-//       const response = await axios.post(`${API_BASE_URL}/api/login-user/`, { email, password });
-//       return response.data;
-//     } catch (error) {
-//       if (error.response && error.response.data) {
-//         return rejectWithValue(error.response.data);
-//       }
-//       return rejectWithValue({ message: 'Failed to login.' });
-//     }
-//   }
-// );
-
-// const userSlice = createSlice({
-//   name: 'user',
-//   initialState: {
-//     isLoading: false,
-//     isRegistered: false,
-//     error: null,
-//     otpSent: false,
-//     successMessage: '',
-//     isAuthenticated: false,
-//     email: null,
-//     userInfo: null,
-//     role: null,
-//     user: null,
-//     accessToken: null,
-//     refreshToken: null,
-//   },
-//   reducers: {
-//     // clearSuccessMessage: (state) => {
-//       state.successMessage = '';
-//     },
-//     logout: (state) => {
-//       state.isAuthenticated = false;
-//       state.userInfo = null;
-//       state.email = null;
-//       localStorage.removeItem('userInfo');
-//     },
-//   },
-//   extraReducers: (builder) => {
-//     builder
-//       .addCase(signupUser.pending, (state) => {
-//         state.isLoading = true;
-//         state.error = null;
-//       })
-//       .addCase(signupUser.fulfilled, (state, action) => {
-//         state.isLoading = false;
-//         state.isRegistered = true;
-//         state.email = action.payload.email;
-//       })
-//       .addCase(signupUser.rejected, (state, action) => {
-//         state.isLoading = false;
-//         state.error = action.payload;
-//       })
-//       .addCase(sendOtp.fulfilled, (state, action) => {
-//         state.otpSent = true;
-//         state.successMessage = action.payload.message;
-//       })
-//       .addCase(sendOtp.rejected, (state, action) => {
-//         state.error = action.payload;
-//       })
-//       .addCase(verifyOtp.pending, (state) => {
-//         state.isLoading = true;
-//         state.error = null;
-//       })
-//       .addCase(verifyOtp.fulfilled, (state) => {
-//         state.isLoading = false;
-//         state.isVerified = true;
-//         state.successMessage = "OTP verified successfully!";
-//       })
-//       .addCase(verifyOtp.rejected, (state, action) => {
-//         state.isLoading = false;
-//         state.error = action.payload;
-//       })
-//       .addCase(login.pending, (state) => {
-//         state.isLoading = true;
-//         state.error = null;
-//       })
-//       .addCase(login.fulfilled, (state, action) => {
-//         state.isLoading = false;
-//         state.isAuthenticated = true;
-//         state.userInfo = action.payload;
-//         state.role = action.payload.role;
-//         localStorage.setItem('userInfo', JSON.stringify(action.payload));
-//       })
-//       .addCase(login.rejected, (state, action) => {
-//         state.isLoading = false;
-//         state.isAuthenticated = false;
-//         state.error = action.payload;
-//       });
-//   },
-// });
-
-// export const { clearSuccessMessage, logout } = userSlice.actions;
-// export default userSlice.reducer;
 
 
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import axiosInstance from '../axioInstance';
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
@@ -243,6 +96,20 @@ export const login = createAsyncThunk(
       }
     }
   );
+
+// Fetch all users
+export const fetchAllUsers = createAsyncThunk(
+  'users/fetchAll',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.get('users/');
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.error || 'Failed to fetch users');
+    }
+  }
+);
+
 const userSlice = createSlice({
   name: 'user',
   initialState: {
@@ -259,6 +126,10 @@ const userSlice = createSlice({
     userId: null,
     accessToken: null,
     refreshToken: null,
+    // New for admin
+    allUsers: [],
+    allUsersLoading: false,
+    allUsersError: null,
   },
   reducers: {
     clearSuccessMessage: (state) => {
@@ -360,6 +231,20 @@ const userSlice = createSlice({
       .addCase(getUserById.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload;
+      })
+
+      // Fetch all users
+      .addCase(fetchAllUsers.pending, (state) => {
+        state.allUsersLoading = true;
+        state.allUsersError = null;
+      })
+      .addCase(fetchAllUsers.fulfilled, (state, action) => {
+        state.allUsersLoading = false;
+        state.allUsers = action.payload;
+      })
+      .addCase(fetchAllUsers.rejected, (state, action) => {
+        state.allUsersLoading = false;
+        state.allUsersError = action.payload;
       });
   },
 });

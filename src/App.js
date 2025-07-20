@@ -28,6 +28,7 @@ import CopAnalytics from './pages/cooperative/cop_analytics';
 import AcadAnalytics from './pages/academy/acad_analytics';
 import AdminDashboard from './pages/admin/admin_dashboard';
 import AdminPriceUploadPage from './pages/admin/admin_price';
+import AdminOverview from './pages/admin/admin_overview';
 function App() {
     return (
         <Router>
@@ -75,6 +76,8 @@ function App() {
                       </Route>
                       <Route path="/admin-dashboard" element={<AdminDashboard />}>
                         <Route path="price" element={<AdminPriceUploadPage />} />
+                        <Route index element={<AdminOverview />} />
+                    
                       </Route>
                     {/* Fallback route */}
                     <Route path="*" element={<Login />} />

@@ -20,6 +20,13 @@ import {
 } from "lucide-react";
 
 const menuItems = [
+    {
+        title: "Overview",
+        icon: Building2,
+        href: "/admin/overview",
+        badge: "24",
+        description: "Manage agricultural cooperatives",
+      },
   {
     title: "Cooperatives",
     icon: Building2,
