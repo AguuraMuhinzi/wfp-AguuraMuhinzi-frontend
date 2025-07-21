@@ -30,6 +30,9 @@ import AdminDashboard from './pages/admin/admin_dashboard';
 import AdminPriceUploadPage from './pages/admin/admin_price';
 import AdminOverview from './pages/admin/admin_overview';
 import AdminUsers from './pages/admin/admin_users';
+import AdminAnalytics from './pages/admin/admin_analytics';
+import AdminProgramReachReport from './pages/admin/admin_program_reach_report';
+import AcademyFinancialReport from './pages/admin/academy_financial_report';
 function App() {
     return (
         <Router>
@@ -79,6 +82,9 @@ function App() {
                         <Route path="price" element={<AdminPriceUploadPage />} />
                         <Route index element={<AdminOverview />} />
                         <Route path="users" element={<AdminUsers />} />
+                        <Route path="program-reach-report" element={<AdminProgramReachReport />} />
+                        <Route path="academy-financial-report" element={<AcademyFinancialReport />} />
+                        <Route path="analytics" element={<AdminAnalytics />}/>
                       </Route>
                     {/* Fallback route */}
                     <Route path="*" element={<Login />} />

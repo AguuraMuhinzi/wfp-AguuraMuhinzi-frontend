@@ -1,14 +1,14 @@
 import React from "react";
 import { Link, useLocation, Outlet } from "react-router-dom";
-import { 
-  GraduationCap, 
-  FileBarChart, 
-  UserCog, 
-  Globe, 
-  Bell, 
-  Search, 
-  Settings, 
-  Shield, 
+import {
+  GraduationCap,
+  FileBarChart,
+  UserCog,
+  Globe,
+  Bell,
+  Search,
+  Settings,
+  Shield,
   Building2,
   Users,
   BarChart3,
@@ -56,9 +56,9 @@ const menuItems = [
     description: "Upload and manage reference prices",
   },
   {
-    title: "Reports",
+    title: "Analytics",
     icon: FileBarChart,
-    href: "/admin/reports",
+    href: "/admin-dashboard/analytics",
     badge: null,
     description: "Analytics & reporting",
   },
@@ -90,7 +90,7 @@ const Button = ({ children, variant = "default", className = "", ...props }) => 
     ghost: "hover:bg-gray-100 hover:text-gray-900",
     outline: "border border-gray-300 bg-white hover:bg-gray-50"
   };
-  
+
   return (
     <button className={`${baseClasses} ${variantClasses[variant]} ${className}`} {...props}>
       {children}
@@ -163,29 +163,29 @@ function AppSidebar() {
 
   return (
     <div className="w-64 bg-white border-r border-gray-200 h-screen flex flex-col">
-      <div className="border-b border-gray-200 p-6">
-        <div className="flex items-center gap-3">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 shadow-lg">
-            <Globe className="h-6 w-6 text-white" />
-          </div>
-          <div>
-            <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent">
-              WFP Admin Portal
-            </h1>
-            <p className="text-xs text-gray-500">World Food Programme</p>
+        <div className="border-b border-gray-200 p-6">
+            <div className="flex items-center gap-3">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 shadow-lg">
+                <Globe className="h-6 w-6 text-white" />
+              </div>
+              <div>
+                <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent">
+                  WFP Admin Portal
+                </h1>
+                <p className="text-xs text-gray-500">World Food Programme</p>
+              </div>
           </div>
         </div>
-      </div>
 
       <div className="flex-1 px-4 py-6">
         <div className="space-y-2">
           {menuItems.map((item) => (
-            <Link
-              key={item.href}
+                <Link
+                  key={item.href}
               to={item.href}
               className={`flex items-center gap-3 h-14 px-4 rounded-lg transition-colors ${
                 location.pathname.startsWith(item.href)
-                  ? "bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-md"
+                        ? "bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-md"
                   : "hover:bg-blue-50 hover:text-blue-700"
               }`}
             >
@@ -193,29 +193,29 @@ function AppSidebar() {
               <div className="flex flex-col items-start">
                 <span className="font-medium">{item.title}</span>
                 <span className="text-xs opacity-70">{item.description}</span>
-              </div>
-              {item.badge && (
+                  </div>
+                  {item.badge && (
                 <Badge
                   variant="secondary"
                   className="ml-auto h-5 w-5 rounded-full p-0 text-xs"
-                >
-                  {item.badge}
+                    >
+                      {item.badge}
                 </Badge>
-              )}
-            </Link>
+                  )}
+                </Link>
           ))}
         </div>
 
-        <div className="mt-8">
-          <Link
+          <div className="mt-8">
+            <Link
             to="/admin/settings"
             className="flex items-center gap-3 h-12 px-4 rounded-lg hover:bg-gray-50 transition-colors"
-          >
-            <Settings className="h-5 w-5" />
-            <span className="font-medium">System Settings</span>
-          </Link>
+            >
+              <Settings className="h-5 w-5" />
+              <span className="font-medium">System Settings</span>
+            </Link>
+          </div>
         </div>
-      </div>
       {/* Removed admin account/profile/notification/signout dropdown/footer */}
     </div>
   );
@@ -233,12 +233,12 @@ const StatCard = ({ title, value, icon: Icon, trend, color = "blue" }) => (
             {trend > 0 ? '+' : ''}{trend}% from last month
           </p>
         )}
-      </div>
+              </div>
       <div className={`p-3 rounded-full bg-${color}-100`}>
         <Icon className={`h-6 w-6 text-${color}-600`} />
-      </div>
-    </div>
-  </div>
+                </div>
+              </div>
+                </div>
 );
 
 // Recent Activity Component
@@ -264,8 +264,8 @@ const RecentActivity = () => (
           </div>
         </div>
       ))}
-    </div>
-  </div>
+        </div>
+      </div>
 );
 
 export default function AdminDashboard() {
@@ -274,9 +274,9 @@ export default function AdminDashboard() {
   return (
     <div className="flex h-screen bg-gray-50">
       <AppSidebar />
-      
+
       <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Header */}
+          {/* Header */}
         <header className="bg-white border-b border-gray-200 px-6 py-4">
           <div className="flex items-center justify-between">
             <div>
@@ -298,12 +298,12 @@ export default function AdminDashboard() {
           </div>
         </header>
 
-        {/* Main Content */}
+          {/* Main Content */}
         <main className="flex-1 overflow-y-auto p-6">
           {/* Dashboard content here */}
           <Outlet />
-        </main>
+          </main>
+        </div>
       </div>
-    </div>
   );
 }
