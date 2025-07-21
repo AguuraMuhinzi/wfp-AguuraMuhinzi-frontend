@@ -25,35 +25,22 @@ const menuItems = [
         icon: Building2,
         href: "/admin/overview",
         badge: "24",
-        description: "Manage agricultural cooperatives",
+        // description: "Manage agricultural cooperatives",
       },
-  {
-    title: "Cooperatives",
-    icon: Building2,
-    href: "/admin/cooperatives",
-    badge: "24",
-    description: "Manage agricultural cooperatives",
-  },
-  {
-    title: "Academy",
-    icon: GraduationCap,
-    href: "/admin/academy",
-    badge: "12",
-    description: "Educational content & training",
-  },
+  // Removed Cooperatives and Academy menu items
   {
     title: "User Management",
     icon: UserCog,
     href: "/admin-dashboard/users",
     badge: null,
-    description: "System users & permissions",
+    // description: "System users & permissions",
   },
   {
     title: "Price Management",
     icon: Package,
     href: "/admin-dashboard/price",
     badge: null,
-    description: "Upload and manage reference prices",
+    // description: "Upload and manage reference prices",
   },
   {
     title: "Analytics",
@@ -161,62 +148,66 @@ const DropdownMenuSeparator = () => <div className="border-t border-gray-200 my-
 function AppSidebar() {
   const location = useLocation();
 
+  // Logout handler
+  const handleLogout = () => {
+    localStorage.clear();
+    window.location.href = '/login';
+  };
+
   return (
     <div className="w-64 bg-white border-r border-gray-200 h-screen flex flex-col">
-        <div className="border-b border-gray-200 p-6">
-            <div className="flex items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 shadow-lg">
-                <Globe className="h-6 w-6 text-white" />
-              </div>
-              <div>
-                <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent">
-                  WFP Admin Portal
-                </h1>
-                <p className="text-xs text-gray-500">World Food Programme</p>
-              </div>
+      <div className="border-b border-gray-200 p-6">
+        <div className="flex items-center gap-3">
+          <img
+            src={process.env.PUBLIC_URL + '/imgs/plant.png'}
+            alt="Leaf Icon"
+            className="w-8 h-8 text-green-500"
+          />
+          <div>
+            <h1 className="text-xl font-bold text-green-600 flex items-center space-x-1">
+              AguuraMuhinzi
+            </h1>
+            <p className="text-xs text-gray-500">World Food Programme</p>
           </div>
         </div>
-
-      <div className="flex-1 px-4 py-6">
+      </div>
+      <div className="flex-1 px-4 py-6 flex flex-col justify-between">
         <div className="space-y-2">
           {menuItems.map((item) => (
-                <Link
-                  key={item.href}
+            <Link
+              key={item.href}
               to={item.href}
               className={`flex items-center gap-3 h-14 px-4 rounded-lg transition-colors ${
                 location.pathname.startsWith(item.href)
-                        ? "bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-md"
-                  : "hover:bg-blue-50 hover:text-blue-700"
+                  ? 'bg-green-600 text-white shadow-md'
+                  : 'hover:bg-green-50 hover:text-green-700'
               }`}
             >
               <item.icon className="h-5 w-5" />
               <div className="flex flex-col items-start">
                 <span className="font-medium">{item.title}</span>
                 <span className="text-xs opacity-70">{item.description}</span>
-                  </div>
-                  {item.badge && (
+              </div>
+              {item.badge && (
                 <Badge
                   variant="secondary"
                   className="ml-auto h-5 w-5 rounded-full p-0 text-xs"
-                    >
-                      {item.badge}
+                >
+                  {item.badge}
                 </Badge>
-                  )}
-                </Link>
+              )}
+            </Link>
           ))}
         </div>
-
-          <div className="mt-8">
-            <Link
-            to="/admin/settings"
-            className="flex items-center gap-3 h-12 px-4 rounded-lg hover:bg-gray-50 transition-colors"
-            >
-              <Settings className="h-5 w-5" />
-              <span className="font-medium">System Settings</span>
-            </Link>
-          </div>
+        <div className="mb-4">
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition-colors"
+          >
+            Logout
+          </button>
         </div>
-      {/* Removed admin account/profile/notification/signout dropdown/footer */}
+      </div>
     </div>
   );
 }
@@ -271,6 +262,9 @@ const RecentActivity = () => (
 export default function AdminDashboard() {
   const location = useLocation();
 
+  // Get admin username from localStorage
+  const username = localStorage.getItem('username') || 'Admin';
+
   return (
     <div className="flex h-screen bg-gray-50">
       <AppSidebar />
@@ -281,7 +275,7 @@ export default function AdminDashboard() {
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-2xl font-bold text-gray-900">Admin Dashboard</h2>
-              <p className="text-sm text-gray-600">Welcome back, System Administrator</p>
+              <p className="text-sm text-gray-600">Welcome back, {username}</p>
             </div>
             <div className="flex items-center gap-4">
               <div className="relative">
@@ -307,3 +301,4 @@ export default function AdminDashboard() {
       </div>
   );
 }
+  
