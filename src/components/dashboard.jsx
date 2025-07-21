@@ -433,7 +433,7 @@ const DashboardLayout = () => {
               <span>AguuraMuhinzi</span>
             </h1>
           </div>
-          <div className="h-full overflow-y-auto p-3 mt-8">
+          <div className="h-full overflow-y-auto p-3 mt-8 flex flex-col">
             <nav className="space-y-1">
               <SidebarItem name="Dashboard" icon={<FiHome />} path="/dashboard/overview" />
               <SidebarItem name="Stock" icon={<FiBox />} path="/dashboard/stock" />
@@ -441,8 +441,17 @@ const DashboardLayout = () => {
               <SidebarItem name="Analytics" icon={<FiBarChart2 />} path="/dashboard/analytics" />
               <SidebarItem name="Price Trends" icon={<FiTrendingUp />} path="/dashboard/trends" />
               <SidebarItem name="Profile" icon={<FiUser />} path="/dashboard/coopProfile" />
-              <SidebarItem name="Chat" icon={<FiMessageCircle />} path="/dashboard/plan" />
+              {/* <SidebarItem name="Chat" icon={<FiMessageCircle />} path="/dashboard/plan" /> */}
             </nav>
+            <div className="flex-1" />
+            <div className="mb-4">
+              <button
+                onClick={() => { localStorage.clear(); window.location.href = '/login'; }}
+                className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition-colors"
+              >
+                Logout
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -464,7 +473,7 @@ const DashboardLayout = () => {
             </svg>
           </div>
           <div className="flex items-center space-x-4">
-            <Link to="/overview" className="text-gray-500 dark:text-white hover:text-green-600">
+            <Link to="/home" className="text-gray-500 dark:text-white hover:text-green-600">
               <FiHome className="w-6 h-6" />
             </Link>
             <button className="text-gray-500 dark:text-white hover:text-green-600">
