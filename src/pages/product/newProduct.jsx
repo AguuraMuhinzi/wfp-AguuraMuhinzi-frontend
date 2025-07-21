@@ -287,7 +287,15 @@ const InsertProductForm = ({ onClose }) => {
     stock: "",
     harvest_date: "",
     image: null,
-  })
+    unit: '',
+  });
+
+  // Unit options based on category
+  const unitOptions = useMemo(() => {
+    if (formData.category.toLowerCase().includes('oil')) return ['Liters', 'Milliliters'];
+    if (formData.category.toLowerCase().includes('grain') || formData.category.toLowerCase().includes('vegetable') || formData.category.toLowerCase().includes('fruit')) return ['Kilograms', 'Grams'];
+    return ['Units', 'Kilograms', 'Liters'];
+  }, [formData.category]);
 
   const productNames = useMemo(() => {
     if (!formData.category) return []
@@ -312,10 +320,10 @@ const InsertProductForm = ({ onClose }) => {
 
     // Reset dependent fields
     if (name === "category") {
-      setFormData((prev) => ({ ...prev, product_name: "", price: "" }))
+      setFormData((prev) => ({ ...prev, product_name: "", price: "", unit: "" }))
     }
     if (name === "product_name") {
-      setFormData((prev) => ({ ...prev, price: "" }))
+      setFormData((prev) => ({ ...prev, price: "", unit: "" }))
     }
   }
 
@@ -346,6 +354,7 @@ const InsertProductForm = ({ onClose }) => {
             stock: "",
             harvest_date: "",
             image: null,
+            unit: '',
           })
           dispatch(listProducts())
           onClose()
@@ -458,6 +467,18 @@ const InsertProductForm = ({ onClose }) => {
             }))}
             placeholder="Select a reference price"
             disabled={!formData.category || !formData.product_name}
+            required
+          />
+        </FormField>
+
+        <FormField icon={FaLeaf} label="Unit" required>
+          <SelectField
+            name="unit"
+            value={formData.unit}
+            onChange={handleChange}
+            options={unitOptions}
+            placeholder="Select a unit"
+            disabled={!formData.category}
             required
           />
         </FormField>

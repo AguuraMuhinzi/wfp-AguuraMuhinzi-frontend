@@ -285,7 +285,7 @@
 "use client"
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { listProducts, updateProduct } from "../../Redux/Slices/product/product"
+import { listProducts, updateProduct, deleteProduct } from "../../Redux/Slices/product/product"
 import { FiEdit, FiTrash2, FiEye, FiPackage, FiCalendar, FiDollarSign } from "react-icons/fi"
 import { FaTimes } from "react-icons/fa"
 
@@ -361,6 +361,15 @@ const ProductTable = () => {
   const handleDisplayCountChange = (e) => {
     setDisplayCount(Number.parseInt(e.target.value, 10))
   }
+
+  // Add delete handler
+  const handleDelete = (productId) => {
+    if (window.confirm('Are you sure you want to delete this product?')) {
+      dispatch(deleteProduct(productId)).then(() => {
+        dispatch(listProducts());
+      });
+    }
+  };
 
   const getStockStatus = (stock) => {
     if (stock < 10) return { color: "text-red-600 bg-red-50", label: "Low Stock" }
@@ -461,6 +470,7 @@ const ProductTable = () => {
                             <FiEdit size={18} />
                           </button>
                           <button
+                            onClick={() => handleDelete(product.id)}
                             className="p-2 text-red-600 hover:bg-red-100 rounded-lg transition-colors duration-200"
                             title="Delete Product"
                           >

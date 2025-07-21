@@ -99,8 +99,10 @@ const CopAnalytics = () => {
   const products = useSelector((state) => state.product.products || [])
   const productsLoading = useSelector((state) => state.product.loading)
   const orders = useSelector((state) => state.order.orders || [])
-  const priceTrends = useSelector((state) => state.commodityTrend.predictions || [])
   const userId = useSelector((state) => state.user.userId) || localStorage.getItem("user_id")
+  // Filter orders for the logged-in cooperative
+  const coopOrders = orders.filter(o => o.cooperative && String(o.cooperative.id || o.cooperative) === String(userId));
+  const priceTrends = useSelector((state) => state.commodityTrend.predictions || [])
   const userReports = useSelector((state) => state.reports.userReports || [])
   const reportsLoading = useSelector((state) => state.reports.loading)
   const reportsError = useSelector((state) => state.reports.error)
@@ -149,13 +151,13 @@ const CopAnalytics = () => {
 
   // Top cards
   const totalStock = userProducts.reduce((sum, p) => sum + (p.quantity || 0), 0)
-  const totalOrders = orders.length
-  const avgOrderValue = totalOrders ? orders.reduce((sum, o) => sum + (o.total || 0), 0) / totalOrders : 0
-  const fulfilledOrders = orders.filter((o) => o.status === "delivered" || o.status === "completed").length
+  const totalOrders = coopOrders.length
+  const avgOrderValue = totalOrders ? coopOrders.reduce((sum, o) => sum + (o.total || 0), 0) / totalOrders : 0
+  const fulfilledOrders = coopOrders.filter((o) => o.status === "delivered" || o.status === "completed").length
   const fulfillmentRate = totalOrders ? ((fulfilledOrders / totalOrders) * 100).toFixed(1) : 0
 
   // Order status breakdown for pie chart
-  const statusCounts = orders.reduce((acc, o) => {
+  const statusCounts = coopOrders.reduce((acc, o) => {
     acc[o.status] = (acc[o.status] || 0) + 1
     return acc
   }, {})
@@ -168,7 +170,7 @@ const CopAnalytics = () => {
   }))
 
   // Recent orders (latest 10)
-  const recentOrders = [...orders].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 10)
+  const recentOrders = [...coopOrders].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 10)
 
   // Export handlers
   const handleExport = (section) => {

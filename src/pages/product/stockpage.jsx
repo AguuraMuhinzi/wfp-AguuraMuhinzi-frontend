@@ -232,6 +232,9 @@ const StatCard = ({ icon: Icon, label, value, color = "emerald" }) => {
 const StockPage = () => {
   const [isModalVisible, setModalVisible] = useState(false)
   const products = useSelector((state) => state.product.products || [])
+  const userId = useSelector((state) => state.user.userId) || localStorage.getItem("user_id")
+  // Filter products for the logged-in user
+  const userProducts = products.filter((product) => String(product.user) === String(userId))
 
   const handleAddProductClick = () => {
     setModalVisible(true)
@@ -242,13 +245,13 @@ const StockPage = () => {
   }
 
   // Calculate metrics
-  const totalProducts = products.length
-  const totalStockValue = products.reduce(
+  const totalProducts = userProducts.length
+  const totalStockValue = userProducts.reduce(
     (total, product) => total + (product.price || 0) * (product.stock || product.quantity || 0),
     0,
   )
   const estimatedProfitMargin = totalStockValue * 0.2
-  const lowStockItems = products.filter((p) => (p.stock || p.quantity || 0) < 10).length
+  const lowStockItems = userProducts.filter((p) => (p.stock || p.quantity || 0) < 10).length
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-green-50 p-6">
@@ -289,22 +292,7 @@ const StockPage = () => {
         </div>
 
         {/* Product Showcase Cards */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <ProductCard
-            productName="Fresh Apples"
-            icon={FaLeaf}
-            quantity="150 kg"
-            description="High-quality fresh apples harvested from our local farm. Perfect for school nutrition programs."
-            trend={12}
-          />
-          <ProductCard
-            productName="Organic Carrots"
-            icon={FaSeedling}
-            quantity="200 kg"
-            description="Organic carrots grown sustainably for school supply. Rich in vitamins and minerals."
-            trend={8}
-          />
-        </div>
+        {/* Removed mock ProductCard components */}
 
         {/* Financial Insights */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

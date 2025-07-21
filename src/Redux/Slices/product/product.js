@@ -80,6 +80,19 @@ export const replenishStock = createAsyncThunk(
     }
 );
 
+// Add deleteProduct async thunk
+export const deleteProduct = createAsyncThunk(
+  'products/deleteProduct',
+  async (productId, { rejectWithValue }) => {
+    try {
+      await axiosInstance.delete(`/products/${productId}/delete/`);
+      return productId;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || 'Failed to delete product');
+    }
+  }
+);
+
 // Product slice
 const productSlice = createSlice({
     name: 'product',
@@ -154,6 +167,18 @@ const productSlice = createSlice({
                 }
             })
             .addCase(replenishStock.rejected, (state, action) => {
+                state.status = 'failed';
+                state.error = action.payload;
+            })
+            // Delete Product
+            .addCase(deleteProduct.pending, (state) => {
+                state.status = 'loading';
+            })
+            .addCase(deleteProduct.fulfilled, (state, action) => {
+                state.status = 'succeeded';
+                state.products = state.products.filter(product => product.id !== action.payload);
+            })
+            .addCase(deleteProduct.rejected, (state, action) => {
                 state.status = 'failed';
                 state.error = action.payload;
             });

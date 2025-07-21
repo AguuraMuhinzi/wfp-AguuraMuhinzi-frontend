@@ -428,16 +428,19 @@ import {
 } from 'react-icons/fi';
 import { getUserById } from '../../Redux/Slices/user_slice';
 import { getAcademyDetails } from '../../Redux/Slices/academy/academy_details';
+import { fetchOrders } from '../../Redux/Slices/order/orderSlice';
 const AcademyDashboard = () => {
   const dispatch = useDispatch();
   // const { user } = useSelector((state) => state.auth || {});
   const { userInfo } = useSelector((state) => state.user);
   const user = useSelector((state) => state.user.userInfo);
   const { academyDetails, isLoading, error } = useSelector((state) => state.academy);
+  const orders = useSelector((state) => state.order.orders || []);
+  // Calculate totalOrders after user and orders are defined
+  const totalOrders = Array.isArray(orders) && user && user.id ? orders.filter(o => o.user && String(o.user.id) === String(user.id)).length : 0;
   const location = useLocation();
   const [stats, setStats] = useState({
-    totalCourses: 104,
-    totalStudents: 0,
+    totalOrders,
     activeClasses: 0,
     remainingClasses: 10,
   });
@@ -449,6 +452,7 @@ const AcademyDashboard = () => {
     if (userId) {
       dispatch(getUserById(userId));
       dispatch(getAcademyDetails(userId));
+      dispatch(fetchOrders());
     }
   }, [dispatch, userId]);
 
@@ -518,13 +522,17 @@ const AcademyDashboard = () => {
               </div>
 
               <div className="flex flex-col md:flex-row justify-end md:w-2/3 mt-6 md:mt-0">
-                <div className="bg-red-500 text-white rounded-lg p-4 text-center w-full md:w-56 md:mr-4">
-                  <div className="text-4xl font-bold">{stats.totalCourses}</div>
-                  <div>Total Courses</div>
+                <div className="bg-green-500 text-white rounded-lg p-4 text-center w-full md:w-56">
+                  <div className="text-4xl font-bold">{stats.totalOrders}</div>
+                  <div>Total Orders Made</div>
                 </div>
-                <div className="bg-green-500 text-white rounded-lg p-4 text-center w-full md:w-56 mt-4 md:mt-0">
-                  <div className="text-4xl font-bold">{stats.totalStudents}</div>
-                  <div>Total Students</div>
+                <div className="flex items-center justify-center mt-4 md:mt-0 md:ml-4">
+                  <Link
+                    to="/home"
+                    className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-lg text-lg shadow-lg transition-colors duration-200"
+                  >
+                    Order Now
+                  </Link>
                 </div>
               </div>
             </div>

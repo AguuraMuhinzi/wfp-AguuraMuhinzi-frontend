@@ -235,17 +235,21 @@ const OrderDashboard = () => {
   const orders = useSelector((state) => state.order.orders || [])
   const loading = useSelector((state) => state.order.loading)
   const error = useSelector((state) => state.order.error)
+  const userId = useSelector(state => state.user.userId) || localStorage.getItem("user_id");
+
+  // Filter orders for the logged-in user/cooperative
+  const filteredOrders = orders.filter(order => order.cooperative && String(order.cooperative.id || order.cooperative) === String(userId));
 
   useEffect(() => {
     dispatch(fetchOrders())
   }, [dispatch])
 
   // Calculate total orders
-  const totalOrders = orders.length
+  const totalOrders = filteredOrders.length
 
   // Calculate most ordered product
   const productCounts = {}
-  orders.forEach((order) => {
+  filteredOrders.forEach((order) => {
     if (Array.isArray(order.products)) {
       order.products.forEach((item) => {
         const name = item.product?.product_name || item.product || ""
@@ -259,7 +263,7 @@ const OrderDashboard = () => {
 
   // Calculate top ordering school (user with most orders)
   const schoolCounts = {}
-  orders.forEach((order) => {
+  filteredOrders.forEach((order) => {
     const school = order.user?.username || order.user?.academy_details?.name || order.user?.user || order.user || ""
     if (school) schoolCounts[school] = (schoolCounts[school] || 0) + 1
   })
@@ -268,7 +272,7 @@ const OrderDashboard = () => {
   const totalSchools = Object.keys(schoolCounts).length
 
   // Calculate pending orders
-  const pendingOrders = orders.filter((order) => order.status === "pending" || order.status === "processing").length
+  const pendingOrders = filteredOrders.filter((order) => order.status === "pending" || order.status === "processing").length
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-green-50 p-6">
