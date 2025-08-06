@@ -625,14 +625,14 @@ const AcademyProfilePage = () => {
                         <FiBuilding className="w-5 h-5" />
                         <span>{academyDetails.school_type} School</span>
                       </div>
-                      <div className="flex items-center space-x-2">
+                      {/* <div className="flex items-center space-x-2">
                         <FiUsers className="w-5 h-5" />
                         <span>{academyDetails.students || 500}+ Students</span>
-                      </div>
-                      <div className="flex items-center space-x-2">
+                      </div> */}
+                      {/* <div className="flex items-center space-x-2">
                         <FiCalendar className="w-5 h-5" />
                         <span>Est. {academyDetails.established || "2010"}</span>
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                 </div>
@@ -721,7 +721,7 @@ const AcademyProfilePage = () => {
                     <p className="text-gray-600">Key metrics and achievements</p>
                   </div>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                {/* <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                   <div className="text-center p-4 bg-gradient-to-br from-emerald-50 to-teal-50 rounded-lg border border-emerald-100">
                     <div className="text-3xl font-bold text-emerald-600 mb-2">{academyDetails.students || 500}+</div>
                     <div className="text-sm text-gray-600">Students</div>
@@ -738,7 +738,7 @@ const AcademyProfilePage = () => {
                     <div className="text-3xl font-bold text-orange-600 mb-2">{academyDetails.years || 14}+</div>
                     <div className="text-sm text-gray-600">Years</div>
                   </div>
-                </div>
+                </div> */}
               </div>
 
               {/* Edit Button */}

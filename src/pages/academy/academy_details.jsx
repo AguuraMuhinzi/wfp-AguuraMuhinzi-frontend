@@ -1176,39 +1176,7 @@ const AcademyProfile = () => {
                 </div>
               </div>
 
-              {/* Stats Section */}
-              <div className="p-6 bg-gradient-to-r from-gray-50 to-slate-50">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                  <div className="bg-white/70 backdrop-blur-sm rounded-lg p-4 border border-gray-100 text-center">
-                    <div className="w-10 h-10 bg-gradient-to-br from-emerald-600 to-emerald-700 rounded-lg flex items-center justify-center mx-auto mb-2">
-                      <FiUsers className="text-white h-5 w-5" />
-                    </div>
-                    <p className="text-lg font-bold text-gray-800">{formData.number_of_students || "N/A"}</p>
-                    <p className="text-sm text-gray-600">Students</p>
-                  </div>
-                  <div className="bg-white/70 backdrop-blur-sm rounded-lg p-4 border border-gray-100 text-center">
-                    <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-700 rounded-lg flex items-center justify-center mx-auto mb-2">
-                      <FiUserCheck className="text-white h-5 w-5" />
-                    </div>
-                    <p className="text-lg font-bold text-gray-800">{formData.number_of_staff || "N/A"}</p>
-                    <p className="text-sm text-gray-600">Staff</p>
-                  </div>
-                  <div className="bg-white/70 backdrop-blur-sm rounded-lg p-4 border border-gray-100 text-center">
-                    <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-purple-700 rounded-lg flex items-center justify-center mx-auto mb-2">
-                      <FiCalendar className="text-white h-5 w-5" />
-                    </div>
-                    <p className="text-lg font-bold text-gray-800">{formData.founded_year || "N/A"}</p>
-                    <p className="text-sm text-gray-600">Founded</p>
-                  </div>
-                  <div className="bg-white/70 backdrop-blur-sm rounded-lg p-4 border border-gray-100 text-center">
-                    <div className="w-10 h-10 bg-gradient-to-br from-orange-600 to-orange-700 rounded-lg flex items-center justify-center mx-auto mb-2">
-                      <FiAward className="text-white h-5 w-5" />
-                    </div>
-                    <p className="text-lg font-bold text-gray-800">Active</p>
-                    <p className="text-sm text-gray-600">Status</p>
-                  </div>
-                </div>
-              </div>
+            
             </div>
 
             {/* Information Cards */}

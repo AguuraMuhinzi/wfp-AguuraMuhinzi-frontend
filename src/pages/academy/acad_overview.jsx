@@ -185,13 +185,21 @@ const AcadOverview = () => {
     // Add export logic here
   }
 
-  const getOrderProductsSummary = (order) => {
-    if (!order.products || !Array.isArray(order.products)) return { names: "-", quantities: "-" }
-    const names = order.products.map((item) => item.product?.product_name || item.product || "").join(", ")
-    const quantities = order.products.map((item) => item.quantity).join(", ")
-    return { names, quantities }
-  }
-
+ const getOrderProductsSummary = (order) => {
+  if (!order.products || !Array.isArray(order.products)) return { names: "-", quantities: "-" }
+  const names = order.products
+    .map((item) =>
+      item.product?.product_name ||
+      item.product?.name ||
+      (typeof item.product === "string" ? item.product : "") ||
+      ""
+    )
+    .join(", ")
+  const quantities = order.products
+    .map((item) => item.quantity ?? "")
+    .join(", ")
+  return { names, quantities }
+}
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-slate-50 to-gray-100 p-6">
       <div className="max-w-7xl mx-auto space-y-8">
@@ -229,13 +237,13 @@ const AcadOverview = () => {
         </div>
 
         {/* Summary Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
           <StatCard
             icon={FiDollarSign}
             label="Total Spend"
             value={`${totalSpend.toLocaleString()} RWF`}
             color="emerald"
-            trend={spendChange}
+            // trend={spendChange}
             subtitle="Academy expenditure"
           />
           <StatCard
@@ -243,7 +251,7 @@ const AcadOverview = () => {
             label="Total Orders"
             value={orderCount.toLocaleString()}
             color="blue"
-            trend={12}
+            // trend={12}
             subtitle="Orders placed"
           />
           <StatCard
@@ -251,7 +259,7 @@ const AcadOverview = () => {
             label="Avg Order Value"
             value={`${avgOrderValue.toLocaleString()} RWF`}
             color="purple"
-            trend={8}
+            // trend={8}
             subtitle="Per order average"
           />
           <StatCard
@@ -259,16 +267,16 @@ const AcadOverview = () => {
             label="Active Cooperatives"
             value={activeCoops.toLocaleString()}
             color="orange"
-            trend={15}
+            // trend={15}
             subtitle="Partnership count"
           />
-          <StatCard
+          {/* <StatCard
             icon={FaLeaf}
             label="Top Product"
             value={mostOrderedProduct.length > 15 ? mostOrderedProduct.substring(0, 15) + "..." : mostOrderedProduct}
             color="green"
             subtitle="Most ordered item"
-          />
+          /> */}
         </div>
 
         {/* Charts Section */}

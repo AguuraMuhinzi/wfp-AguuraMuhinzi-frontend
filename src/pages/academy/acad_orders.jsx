@@ -1076,7 +1076,10 @@ const AcademyOrders = () => {
                         {selectedOrder.products && selectedOrder.products.length > 0 ? (
                           selectedOrder.products.map((item) => (
                             <tr key={item.id} className="hover:bg-emerald-50/50 transition-colors duration-200">
-                              <td className="px-6 py-4 text-sm text-gray-800">{item.product}</td>
+                              {/* <td className="px-6 py-4 text-sm text-gray-800">{item.product}</td> */}
+                              <td className="px-6 py-4 text-sm text-gray-800">
+  {item.product?.product_name || item.product?.name || (typeof item.product === "string" ? item.product : "")}
+</td>
                               <td className="px-6 py-4 text-sm text-center text-gray-600">{item.quantity}</td>
                               <td className="px-6 py-4 text-sm text-right font-medium text-gray-900">
                                 RWF {item.price?.toLocaleString()}
