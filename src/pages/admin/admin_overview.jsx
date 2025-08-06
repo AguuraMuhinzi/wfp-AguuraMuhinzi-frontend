@@ -767,391 +767,391 @@ const AdminOverview = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-green-50 p-6">
-      <div className="space-y-8">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
+    <div className="space-y-8">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
             <h1 className="text-3xl font-bold tracking-tight text-gray-900">Welcome, {username}!</h1>
             <p className="text-gray-600">Welcome to AguuraMuhinzi.</p>
-          </div>
-          <div className="flex items-center gap-3">
+        </div>
+        <div className="flex items-center gap-3">
             <select className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none bg-white">
-              <option value="7d">Last 7 days</option>
-              <option value="30d">Last 30 days</option>
-              <option value="90d">Last 90 days</option>
-              <option value="1y">Last year</option>
-            </select>
-          </div>
+            <option value="7d">Last 7 days</option>
+            <option value="30d">Last 30 days</option>
+            <option value="90d">Last 90 days</option>
+            <option value="1y">Last year</option>
+          </select>
         </div>
+      </div>
 
-        {/* Summary Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-          <SummaryCard
-            icon={<FiUsers className="h-6 w-6" />}
-            label="Total Users"
-            value={totalUsers.toLocaleString()}
-            growth={growthData.users}
+      {/* Summary Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+        <SummaryCard
+          icon={<FiUsers className="h-6 w-6" />}
+          label="Total Users"
+          value={totalUsers.toLocaleString()}
+          growth={growthData.users}
             color="emerald"
-          />
-          <SummaryCard
-            icon={<FiPackage className="h-6 w-6" />}
-            label="Cooperatives"
-            value={totalCooperatives.toLocaleString()}
-            growth={growthData.cooperatives}
-            color="green"
-          />
-          <SummaryCard
-            icon={<FiBarChart2 className="h-6 w-6" />}
-            label="Academies"
-            value={totalAcademies.toLocaleString()}
-            growth={growthData.academies}
+        />
+        <SummaryCard
+          icon={<FiPackage className="h-6 w-6" />}
+          label="Cooperatives"
+          value={totalCooperatives.toLocaleString()}
+          growth={growthData.cooperatives}
+          color="green"
+        />
+        <SummaryCard
+          icon={<FiBarChart2 className="h-6 w-6" />}
+          label="Academies"
+          value={totalAcademies.toLocaleString()}
+          growth={growthData.academies}
             color="teal"
-          />
-          <SummaryCard
-            icon={<FiShoppingCart className="h-6 w-6" />}
-            label="Total Orders"
-            value={totalOrders.toLocaleString()}
-            growth={growthData.orders}
+        />
+        <SummaryCard
+          icon={<FiShoppingCart className="h-6 w-6" />}
+          label="Total Orders"
+          value={totalOrders.toLocaleString()}
+          growth={growthData.orders}
             color="emerald"
-          />
-          <SummaryCard
-            icon={<FiTrendingUp className="h-6 w-6" />}
-            label="Revenue (RWF)"
-            value={revenue.toLocaleString()}
-            growth={growthData.revenue}
+        />
+        <SummaryCard
+          icon={<FiTrendingUp className="h-6 w-6" />}
+          label="Revenue (RWF)"
+          value={revenue.toLocaleString()}
+          growth={growthData.revenue}
             color="green"
-          />
-        </div>
+        />
+      </div>
 
-        {/* Charts Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Product Demand Chart */}
+      {/* Charts Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Product Demand Chart */}
           <div className="lg:col-span-2 bg-white/80 backdrop-blur-sm rounded-2xl border border-emerald-200 p-6 shadow-lg">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
                 <FiBarChart2 className="text-emerald-600" />
-                Product Demand Trends
-              </h3>
+              Product Demand Trends
+            </h3>
               <button className="text-sm text-emerald-600 hover:text-emerald-700 font-medium">View All</button>
-            </div>
-            <div className="space-y-4">
-              {productBarData.length > 0 ? (
-                productBarData.map((product, index) => (
+          </div>
+          <div className="space-y-4">
+            {productBarData.length > 0 ? (
+              productBarData.map((product, index) => (
                   <div
                     key={product.name}
                     className="flex items-center justify-between p-3 bg-gradient-to-r from-emerald-50 to-green-50 rounded-lg border border-emerald-100"
                   >
-                    <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3">
                       <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center text-emerald-600 font-semibold text-sm">
-                        {index + 1}
-                      </div>
-                      <div>
-                        <p className="font-medium text-gray-900">{product.name}</p>
-                        <p className="text-sm text-gray-500">{product.quantity} units ordered</p>
-                      </div>
+                      {index + 1}
                     </div>
-                    <div className="flex items-center gap-2">
-                      <div
-                        className={`flex items-center gap-1 text-sm font-medium ${product.growth > 0 ? "text-green-600" : "text-red-600"}`}
-                      >
-                        {product.growth > 0 ? <FiArrowUp className="h-3 w-3" /> : <FiArrowDown className="h-3 w-3" />}
-                        {Math.abs(product.growth)}%
-                      </div>
-                      <div className="w-20 bg-gray-200 rounded-full h-2">
-                        <div
-                          className="bg-emerald-600 h-2 rounded-full"
-                          style={{
-                            width: `${Math.min((product.quantity / Math.max(...productBarData.map((p) => p.quantity))) * 100, 100)}%`,
-                          }}
-                        ></div>
-                      </div>
+                    <div>
+                      <p className="font-medium text-gray-900">{product.name}</p>
+                      <p className="text-sm text-gray-500">{product.quantity} units ordered</p>
                     </div>
                   </div>
-                ))
-              ) : (
-                <div className="text-center py-8 text-gray-400">No product demand data available</div>
-              )}
-            </div>
-          </div>
-
-          {/* Order Status Pie Chart */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-emerald-200 p-6 shadow-lg">
-            <h3 className="text-lg font-semibold text-gray-900 mb-6 flex items-center gap-2">
-              <FiPieChart className="text-emerald-600" />
-              Order Status
-            </h3>
-            {statusData.length > 0 ? (
-              <div className="relative">
-                <div className="w-48 h-48 mx-auto mb-4">
-                  <svg viewBox="0 0 100 100" className="w-full h-full transform -rotate-90">
-                    {statusData.map((status, index) => {
-                      const total = statusData.reduce((sum, s) => sum + s.value, 0)
-                      const percentage = (status.value / total) * 100
-                      const strokeDasharray = `${percentage} ${100 - percentage}`
-                      const strokeDashoffset = statusData
-                        .slice(0, index)
-                        .reduce((sum, s) => sum + (s.value / total) * 100, 0)
-
-                      return (
-                        <circle
-                          key={status.name}
-                          cx="50"
-                          cy="50"
-                          r="15.915"
-                          fill="transparent"
-                          stroke={status.color}
-                          strokeWidth="8"
-                          strokeDasharray={strokeDasharray}
-                          strokeDashoffset={-strokeDashoffset}
-                          className="transition-all duration-300"
-                        />
-                      )
-                    })}
-                  </svg>
-                </div>
-                <div className="space-y-2">
-                  {statusData.map((status) => (
-                    <div key={status.name} className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: status.color }}></div>
-                        <span className="text-sm text-gray-600 capitalize">{status.name}</span>
-                      </div>
-                      <span className="text-sm font-medium text-gray-900">{status.value}</span>
+                  <div className="flex items-center gap-2">
+                    <div
+                      className={`flex items-center gap-1 text-sm font-medium ${product.growth > 0 ? "text-green-600" : "text-red-600"}`}
+                    >
+                      {product.growth > 0 ? <FiArrowUp className="h-3 w-3" /> : <FiArrowDown className="h-3 w-3" />}
+                      {Math.abs(product.growth)}%
                     </div>
-                  ))}
+                    <div className="w-20 bg-gray-200 rounded-full h-2">
+                      <div
+                          className="bg-emerald-600 h-2 rounded-full"
+                        style={{
+                          width: `${Math.min((product.quantity / Math.max(...productBarData.map((p) => p.quantity))) * 100, 100)}%`,
+                        }}
+                      ></div>
+                    </div>
+                  </div>
                 </div>
-              </div>
+              ))
             ) : (
-              <div className="text-center py-8 text-gray-400">No order status data available</div>
+              <div className="text-center py-8 text-gray-400">No product demand data available</div>
             )}
           </div>
         </div>
 
-        {/* Top Cooperatives & Smart Market Usage Chart */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Top Cooperatives */}
+        {/* Order Status Pie Chart */}
           <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-emerald-200 p-6 shadow-lg">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                <FiTrendingUp className="text-emerald-600" />
-                Top Performing Cooperatives
-              </h3>
-              <button className="text-sm text-emerald-600 hover:text-emerald-700 font-medium">View All</button>
+          <h3 className="text-lg font-semibold text-gray-900 mb-6 flex items-center gap-2">
+              <FiPieChart className="text-emerald-600" />
+            Order Status
+          </h3>
+          {statusData.length > 0 ? (
+            <div className="relative">
+              <div className="w-48 h-48 mx-auto mb-4">
+                <svg viewBox="0 0 100 100" className="w-full h-full transform -rotate-90">
+                  {statusData.map((status, index) => {
+                    const total = statusData.reduce((sum, s) => sum + s.value, 0)
+                    const percentage = (status.value / total) * 100
+                    const strokeDasharray = `${percentage} ${100 - percentage}`
+                    const strokeDashoffset = statusData
+                      .slice(0, index)
+                      .reduce((sum, s) => sum + (s.value / total) * 100, 0)
+
+                    return (
+                      <circle
+                        key={status.name}
+                        cx="50"
+                        cy="50"
+                        r="15.915"
+                        fill="transparent"
+                        stroke={status.color}
+                        strokeWidth="8"
+                        strokeDasharray={strokeDasharray}
+                        strokeDashoffset={-strokeDashoffset}
+                        className="transition-all duration-300"
+                      />
+                    )
+                  })}
+                </svg>
+              </div>
+              <div className="space-y-2">
+                {statusData.map((status) => (
+                  <div key={status.name} className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full" style={{ backgroundColor: status.color }}></div>
+                      <span className="text-sm text-gray-600 capitalize">{status.name}</span>
+                    </div>
+                    <span className="text-sm font-medium text-gray-900">{status.value}</span>
+                  </div>
+                ))}
+              </div>
             </div>
-            <div className="space-y-4">
-              {topCoops.length > 0 ? (
-                topCoops.map((coop, index) => (
-                  <div
-                    key={coop.name}
+          ) : (
+            <div className="text-center py-8 text-gray-400">No order status data available</div>
+          )}
+        </div>
+      </div>
+
+      {/* Top Cooperatives & Smart Market Usage Chart */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Top Cooperatives */}
+          <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-emerald-200 p-6 shadow-lg">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                <FiTrendingUp className="text-emerald-600" />
+              Top Performing Cooperatives
+            </h3>
+              <button className="text-sm text-emerald-600 hover:text-emerald-700 font-medium">View All</button>
+          </div>
+          <div className="space-y-4">
+            {topCoops.length > 0 ? (
+              topCoops.map((coop, index) => (
+                <div
+                  key={coop.name}
                     className="flex items-center justify-between p-4 bg-gradient-to-r from-emerald-50 to-green-50 rounded-lg border border-emerald-100"
-                  >
-                    <div className="flex items-center gap-3">
+                >
+                  <div className="flex items-center gap-3">
                       <div className="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center">
                         <span className="text-emerald-600 font-bold">#{index + 1}</span>
-                      </div>
-                      <div>
-                        <p className="font-medium text-gray-900">{coop.name}</p>
-                        <p className="text-sm text-gray-500">{coop.orders} orders</p>
-                      </div>
                     </div>
-                    <div className="text-right">
-                      <p className="font-semibold text-gray-900">RWF {coop.revenue.toLocaleString()}</p>
-                      <p className="text-sm text-emerald-600">Revenue</p>
+                    <div>
+                      <p className="font-medium text-gray-900">{coop.name}</p>
+                      <p className="text-sm text-gray-500">{coop.orders} orders</p>
                     </div>
                   </div>
-                ))
-              ) : (
-                <div className="text-center py-8 text-gray-400">No cooperative data available</div>
-              )}
-            </div>
+                  <div className="text-right">
+                    <p className="font-semibold text-gray-900">RWF {coop.revenue.toLocaleString()}</p>
+                      <p className="text-sm text-emerald-600">Revenue</p>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="text-center py-8 text-gray-400">No cooperative data available</div>
+            )}
           </div>
+        </div>
 
-          {/* Smart Market Usage Chart */}
+        {/* Smart Market Usage Chart */}
           <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-emerald-200 p-6 shadow-lg">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
               <FiBarChart2 className="text-emerald-600" />
-              Smart Market Usage (Predictions per Month)
-            </h3>
+            Smart Market Usage (Predictions per Month)
+          </h3>
             <div className="relative h-96 rounded-lg overflow-hidden border border-emerald-300 bg-gradient-to-br from-emerald-50 to-green-50 flex items-center justify-center">
               {usageByMonth.some((d) => d.count > 0) ? (
-                <ResponsiveContainer width="100%" height={350}>
-                  <BarChart data={usageByMonth} margin={{ top: 20, right: 30, left: 10, bottom: 5 }}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="month" />
-                    <YAxis allowDecimals={false} />
-                    <Tooltip />
-                    <Legend />
+              <ResponsiveContainer width="100%" height={350}>
+                <BarChart data={usageByMonth} margin={{ top: 20, right: 30, left: 10, bottom: 5 }}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="month" />
+                  <YAxis allowDecimals={false} />
+                  <Tooltip />
+                  <Legend />
                     <Bar dataKey="count" fill="#10B981" name="Predictions" />
-                  </BarChart>
-                </ResponsiveContainer>
-              ) : (
+                </BarChart>
+              </ResponsiveContainer>
+            ) : (
                 <div className="absolute inset-0 flex items-center justify-center text-gray-500 font-semibold bg-white/80">
                   No prediction usage data available
                 </div>
-              )}
-            </div>
+            )}
           </div>
         </div>
+      </div>
 
-        {/* Recent Activity Tables */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Recent User Registrations */}
+      {/* Recent Activity Tables */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Recent User Registrations */}
           <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-emerald-200 p-6 shadow-lg">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
                 <FiUsers className="text-emerald-600" />
-                Recent User Registrations
-              </h3>
+              Recent User Registrations
+            </h3>
               <button className="text-sm text-emerald-600 hover:text-emerald-700 font-medium">View All</button>
-            </div>
-            <div className="space-y-3">
-              {recentUsers.length > 0 ? (
-                recentUsers.map((user) => (
-                  <div
-                    key={user.id}
+          </div>
+          <div className="space-y-3">
+            {recentUsers.length > 0 ? (
+              recentUsers.map((user) => (
+                <div
+                  key={user.id}
                     className="flex items-center justify-between p-3 hover:bg-gradient-to-r hover:from-emerald-50 hover:to-green-50 rounded-lg transition-all duration-200"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div
-                        className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-medium ${
+                >
+                  <div className="flex items-center gap-3">
+                    <div
+                      className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-medium ${
                           user.role === "cooperative"
                             ? "bg-gradient-to-r from-emerald-500 to-green-500"
                             : "bg-gradient-to-r from-teal-500 to-emerald-500"
-                        }`}
-                      >
-                        {(user.username || user.name || "U")
-                          .split(" ")
-                          .map((n) => n[0])
-                          .join("")
-                          .toUpperCase()}
-                      </div>
-                      <div>
-                        <p className="font-medium text-gray-900">{user.username || user.name}</p>
-                        <div className="flex items-center gap-2 text-sm text-gray-500">
-                          <span
-                            className={`px-2 py-0.5 rounded-full text-xs font-medium ${
+                      }`}
+                    >
+                      {(user.username || user.name || "U")
+                        .split(" ")
+                        .map((n) => n[0])
+                        .join("")
+                        .toUpperCase()}
+                    </div>
+                    <div>
+                      <p className="font-medium text-gray-900">{user.username || user.name}</p>
+                      <div className="flex items-center gap-2 text-sm text-gray-500">
+                        <span
+                          className={`px-2 py-0.5 rounded-full text-xs font-medium ${
                               user.role === "cooperative"
                                 ? "bg-emerald-100 text-emerald-700"
                                 : "bg-teal-100 text-teal-700"
-                            }`}
-                          >
-                            {user.role}
-                          </span>
-                          <span>•</span>
-                          <span>{user.district}</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="flex items-center gap-1 text-sm text-gray-500">
-                        <FiClock className="h-3 w-3" />
-                        {new Date(user.created_at).toLocaleDateString()}
+                          }`}
+                        >
+                          {user.role}
+                        </span>
+                        <span>•</span>
+                        <span>{user.district}</span>
                       </div>
                     </div>
                   </div>
-                ))
-              ) : (
-                <div className="text-center py-8 text-gray-400">No recent users</div>
-              )}
-            </div>
+                  <div className="text-right">
+                    <div className="flex items-center gap-1 text-sm text-gray-500">
+                      <FiClock className="h-3 w-3" />
+                      {new Date(user.created_at).toLocaleDateString()}
+                    </div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="text-center py-8 text-gray-400">No recent users</div>
+            )}
           </div>
+        </div>
 
-          {/* Recent File Uploads */}
+        {/* Recent File Uploads */}
           <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-emerald-200 p-6 shadow-lg">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
                 <FiUpload className="text-emerald-600" />
-                Recent File Uploads
-              </h3>
+              Recent File Uploads
+            </h3>
               <button className="text-sm text-emerald-600 hover:text-emerald-700 font-medium">View All</button>
-            </div>
-            <div className="space-y-3">
-              {recentUploads.length > 0 ? (
-                recentUploads.map((upload) => (
-                  <div
-                    key={upload.id}
+          </div>
+          <div className="space-y-3">
+            {recentUploads.length > 0 ? (
+              recentUploads.map((upload) => (
+                <div
+                  key={upload.id}
                     className="flex items-center justify-between p-3 hover:bg-gradient-to-r hover:from-emerald-50 hover:to-green-50 rounded-lg transition-all duration-200"
-                  >
-                    <div className="flex items-center gap-3">
+                >
+                  <div className="flex items-center gap-3">
                       <div className="w-10 h-10 bg-gradient-to-r from-emerald-100 to-green-100 rounded-lg flex items-center justify-center">
                         <FiPackage className="h-5 w-5 text-emerald-600" />
-                      </div>
-                      <div>
-                        <p className="font-medium text-gray-900">{upload.file_name}</p>
-                        <div className="flex items-center gap-2 text-sm text-gray-500">
-                          <span>by {upload.uploaded_by_username}</span>
-                        </div>
-                      </div>
                     </div>
-                    <div className="text-right">
-                      <div className="flex items-center gap-1 text-sm text-gray-500">
-                        <FiClock className="h-3 w-3" />
-                        {upload.upload_date}
+                    <div>
+                      <p className="font-medium text-gray-900">{upload.file_name}</p>
+                      <div className="flex items-center gap-2 text-sm text-gray-500">
+                        <span>by {upload.uploaded_by_username}</span>
                       </div>
                     </div>
                   </div>
-                ))
-              ) : (
-                <div className="text-center py-8 text-gray-400">No recent uploads</div>
-              )}
-            </div>
+                  <div className="text-right">
+                    <div className="flex items-center gap-1 text-sm text-gray-500">
+                      <FiClock className="h-3 w-3" />
+                      {upload.upload_date}
+                    </div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="text-center py-8 text-gray-400">No recent uploads</div>
+            )}
           </div>
         </div>
+      </div>
 
-        {/* Smart Insights */}
+      {/* Smart Insights */}
         <div className="bg-gradient-to-r from-emerald-50 via-teal-50 to-green-50 rounded-2xl border border-emerald-200 p-6 shadow-lg">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
             <FiActivity className="text-emerald-600" />
-            Smart Insights & Recommendations
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          Smart Insights & Recommendations
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="bg-white/70 backdrop-blur-sm rounded-lg p-4 border border-emerald-100">
-              <div className="flex items-center gap-2 mb-2">
+            <div className="flex items-center gap-2 mb-2">
                 <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
-                <span className="text-sm font-medium text-gray-700">Top Performer</span>
-              </div>
-              <p className="text-gray-900 font-semibold">{topCoop}</p>
-              <p className="text-sm text-gray-600">Leading cooperative by orders</p>
+              <span className="text-sm font-medium text-gray-700">Top Performer</span>
             </div>
+            <p className="text-gray-900 font-semibold">{topCoop}</p>
+            <p className="text-sm text-gray-600">Leading cooperative by orders</p>
+          </div>
             <div className="bg-white/70 backdrop-blur-sm rounded-lg p-4 border border-emerald-100">
-              <div className="flex items-center gap-2 mb-2">
+            <div className="flex items-center gap-2 mb-2">
                 <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                <span className="text-sm font-medium text-gray-700">High Demand</span>
-              </div>
-              <p className="text-gray-900 font-semibold">{mostDemandedProduct}</p>
-              <p className="text-sm text-gray-600">Most requested product</p>
+              <span className="text-sm font-medium text-gray-700">High Demand</span>
             </div>
+            <p className="text-gray-900 font-semibold">{mostDemandedProduct}</p>
+            <p className="text-sm text-gray-600">Most requested product</p>
+          </div>
             <div className="bg-white/70 backdrop-blur-sm rounded-lg p-4 border border-emerald-100">
-              <div className="flex items-center gap-2 mb-2">
+            <div className="flex items-center gap-2 mb-2">
                 <div className="w-2 h-2 bg-teal-500 rounded-full"></div>
-                <span className="text-sm font-medium text-gray-700">Platform Growth</span>
-              </div>
-              <p className="text-gray-900 font-semibold">{totalUsers} Total Users</p>
-              <p className="text-sm text-gray-600">Active platform members</p>
+              <span className="text-sm font-medium text-gray-700">Platform Growth</span>
             </div>
+            <p className="text-gray-900 font-semibold">{totalUsers} Total Users</p>
+            <p className="text-sm text-gray-600">Active platform members</p>
           </div>
         </div>
+      </div>
 
-        {/* Quick Actions */}
+      {/* Quick Actions */}
         <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-emerald-200 p-6 shadow-lg">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <button className="flex items-center justify-center gap-3 p-4 bg-gradient-to-r from-emerald-600 to-green-700 hover:from-emerald-700 hover:to-green-800 text-white rounded-lg font-medium transition-all duration-200 transform hover:scale-105 shadow-lg">
-              <FiPlus className="h-5 w-5" />
-              Add New User
-            </button>
+            <FiPlus className="h-5 w-5" />
+            Add New User
+          </button>
             <button className="flex items-center justify-center gap-3 p-4 bg-gradient-to-r from-teal-600 to-emerald-700 hover:from-teal-700 hover:to-emerald-800 text-white rounded-lg font-medium transition-all duration-200 transform hover:scale-105 shadow-lg">
-              <FiDownload className="h-5 w-5" />
-              Download Platform Report
-            </button>
+            <FiDownload className="h-5 w-5" />
+            Download Platform Report
+          </button>
             <button className="flex items-center justify-center gap-3 p-4 bg-gradient-to-r from-green-600 to-emerald-700 hover:from-green-700 hover:to-emerald-800 text-white rounded-lg font-medium transition-all duration-200 transform hover:scale-105 shadow-lg">
-              <FiShoppingCart className="h-5 w-5" />
-              View All Orders
-            </button>
+            <FiShoppingCart className="h-5 w-5" />
+            View All Orders
+          </button>
             <button className="flex items-center justify-center gap-3 p-4 bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white rounded-lg font-medium transition-all duration-200 transform hover:scale-105 shadow-lg">
-              <FiBarChart2 className="h-5 w-5" />
-              Analytics
-            </button>
+            <FiBarChart2 className="h-5 w-5" />
+            Analytics
+          </button>
           </div>
         </div>
       </div>

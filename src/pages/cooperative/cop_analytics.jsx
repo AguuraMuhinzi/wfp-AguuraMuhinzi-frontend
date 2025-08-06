@@ -133,8 +133,8 @@ const CopAnalytics = () => {
     try {
       await dispatch(
         fetchSalesSummaryReport({
-          start_date: dateRange.start_date,
-          end_date: dateRange.end_date,
+        start_date: dateRange.start_date,
+        end_date: dateRange.end_date,
           cooperative_id: userId,
         }),
       )
@@ -227,7 +227,7 @@ const CopAnalytics = () => {
             color="green"
             trend={3}
           />
-        </div>
+            </div>
 
         {/* Charts Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -353,7 +353,7 @@ const CopAnalytics = () => {
                         Get Summary
                       </>
                     )}
-                  </button>
+                </button>
                 </div>
               </form>
 
@@ -416,10 +416,10 @@ const CopAnalytics = () => {
                                 <td className="px-4 py-3 text-sm text-gray-900">{prod.product__product_name}</td>
                                 <td className="px-4 py-3 text-sm text-gray-900">{prod.quantity_sold}</td>
                                 <td className="px-4 py-3 text-sm font-medium text-emerald-600">{prod.revenue}</td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
                       </div>
                     </div>
                   )}
@@ -444,7 +444,7 @@ const CopAnalytics = () => {
                               boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
                             }}
                           />
-                          <Legend />
+                            <Legend />
                           <Line
                             type="monotone"
                             dataKey="revenue"
@@ -453,8 +453,8 @@ const CopAnalytics = () => {
                             dot={{ fill: "#10b981", strokeWidth: 2, r: 4 }}
                             activeDot={{ r: 6, stroke: "#10b981", strokeWidth: 2 }}
                           />
-                        </LineChart>
-                      </ResponsiveContainer>
+                          </LineChart>
+                        </ResponsiveContainer>
                     </div>
                   )}
 
@@ -482,10 +482,10 @@ const CopAnalytics = () => {
                                 <td className="px-4 py-3 text-sm text-gray-900">{coop.cooperative__username}</td>
                                 <td className="px-4 py-3 text-sm text-gray-900">{coop.order_count}</td>
                                 <td className="px-4 py-3 text-sm font-medium text-emerald-600">{coop.revenue}</td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                       </div>
                     </div>
                   )}
@@ -532,7 +532,7 @@ const CopAnalytics = () => {
                 <FiUsers />
                 Collaborating Academies
               </h3>
-            </div>
+          </div>
             <div className="overflow-x-auto p-6">
               <table className="min-w-full">
                 <thead className="bg-gray-50">
@@ -548,7 +548,7 @@ const CopAnalytics = () => {
                       <td className="px-4 py-3 text-sm text-gray-900">{row.user__username}</td>
                       <td className="px-4 py-3 text-sm text-gray-900">{row.order_count}</td>
                       <td className="px-4 py-3 text-sm font-medium text-emerald-600">{row.total_value}</td>
-                    </tr>
+                      </tr>
                   ))}
                 </tbody>
               </table>
