@@ -1,4 +1,5 @@
 "use client"
+import { useNavigate } from 'react-router-dom';
 
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
@@ -98,6 +99,13 @@ const ChartCard = ({ title, children, onExport, icon: Icon = FiBarChart2 }) => (
 )
 
 const AcadOverview = () => {
+  const navigate = useNavigate(); // Must be inside the component
+
+  const handleFindCooperatives = () => {
+    
+    navigate('/aca_dashboard/cooperatives_page');
+  };
+
   const dispatch = useDispatch()
   const userInfo = useSelector((state) => state.user.userInfo) || {}
   const academyFinancial = useSelector((state) => state.reports.academyFinancialReport) || {}
@@ -639,7 +647,12 @@ const AcadOverview = () => {
               <FiShoppingCart className="h-5 w-5" />
               View All Orders
             </button>
-            <button className="flex items-center justify-center gap-3 p-4 bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white rounded-lg font-medium transition-all duration-200 transform hover:scale-[1.02] shadow-sm">
+
+
+            <button
+            
+              onClick={handleFindCooperatives}
+              className="flex items-center justify-center gap-3 p-4 bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white rounded-lg font-medium transition-all duration-200 transform hover:scale-[1.02] shadow-sm">
               <FaHandshake className="h-5 w-5" />
               Find Cooperatives
             </button>
