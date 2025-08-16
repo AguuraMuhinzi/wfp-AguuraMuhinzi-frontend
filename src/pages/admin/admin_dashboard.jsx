@@ -18,6 +18,7 @@ import {
   CheckCircle,
   Clock
 } from "lucide-react";
+import { FiMessageCircle } from "react-icons/fi";
 
 const menuItems = [
     {
@@ -48,6 +49,14 @@ const menuItems = [
     href: "/admin-dashboard/analytics",
     badge: null,
     description: "Analytics & reporting",
+  },
+
+  {
+    title: "Messages",
+    icon: FiMessageCircle,
+    href: "/admin-dashboard/list_messages",
+    badge: null,
+    description: "Read and answer messages from users",
   },
 ];
 

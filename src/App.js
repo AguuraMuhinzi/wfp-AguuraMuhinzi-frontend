@@ -11,7 +11,7 @@ import AllProducts from './pages/product/Allproducts';
 import StockPage from './pages/product/stockpage';
 import OrdersPage from './pages/orders/orderpage';
 import Home from './pages/product/productDisplay';
-
+import AdminMessagesPage from './pages/admin/list_messages';
 // import ProductDisplay from './pages/cooperative/product_display';
 import CoopProfile from './pages/cooperative/profile';
 import Overview from './pages/cooperative/overview';
@@ -38,6 +38,7 @@ import AcademyFinancialReport from './pages/admin/academy_financial_report';
 import CooperativesPage from './pages/academy/cooperatives_page';
 import ProductDisplayCooperatives from './pages/cooperative/product_display';
 // import newProduct from './pages/product/newProduct'
+import ContactUsPage from './pages/academy/contact_us';
 function App() {
     return (
         <Router>
@@ -52,6 +53,8 @@ function App() {
                     <Route path="/cooperative_details" element={<CooperativeDetails />} />
                     {/* <Route path="/academy_details" element={<AcademyDetails />} /> */}
                     <Route path="/home" element={<Home />} />
+                    {/* <Route path="/contact_us" element={<ContactUsPage />} /> */}
+
                     <Route path="/product_display_cooperatives" element={<ProductDisplayCooperatives />} />
 
                     {/* <Route path="/newProduct" element={<newProduct />} /> */}
@@ -85,6 +88,7 @@ function App() {
                       <Route path="chat" element={<Chat />} />
                       <Route path="analytics" element={<AcadAnalytics/>}/>
                       <Route path="cooperatives_page" element={<CooperativesPage/>}/>
+                      <Route path="contact_us" element={<ContactUsPage />} />
                     
                        
 
@@ -100,6 +104,8 @@ function App() {
                         <Route path="program-reach-report" element={<AdminProgramReachReport />} />
                         <Route path="academy-financial-report" element={<AcademyFinancialReport />} />
                         <Route path="analytics" element={<AdminAnalytics />}/>
+                        <Route path="list_messages" element={<AdminMessagesPage />}/>
+
                       </Route>
                     {/* Fallback route */}
                     <Route path="*" element={<Login />} />
