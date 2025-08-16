@@ -77,6 +77,8 @@ function App() {
                         <Route  path="plan" element={<Plan/>}/>
                         <Route path="report" element={<CoopReport/>}/>
                         <Route path="analytics" element={<CopAnalytics/>}/>
+                        <Route path="contact_us" element={<ContactUsPage />} />
+
                     </Route>
 
                       {/* academy dashboard-related routes  */}

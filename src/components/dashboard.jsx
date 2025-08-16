@@ -443,6 +443,9 @@ const DashboardLayout = () => {
               <SidebarItem name="Analytics" icon={<FiBarChart2 />} path="/dashboard/analytics" />
               <SidebarItem name="Price Trends" icon={<FiTrendingUp />} path="/dashboard/trends" />
               <SidebarItem name="Profile" icon={<FiUser />} path="/dashboard/coopProfile" />
+              <SidebarItem name="Contact Us" icon={<FiMessageCircle />} path="/dashboard/contact_us" />
+
+              
               {/* <SidebarItem name="Chat" icon={<FiMessageCircle />} path="/dashboard/plan" /> */}
             </nav>
             <div className="flex-1" />
