@@ -68,7 +68,6 @@ function App() {
                         <Route path="overview" element={<Overview />} />
                         <Route path="stock" element={<StockPage />} />
                         <Route path="Orders" element={<OrdersPage />} />
-                        <Route path="newProduct" element={<NewProduct />} />
                         <Route  path="allProducts" element={<AllProducts />} />
                         <Route path="coopProfile" element={<CoopProfile />} />
                         <Route path="chat" element={<Chat />} />

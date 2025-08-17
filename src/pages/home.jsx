@@ -1,5 +1,6 @@
 
 "use client"
+import { Send, MessageSquare, User, AlertCircle, Calendar } from "lucide-react"
 
 import { useState, useEffect } from "react"
 import {
@@ -18,6 +19,49 @@ import {
 } from "lucide-react"
 import { Link } from 'react-router-dom';
 const HomePage = () => {
+
+
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
+    phone: "",
+  })
+  const [status, setStatus] = useState(null)
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value })
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setStatus(null)
+
+    try {
+      const response = await fetch("http://127.0.0.1:8000/api/v1/contact/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      })
+
+      if (response.ok) {
+        setStatus({ success: true, message: "Message sent successfully!" })
+        setFormData({ name: "", email: "", message: ""})
+      } else {
+        setStatus({ success: false, message: "Failed to send message. Please try again later." })
+      }
+    } catch (error) {
+      console.error("Error:", error)
+      setStatus({ success: false, message: "Something went wrong. Please try again." })
+    }
+  }
+
+
+
+
   const [openFAQ, setOpenFAQ] = useState(null)
   const [currentIndex, setCurrentIndex] = useState(0)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -531,7 +575,7 @@ const HomePage = () => {
               <div className="p-8 lg:p-12">
                 <h3 className="text-2xl font-semibold text-green-900 mb-6">Send Us a Message</h3>
 
-                <form className="space-y-6">
+                <form onSubmit={handleSubmit} className="space-y-6">
                   <div>
                     <label className="block text-gray-700 mb-2 font-medium" htmlFor="name">
                       Your Name
@@ -539,7 +583,10 @@ const HomePage = () => {
                     <input
                       type="text"
                       id="name"
-                      placeholder="John Doe"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleChange}
+                       placeholder="Your Name"
                       className="w-full px-4 py-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
                     />
                   </div>
@@ -551,7 +598,10 @@ const HomePage = () => {
                     <input
                       type="email"
                       id="email"
-                      placeholder="your@email.com"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      placeholder="Your Email"
                       className="w-full px-4 py-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
                     />
                   </div>
@@ -562,6 +612,9 @@ const HomePage = () => {
                     </label>
                     <textarea
                       id="message"
+                      name="message"
+                      value={formData.message}
+                      onChange={handleChange}
                       rows={5}
                       placeholder="How can we help you?"
                       className="w-full px-4 py-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
@@ -575,6 +628,16 @@ const HomePage = () => {
                     Send Message
                     <ArrowRight className="w-4 h-4 ml-2" />
                   </button>
+                  {status && (
+              <p
+                className={`mt-4 flex items-center ${
+                  status.success ? "text-green-600" : "text-red-600"
+                }`}
+              >
+                {status.success ? <CheckCircle className="w-5 h-5 mr-2" /> : <AlertCircle className="w-5 h-5 mr-2" />}
+                {status.message}
+              </p>
+            )}
                 </form>
               </div>
             </div>
@@ -781,3 +844,6 @@ const HomePage = () => {
 }
 
 export default HomePage
+
+
+

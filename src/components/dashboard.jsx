@@ -346,8 +346,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchCooperativeDetails } from '../Redux/Slices/cooperative/coop_details';
 import {
   FiHome, FiBox, FiClipboard, FiBarChart2,
-  FiTrendingUp, FiUser, FiMessageCircle, FiBell, FiUser as FiUserIcon,
-  FiPackage, FiPlus
+  FiTrendingUp, FiUser, FiMessageCircle, FiBell, FiUser as FiUserIcon
 } from 'react-icons/fi';
 
 const SidebarItem = ({ name, icon, path }) => (
@@ -437,7 +436,6 @@ const DashboardLayout = () => {
           <div className="h-full overflow-y-auto p-3 mt-8 flex flex-col">
             <nav className="space-y-1">
               <SidebarItem name="Dashboard" icon={<FiHome />} path="/dashboard/overview" />
-              <SidebarItem name="New Product" icon={<FiPlus />} path="/dashboard/newProduct" />
               <SidebarItem name="Stock" icon={<FiBox />} path="/dashboard/stock" />
               <SidebarItem name="Orders" icon={<FiClipboard />} path="/dashboard/orders" />
               <SidebarItem name="Analytics" icon={<FiBarChart2 />} path="/dashboard/analytics" />
@@ -445,7 +443,6 @@ const DashboardLayout = () => {
               <SidebarItem name="Profile" icon={<FiUser />} path="/dashboard/coopProfile" />
               <SidebarItem name="Contact Us" icon={<FiMessageCircle />} path="/dashboard/contact_us" />
 
-              
               {/* <SidebarItem name="Chat" icon={<FiMessageCircle />} path="/dashboard/plan" /> */}
             </nav>
             <div className="flex-1" />
@@ -478,8 +475,8 @@ const DashboardLayout = () => {
             </svg>
           </div>
           <div className="flex items-center space-x-4">
-            <Link to="/product_display_cooperatives" className="text-gray-500 dark:text-white hover:text-green-600">
-              <FiPackage className="w-6 h-6" />
+            <Link to="/home" className="text-gray-500 dark:text-white hover:text-green-600">
+              <FiHome className="w-6 h-6" />
             </Link>
             <button className="text-gray-500 dark:text-white hover:text-green-600">
               <FiBell className="w-6 h-6" />

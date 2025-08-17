@@ -782,7 +782,7 @@ const AdminMessagesPage = () => {
         headers['Authorization'] = `Bearer ${token}`;
       }
       
-      const response = await fetch(`${API_BASE_URL}/api/api/contact/messages/`, {
+      const response = await fetch(`${API_BASE_URL}/api/v1/contact/messages/`, {
         headers: headers
       });
 
@@ -1094,10 +1094,7 @@ const AdminMessagesPage = () => {
                       <Reply className="w-4 h-4" />
                       Reply via Email
                     </button>
-                    <button className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
-                      <Archive className="w-4 h-4" />
-                      Archive
-                    </button>
+
                   </div>
                 </div>
               </div>
