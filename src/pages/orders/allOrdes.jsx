@@ -756,11 +756,11 @@ const OrdersTable = () => {
                   <h3 className="text-lg font-semibold text-gray-800 mb-4">Update Status</h3>
                   <div className="grid grid-cols-1 gap-3">
                     <button
-                      onClick={() => handleStatusChange(selectedOrder.id, "shipped")}
+                      onClick={() => handleStatusChange(selectedOrder.id, "approved")}
                       className="flex items-center gap-3 p-4 border border-purple-200 rounded-lg hover:bg-purple-50 transition-colors duration-200"
                     >
                       <FiTruck className="text-purple-600" size={20} />
-                      <span className="font-medium text-gray-800">Mark as Shipped</span>
+                      <span className="font-medium text-gray-800">Mark as approve</span>
                     </button>
                     <button
                       onClick={() => handleStatusChange(selectedOrder.id, "delivered")}

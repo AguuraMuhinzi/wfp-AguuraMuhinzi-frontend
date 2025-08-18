@@ -34,6 +34,7 @@ import AdminAnalytics from './pages/admin/admin_analytics';
 import AdminProgramReachReport from './pages/admin/admin_program_reach_report';
 import AcademyFinancialReport from './pages/admin/academy_financial_report';
 import CopNotification from './pages/cooperative/cop_notifications';
+import AcadNotification from './pages/academy/acad_notifications';
 function App() {
     return (
         <Router>
@@ -75,7 +76,8 @@ function App() {
                       <Route path="acad_prediction" element={<Acad_prediction/>} />
                       <Route path="chat" element={<Chat />} />
                       <Route path="analytics" element={<AcadAnalytics/>}/>
-                    <Route path="overview" element={<Overview_acad/>}/>
+                      <Route path="overview" element={<Overview_acad/>}/>
+                      <Route path="acadNotification" element={<AcadNotification/>}/>
                       
 
                       
