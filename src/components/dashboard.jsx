@@ -475,7 +475,7 @@ const DashboardLayout = () => {
             </svg>
           </div>
           <div className="flex items-center space-x-4">
-            <Link to="/home" className="text-gray-500 dark:text-white hover:text-green-600">
+            <Link to="/product_display_cooperatives" className="text-gray-500 dark:text-white hover:text-green-600">
               <FiHome className="w-6 h-6" />
             </Link>
             <button className="text-gray-500 dark:text-white hover:text-green-600">

@@ -816,6 +816,45 @@ const AdminMessagesPage = () => {
     }
   };
 
+  // Handle reply via Gmail
+  const handleReply = (message) => {
+    if (!message || !message.email) {
+      alert('No email address found for this message');
+      return;
+    }
+
+    // Prepare the email content
+    const recipientEmail = encodeURIComponent(message.email);
+    const subject = encodeURIComponent(`Re: ${message.subject || 'Your inquiry'}`);
+    
+    // Create a professional reply template
+    const bodyTemplate = `Hello ${message.name || 'there'},
+
+Thank you for contacting us regarding "${message.subject || 'your inquiry'}".
+
+[Your response here]
+
+Best regards,
+[Your name]
+[Your title]
+
+---
+Original message:
+From: ${message.name} <${message.email}>
+Date: ${formatDate(message.created_at || message.timestamp)}
+Subject: ${message.subject || 'No Subject'}
+
+${message.message}`;
+    
+    const body = encodeURIComponent(bodyTemplate);
+    
+    // Gmail compose URL
+    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${recipientEmail}&su=${subject}&body=${body}`;
+    
+    // Open in new tab
+    window.open(gmailUrl, '_blank');
+  };
+
   // Mark message as read/unread
   const toggleMessageStatus = async (messageId, currentStatus) => {
     try {
@@ -1090,11 +1129,13 @@ const AdminMessagesPage = () => {
                   </div>
                   
                   <div className="mt-6 flex gap-3">
-                    <button className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                    <button 
+                      onClick={() => handleReply(selectedMessage)}
+                      className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+                    >
                       <Reply className="w-4 h-4" />
                       Reply via Email
                     </button>
-
                   </div>
                 </div>
               </div>

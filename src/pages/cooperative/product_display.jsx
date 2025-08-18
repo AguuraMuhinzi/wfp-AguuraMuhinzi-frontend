@@ -41,7 +41,11 @@ const BASE_URL = process.env.REACT_APP_API_BASE_URL
 
 // Enhanced Cooperative Profile Modal - Expanded version for cooperatives
 const CooperativeProfileModal = ({ cooperative, onClose, products = [] }) => {
+
   if (!cooperative) return null
+
+
+
 
   const coopProducts = products.filter((p) => p.user === cooperative.id)
   const totalProducts = coopProducts.length
@@ -541,7 +545,43 @@ const WeatherWidget = () => {
 
 // Simplified Modal Component without order functionality
 const Modal = ({ product, cooperative, onClose }) => {
+
+
   if (!product || !cooperative) return null
+
+
+
+
+  const handleContact = () => {
+    // The phone number should be in contact_phone field from User model
+  const phoneNumber = cooperative?.contact_phone || cooperative?.user?.contact_phone
+    
+  if (!phoneNumber) {
+    console.log("Cooperative object:", cooperative)
+    console.log("Available fields:", Object.keys(cooperative || {}))
+    alert("Contact phone number not available for this cooperative.")
+    return
+  }
+    
+    // Clean and format the phone number
+  const cleanNumber = phoneNumber.toString().replace(/[\s\-\(\)]/g, '')
+    
+    // Format for Rwanda numbers
+  let formattedNumber = cleanNumber
+  if (cleanNumber.startsWith('0')) {
+      // Replace leading 0 with Rwanda country code
+    formattedNumber = '250' + cleanNumber.substring(1)
+  } else if (!cleanNumber.startsWith('250') && !cleanNumber.startsWith('+250')) {
+      // Add Rwanda country code if missing
+    formattedNumber = '250' + cleanNumber
+  }
+    
+    // Remove + if present for WhatsApp URL
+  formattedNumber = formattedNumber.replace('+', '')
+    
+  const whatsappUrl = `https://wa.me/${formattedNumber}`
+  window.open(whatsappUrl, "_blank")
+}
 
   return (
     <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex justify-center items-center z-50 p-4">
@@ -718,14 +758,19 @@ const Modal = ({ product, cooperative, onClose }) => {
             {/* Footer Actions for Cooperatives */}
             <div className="p-6 border-t border-gray-200 bg-gradient-to-r from-gray-50 to-green-50">
               <div className="flex gap-3">
-                <button className="flex-1 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white py-3 px-6 rounded-xl font-medium transition-all duration-200 transform hover:scale-[1.02] shadow-lg hover:shadow-xl flex items-center justify-center gap-2">
+                <button
+                onClick={handleContact}
+
+                className="flex-1 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white py-3 px-6 rounded-xl font-medium transition-all duration-200 transform hover:scale-[1.02] shadow-lg hover:shadow-xl flex items-center justify-center gap-2">
                   <MessageSquare className="w-5 h-5" />
                   Connect with Cooperative
                 </button>
-                <button className="px-6 py-3 border-2 border-green-600 text-green-600 rounded-xl font-medium hover:bg-green-50 transition-colors flex items-center justify-center gap-2">
+                {/* <button
+
+                 className="px-6 py-3 border-2 border-green-600 text-green-600 rounded-xl font-medium hover:bg-green-50 transition-colors flex items-center justify-center gap-2">
                   <ExternalLink className="w-4 h-4" />
                   View Profile
-                </button>
+                </button> */}
               </div>
               <p className="text-xs text-gray-500 text-center mt-3">
                 🤝 Building cooperative networks and sustainable agriculture
@@ -739,6 +784,7 @@ const Modal = ({ product, cooperative, onClose }) => {
 }
 
 const ProductDisplayCooperatives = () => {
+  
   const dispatch = useDispatch()
   const [selectedProduct, setSelectedProduct] = useState(null)
   const [selectedCooperative, setSelectedCooperative] = useState(null)
@@ -797,7 +843,24 @@ const ProductDisplayCooperatives = () => {
     }
   }
 
+
+
+  // const handleViewProfileFromModal = (cooperative) => {
+  //   setSelectedCooperativeProfile(cooperative)
+  //   setShowCooperativeModal(true)
+  // }
+
+
+
+  const handleCloseCooperativeModal = () => {
+    setShowCooperativeModal(false)
+    setSelectedCooperativeProfile(null)
+  }
+
+
+
   const handleCloseModal = () => {
+    
     setSelectedProduct(null)
     setSelectedCooperative(null)
   }
@@ -901,6 +964,7 @@ const ProductDisplayCooperatives = () => {
               BASE_URL={BASE_URL}
               onViewMore={handleViewProduct}
               onCooperativeClick={handleCooperativeClick}
+
             />
           ))}
         </div>
@@ -920,6 +984,8 @@ const ProductDisplayCooperatives = () => {
           product={selectedProduct}
           cooperative={selectedCooperative}
           onClose={handleCloseModal}
+          // onViewProfile={handleViewProfileFromModal}
+
         />
       )}
     </div>
