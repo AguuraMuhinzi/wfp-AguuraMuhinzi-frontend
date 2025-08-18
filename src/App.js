@@ -33,6 +33,7 @@ import AdminUsers from './pages/admin/admin_users';
 import AdminAnalytics from './pages/admin/admin_analytics';
 import AdminProgramReachReport from './pages/admin/admin_program_reach_report';
 import AcademyFinancialReport from './pages/admin/academy_financial_report';
+import CopNotification from './pages/cooperative/cop_notifications';
 function App() {
     return (
         <Router>
@@ -63,6 +64,7 @@ function App() {
                         <Route  path="plan" element={<Plan/>}/>
                         <Route path="report" element={<CoopReport/>}/>
                         <Route path="analytics" element={<CopAnalytics/>}/>
+                        <Route path="copNotification" element={<CopNotification/>}/>
                     </Route>
 
                       {/* academy dashboard-related routes  */}
