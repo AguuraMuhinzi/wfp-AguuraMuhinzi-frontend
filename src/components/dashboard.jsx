@@ -288,7 +288,10 @@ const DashboardLayout = () => {
               <SidebarItem name="Analytics" icon={<FiBarChart2 />} path="/dashboard/analytics" />
               <SidebarItem name="Price Trends" icon={<FiTrendingUp />} path="/dashboard/trends" />
               <SidebarItem name="Profile" icon={<FiUser />} path="/dashboard/coopProfile" />
-              <SidebarItem name="Notifications" icon={<FiMessageCircle />} path="/dashboard/copNotification" />
+              <SidebarItem name="Contact Us" icon={<FiMessageCircle />} path="/dashboard/contact_us" />
+
+              {/* <SidebarItem name="Chat" icon={<FiMessageCircle />} path="/dashboard/plan" /> */}
+              <SidebarItem name="Notifications" icon={<FiMessageCircle />} path="/dashboard/copNotification" 
             </nav>
             <div className="flex-1" />
             <div className="mb-4">
@@ -326,7 +329,7 @@ const DashboardLayout = () => {
           </div>
 
           <div className="flex items-center space-x-4">
-            <Link to="/home" className="text-gray-500 dark:text-white hover:text-green-600">
+            <Link to="/product_display_cooperatives" className="text-gray-500 dark:text-white hover:text-green-600">
               <FiHome className="w-6 h-6" />
             </Link>
 

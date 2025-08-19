@@ -11,6 +11,8 @@ import AllProducts from './pages/product/Allproducts';
 import StockPage from './pages/product/stockpage';
 import OrdersPage from './pages/orders/orderpage';
 import Home from './pages/product/productDisplay';
+import AdminMessagesPage from './pages/admin/list_messages';
+// import ProductDisplay from './pages/cooperative/product_display';
 import CoopProfile from './pages/cooperative/profile';
 import Overview from './pages/cooperative/overview';
 import DashboardLayout_aca from './pages/academy/acad_dashboard';
@@ -33,6 +35,11 @@ import AdminUsers from './pages/admin/admin_users';
 import AdminAnalytics from './pages/admin/admin_analytics';
 import AdminProgramReachReport from './pages/admin/admin_program_reach_report';
 import AcademyFinancialReport from './pages/admin/academy_financial_report';
+
+import CooperativesPage from './pages/academy/cooperatives_page';
+import ProductDisplayCooperatives from './pages/cooperative/product_display';
+// import newProduct from './pages/product/newProduct'
+import ContactUsPage from './pages/academy/contact_us';
 import CopNotification from './pages/cooperative/cop_notifications';
 import AcadNotification from './pages/academy/acad_notifications';
 function App() {
@@ -49,6 +56,14 @@ function App() {
                     <Route path="/cooperative_details" element={<CooperativeDetails />} />
                     {/* <Route path="/academy_details" element={<AcademyDetails />} /> */}
                     <Route path="/home" element={<Home />} />
+                    {/* <Route path="/contact_us" element={<ContactUsPage />} /> */}
+
+                    <Route path="/product_display_cooperatives" element={<ProductDisplayCooperatives />} />
+
+                    {/* <Route path="/newProduct" element={<newProduct />} /> */}
+
+                    {/* <Route path="/product_display" element={<ProductDisplay />} /> */}
+
 
                      {/* cooperative dashboard-related routes  */}
                     <Route path="/dashboard" element={<DashboardLayout />}>
@@ -56,7 +71,6 @@ function App() {
                         <Route path="overview" element={<Overview />} />
                         <Route path="stock" element={<StockPage />} />
                         <Route path="Orders" element={<OrdersPage />} />
-                        <Route path="newProduct" element={<NewProduct />} />
                         <Route  path="allProducts" element={<AllProducts />} />
                         <Route path="coopProfile" element={<CoopProfile />} />
                         <Route path="chat" element={<Chat />} />
@@ -65,7 +79,9 @@ function App() {
                         <Route  path="plan" element={<Plan/>}/>
                         <Route path="report" element={<CoopReport/>}/>
                         <Route path="analytics" element={<CopAnalytics/>}/>
+                        <Route path="contact_us" element={<ContactUsPage />} />
                         <Route path="copNotification" element={<CopNotification/>}/>
+
                     </Route>
 
                       {/* academy dashboard-related routes  */}
@@ -76,10 +92,11 @@ function App() {
                       <Route path="acad_prediction" element={<Acad_prediction/>} />
                       <Route path="chat" element={<Chat />} />
                       <Route path="analytics" element={<AcadAnalytics/>}/>
+                      <Route path="cooperatives_page" element={<CooperativesPage/>}/>
+                      <Route path="contact_us" element={<ContactUsPage />} />
+                      <Route path="overview" element={<Overview_acad/>}/>
                       <Route path="overview" element={<Overview_acad/>}/>
                       <Route path="acadNotification" element={<AcadNotification/>}/>
-                      
-
                       
                       </Route>
                       <Route path="/admin-dashboard" element={<AdminDashboard />}>
@@ -89,6 +106,8 @@ function App() {
                         <Route path="program-reach-report" element={<AdminProgramReachReport />} />
                         <Route path="academy-financial-report" element={<AcademyFinancialReport />} />
                         <Route path="analytics" element={<AdminAnalytics />}/>
+                        <Route path="list_messages" element={<AdminMessagesPage />}/>
+
                       </Route>
                     {/* Fallback route */}
                     <Route path="*" element={<Login />} />

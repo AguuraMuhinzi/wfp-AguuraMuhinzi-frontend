@@ -18,94 +18,223 @@ import {
   Camera,
   Search,
   Filter,
+  X,
+  Star,
   TrendingUp,
   Phone,
   Mail,
   Globe,
   ExternalLink,
   CheckCircle,
-  ShoppingCart,
   Building2,
   Leaf,
   Trophy,
   Package,
-  X,
-  Star,
+  Eye,
+  Award,
+  TrendingDown,
+  BarChart3,
+  Clock,
 } from "lucide-react"
-import OrderModal from "../../pages/orders/createOrder"
-import { EnhancedCartModal, CartIcon } from "../../pages/orders/cart"
-import {
-  addToCart,
-  fetchCart,
-  updateCartItem,
-  removeFromCart,
-  checkoutCart,
-} from "../../Redux/Slices/order/cartSlice"
 
 const BASE_URL = process.env.REACT_APP_API_BASE_URL
 
-// Simplified Cooperative Profile Modal - Small version
+// Enhanced Cooperative Profile Modal - Expanded version for cooperatives
 const CooperativeProfileModal = ({ cooperative, onClose, products = [] }) => {
+
   if (!cooperative) return null
+
+
+
 
   const coopProducts = products.filter((p) => p.user === cooperative.id)
   const totalProducts = coopProducts.length
+  const avgPrice =
+    coopProducts.length > 0 ? Math.round(coopProducts.reduce((sum, p) => sum + p.price, 0) / coopProducts.length) : 0
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-50 p-4">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in slide-in-from-bottom-4 duration-300">
-        {/* Compact Header */}
-        <div className="relative bg-gradient-to-br from-emerald-500 via-green-500 to-teal-600 p-6 text-white">
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex justify-center items-center z-50 p-4">
+      <div className="bg-white rounded-3xl shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-hidden animate-in slide-in-from-bottom-4 duration-300">
+        {/* Header with gradient background */}
+        <div className="relative bg-gradient-to-br from-emerald-500 via-green-500 to-teal-600 p-8 text-white">
           <button
             onClick={onClose}
-            className="absolute top-3 right-3 w-8 h-8 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110"
+            className="absolute top-4 right-4 w-10 h-10 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110"
           >
-            <X className="w-4 h-4" />
+            <X className="w-5 h-5" />
           </button>
-          <div className="flex items-center gap-4">
-            <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center border-2 border-white/30">
-              <Building2 className="w-8 h-8 text-white" />
+
+          <div className="flex items-center gap-6">
+            <div className="w-24 h-24 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center border-4 border-white/30">
+              <Building2 className="w-12 h-12 text-white" />
             </div>
-            <div className="flex-1">
-              <h2 className="text-xl font-bold mb-1">{cooperative.name}</h2>
-              <div className="flex items-center gap-1 text-green-100 text-sm">
-                <CheckCircle className="w-4 h-4" />
-                <span>Verified Cooperative</span>
-              </div>
-              <div className="flex items-center gap-1 text-green-100 text-sm mt-1">
-                <MapPin className="w-3 h-3" />
-                <span>
-                  {cooperative.province}, {cooperative.district}
-                </span>
+            <div>
+              <h2 className="text-3xl font-bold mb-2">{cooperative.name}</h2>
+              <div className="flex items-center gap-4 text-green-100">
+                <div className="flex items-center gap-1">
+                  <CheckCircle className="w-5 h-5" />
+                  <span>Verified Cooperative</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <MapPin className="w-4 h-4" />
+                  <span>
+                    {cooperative.province}, {cooperative.district}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-          {/* Compact stats */}
-          <div className="flex justify-center gap-6 mt-4">
-            <div className="text-center">
-              <p className="text-lg font-bold">{totalProducts}</p>
-              <p className="text-xs text-green-100">Products</p>
+
+          {/* Enhanced stats grid for cooperatives */}
+          <div className="grid grid-cols-4 gap-4 mt-6">
+            <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-4 text-center border border-white/30">
+              <Package className="w-6 h-6 mx-auto mb-2 text-green-100" />
+              <p className="text-2xl font-bold">{totalProducts}</p>
+              <p className="text-sm text-green-100">Products</p>
             </div>
-            <div className="text-center">
-              <p className="text-lg font-bold">4.8</p>
-              <p className="text-xs text-green-100">Rating</p>
+            <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-4 text-center border border-white/30">
+              <BarChart3 className="w-6 h-6 mx-auto mb-2 text-blue-200" />
+              <p className="text-2xl font-bold">{avgPrice}</p>
+              <p className="text-sm text-green-100">Avg Price</p>
             </div>
-            <div className="text-center">
-              <p className="text-lg font-bold">{Math.floor(Math.random() * 10) + 5}</p>
-              <p className="text-xs text-green-100">Years</p>
+            <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-4 text-center border border-white/30">
+              <Trophy className="w-6 h-6 mx-auto mb-2 text-yellow-200" />
+              <p className="text-2xl font-bold">4.8</p>
+              <p className="text-sm text-green-100">Rating</p>
+            </div>
+            <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-4 text-center border border-white/30">
+              <Clock className="w-6 h-6 mx-auto mb-2 text-orange-200" />
+              <p className="text-2xl font-bold">{Math.floor(Math.random() * 10) + 5}</p>
+              <p className="text-sm text-green-100">Years</p>
             </div>
           </div>
         </div>
-        {/* Compact Footer Actions */}
-        <div className="p-4 bg-gray-50">
-          <div className="flex gap-3">
-            <button className="flex-1 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white py-2.5 px-4 rounded-xl font-medium transition-all duration-200 transform hover:scale-[1.02] shadow-lg flex items-center justify-center gap-2 text-sm">
-              <MessageSquare className="w-4 h-4" />
-              Contact
+
+        {/* Enhanced Content */}
+        <div className="p-8 max-h-[60vh] overflow-y-auto">
+          {/* About Section */}
+          <div className="mb-8">
+            <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+              <Leaf className="w-5 h-5 text-green-600" />
+              About This Cooperative
+            </h3>
+            <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-6 border border-green-100">
+              <p className="text-gray-700 leading-relaxed mb-4">
+                {cooperative.specialization ||
+                  "This cooperative is dedicated to sustainable agriculture and providing high-quality produce. They focus on organic farming practices and community development."}
+              </p>
+              <div className="grid grid-cols-3 gap-4 text-sm">
+                <div className="flex items-center gap-2">
+                  <Sprout className="w-4 h-4 text-green-600" />
+                  <span className="text-gray-600">Organic Certified</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Award className="w-4 h-4 text-blue-600" />
+                  <span className="text-gray-600">Quality Assured</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Users className="w-4 h-4 text-purple-600" />
+                  <span className="text-gray-600">Community Focused</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Market Performance for cooperatives */}
+          <div className="mb-8">
+            <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+              <TrendingUp className="w-5 h-5 text-blue-600" />
+              Market Performance
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="bg-blue-50 rounded-xl p-4 border border-blue-100">
+                <div className="flex items-center gap-3 mb-2">
+                  <Eye className="w-5 h-5 text-blue-600" />
+                  <span className="font-medium text-gray-900">Product Views</span>
+                </div>
+                <p className="text-2xl font-bold text-blue-600">{Math.floor(Math.random() * 500) + 200}</p>
+                <p className="text-sm text-gray-600">This month</p>
+              </div>
+              <div className="bg-green-50 rounded-xl p-4 border border-green-100">
+                <div className="flex items-center gap-3 mb-2">
+                  <TrendingUp className="w-5 h-5 text-green-600" />
+                  <span className="font-medium text-gray-900">Market Interest</span>
+                </div>
+                <p className="text-2xl font-bold text-green-600">+{Math.floor(Math.random() * 30) + 10}%</p>
+                <p className="text-sm text-gray-600">Growth rate</p>
+              </div>
+              <div className="bg-orange-50 rounded-xl p-4 border border-orange-100">
+                <div className="flex items-center gap-3 mb-2">
+                  <Star className="w-5 h-5 text-orange-600" />
+                  <span className="font-medium text-gray-900">Engagement</span>
+                </div>
+                <p className="text-2xl font-bold text-orange-600">{Math.floor(Math.random() * 100) + 50}</p>
+                <p className="text-sm text-gray-600">Interactions</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Contact Information */}
+          <div className="mb-8">
+            <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+              <Phone className="w-5 h-5 text-blue-600" />
+              Contact Information
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="bg-blue-50 rounded-xl p-4 border border-blue-100">
+                <div className="flex items-center gap-3 mb-2">
+                  <Phone className="w-5 h-5 text-blue-600" />
+                  <span className="font-medium text-gray-900">Phone</span>
+                </div>
+                <p className="text-gray-700">{cooperative.contact || "+250 788 123 456"}</p>
+              </div>
+              <div className="bg-green-50 rounded-xl p-4 border border-green-100">
+                <div className="flex items-center gap-3 mb-2">
+                  <Mail className="w-5 h-5 text-green-600" />
+                  <span className="font-medium text-gray-900">Email</span>
+                </div>
+                <p className="text-gray-700">{cooperative.name.toLowerCase().replace(/\s+/g, "")}@coop.rw</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Featured Products Grid */}
+          <div className="mb-6">
+            <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+              <Package className="w-5 h-5 text-orange-600" />
+              Featured Products ({coopProducts.length})
+            </h3>
+            <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
+              {coopProducts.slice(0, 6).map((product) => (
+                <div
+                  key={product.id}
+                  className="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden hover:shadow-lg transition-all duration-200 hover:scale-105"
+                >
+                  <img
+                    src={`${BASE_URL}${product.image}`}
+                    alt={product.product_name}
+                    className="w-full h-20 object-cover"
+                  />
+                  <div className="p-3">
+                    <p className="font-medium text-sm text-gray-900 truncate">{product.product_name}</p>
+                    <p className="text-green-600 font-bold text-sm">{product.price} RWF</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Enhanced Footer Actions for cooperatives */}
+        <div className="bg-gray-50 px-8 py-6 border-t border-gray-200">
+          <div className="flex gap-4">
+            <button className="flex-1 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white py-3 px-6 rounded-xl font-medium transition-all duration-200 transform hover:scale-[1.02] shadow-lg flex items-center justify-center gap-2">
+              <MessageSquare className="w-5 h-5" />
+              Connect & Collaborate
             </button>
-            <button className="flex-1 border-2 border-green-600 text-green-600 py-2.5 px-4 rounded-xl font-medium hover:bg-green-50 transition-colors flex items-center justify-center gap-2 text-sm">
-              <Package className="w-4 h-4" />
-              View Products
+            <button className="flex-1 border-2 border-green-600 text-green-600 py-3 px-6 rounded-xl font-medium hover:bg-green-50 transition-colors flex items-center justify-center gap-2">
+              <ExternalLink className="w-4 h-4" />
+              View All Products
             </button>
           </div>
         </div>
@@ -114,7 +243,7 @@ const CooperativeProfileModal = ({ cooperative, onClose, products = [] }) => {
   )
 }
 
-// Enhanced Story-style highlights component
+// Farm Stories component (same as original)
 const FarmStories = ({ cooperatives, onStoryClick }) => {
   return (
     <div className="flex gap-4 overflow-x-auto pb-4 mb-8 scrollbar-hide">
@@ -125,11 +254,7 @@ const FarmStories = ({ cooperatives, onStoryClick }) => {
         <span className="text-xs text-gray-600 font-medium">Discover</span>
       </div>
       {cooperatives.slice(0, 8).map((coop, index) => (
-        <div
-          key={index}
-          className="flex-shrink-0 text-center cursor-pointer group"
-          onClick={() => onStoryClick(coop)}
-        >
+        <div key={index} className="flex-shrink-0 text-center cursor-pointer group" onClick={() => onStoryClick(coop)}>
           <div className="w-16 h-16 rounded-full bg-gradient-to-br from-emerald-400 via-green-500 to-teal-600 p-0.5 hover:scale-110 transition-all duration-300 shadow-lg hover:shadow-xl group-hover:shadow-green-500/25">
             <div className="w-full h-full rounded-full bg-white flex items-center justify-center group-hover:bg-green-50 transition-colors duration-200">
               <Building2 className="w-6 h-6 text-green-600 group-hover:scale-110 transition-transform duration-200" />
@@ -144,6 +269,7 @@ const FarmStories = ({ cooperatives, onStoryClick }) => {
   )
 }
 
+// Simplified FarmPost without cart functionality
 const FarmPost = ({
   product,
   cooperativeName,
@@ -151,13 +277,12 @@ const FarmPost = ({
   BASE_URL,
   onViewMore,
   onLike,
-  onComment,
-  onAddToCart,
   onCooperativeClick,
   isLiked = false,
 }) => {
   const [likes, setLikes] = useState(Math.floor(Math.random() * 50) + 10)
   const [comments, setComments] = useState(Math.floor(Math.random() * 20) + 3)
+  const [views, setViews] = useState(Math.floor(Math.random() * 100) + 25)
   const [showFullDescription, setShowFullDescription] = useState(false)
   const [localLiked, setLocalLiked] = useState(isLiked)
 
@@ -167,10 +292,16 @@ const FarmPost = ({
     onLike && onLike(product.id)
   }
 
+  const handleView = () => {
+    setViews((prev) => prev + 1)
+    onViewMore(product)
+  }
+
   const timeAgo = () => {
     const harvestDate = new Date(product.harvest_date)
     const now = new Date()
     const diffInHours = Math.floor((now - harvestDate) / (1000 * 60 * 60))
+
     if (diffInHours < 24) return `${diffInHours}h`
     if (diffInHours < 168) return `${Math.floor(diffInHours / 24)}d`
     return `${Math.floor(diffInHours / 168)}w`
@@ -178,7 +309,7 @@ const FarmPost = ({
 
   const description =
     product.description ||
-    "Fresh from our farm to your table! 🌱 Grown with love and care using sustainable farming practices."
+    "Fresh from our farm! 🌱 Grown with sustainable practices and lots of care. Perfect quality for the market."
 
   return (
     <div className="bg-white rounded-2xl shadow-lg overflow-hidden mb-6 w-full break-inside-avoid hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-green-200">
@@ -220,28 +351,28 @@ const FarmPost = ({
         <div className="absolute bottom-4 left-4 bg-emerald-600/90 backdrop-blur-sm text-white px-3 py-1.5 rounded-full text-sm font-medium border border-white/20">
           🌾 Fresh Harvest
         </div>
+        <div className="absolute top-4 left-4 bg-blue-600/90 backdrop-blur-sm text-white px-2 py-1 rounded-full text-xs font-medium border border-white/20 flex items-center gap-1">
+          <Eye className="w-3 h-3" />
+          {views}
+        </div>
       </div>
 
-      {/* Post Actions */}
+      {/* Enhanced Post Actions for cooperatives */}
       <div className="p-5">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-4">
             <button
               onClick={handleLike}
-              className={`p-2 rounded-full transition-all duration-200 ${
-                localLiked
-                  ? "text-red-500 bg-red-50"
-                  : "text-gray-700 hover:bg-gray-100"
-              }`}
+              className={`p-2 rounded-full transition-all duration-200 ${localLiked ? "text-red-500 bg-red-50" : "text-gray-700 hover:bg-gray-100"}`}
             >
               <Heart className={`w-7 h-7 ${localLiked ? "fill-current" : ""}`} />
             </button>
             <button
-              onClick={() => onAddToCart(product)}
-              className="p-2 rounded-full text-gray-700 hover:bg-green-100 hover:text-green-600 transition-all duration-200 hover:scale-110"
-              title="Add to Cart"
+              onClick={handleView}
+              className="p-2 rounded-full text-gray-700 hover:bg-blue-100 hover:text-blue-600 transition-all duration-200 hover:scale-110"
+              title="View Details"
             >
-              <ShoppingCart className="w-7 h-7" />
+              <Eye className="w-7 h-7" />
             </button>
             <button className="p-2 rounded-full text-gray-700 hover:bg-blue-100 hover:text-blue-600 transition-all duration-200">
               <Share2 className="w-7 h-7" />
@@ -252,10 +383,11 @@ const FarmPost = ({
           </button>
         </div>
 
-        {/* Likes and comments */}
+        {/* Enhanced stats for cooperatives */}
         <div className="flex items-center gap-4 mb-3 text-sm text-gray-600">
           <span className="font-medium">{likes} likes</span>
           <span>{comments} comments</span>
+          <span>{views} views</span>
         </div>
 
         {/* Post Content */}
@@ -267,19 +399,13 @@ const FarmPost = ({
             >
               {cooperativeName || "farm_community"}
             </button>
-            <span className="font-bold text-green-700 text-xl">
-              {product.product_name}
-            </span>
+            <span className="font-bold text-green-700 text-xl">{product.product_name}</span>
             <span className="ml-2 text-green-600 font-semibold text-lg bg-green-50 px-2 py-1 rounded-lg">
               {product.price} RWF
             </span>
           </p>
           <p className="text-base text-gray-700 mt-2">
-            {showFullDescription
-              ? description
-              : `${description.slice(0, 100)}${
-                  description.length > 100 ? "..." : ""
-                }`}
+            {showFullDescription ? description : `${description.slice(0, 100)}${description.length > 100 ? "..." : ""}`}
             {description.length > 100 && (
               <button
                 onClick={() => setShowFullDescription(!showFullDescription)}
@@ -312,26 +438,24 @@ const FarmPost = ({
           <span>{timeAgo()} ago</span>
           <div className="flex items-center gap-2">
             <Calendar className="w-4 h-4" />
-            <span>
-              Harvested {new Date(product.harvest_date).toLocaleDateString()}
-            </span>
+            <span>Harvested {new Date(product.harvest_date).toLocaleDateString()}</span>
           </div>
         </div>
 
-        {/* Enhanced Action Button */}
+        {/* Enhanced Action Button for cooperatives */}
         <button
-          onClick={() => onViewMore(product)}
+          onClick={handleView}
           className="w-full bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white py-3 rounded-xl font-medium transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-xl hover:shadow-green-500/25 flex items-center justify-center gap-2"
         >
-          <Sprout className="w-5 h-5" />
-          Connect with Farm 🌱
+          <Eye className="w-5 h-5" />
+          View Product Details 🌱
         </button>
       </div>
     </div>
   )
 }
 
-// Enhanced Trending section component
+// Enhanced Trending section for cooperatives
 const TrendingSection = ({ products, onViewMore }) => {
   const trendingProducts = products.slice(0, 6)
 
@@ -342,7 +466,7 @@ const TrendingSection = ({ products, onViewMore }) => {
           <TrendingUp className="w-6 h-6 text-white" />
         </div>
         <h3 className="font-bold text-xl bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
-          🔥 Trending Harvests
+          🔥 Market Trending Products
         </h3>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -372,12 +496,12 @@ const TrendingSection = ({ products, onViewMore }) => {
                 {product.product_name}
               </p>
               <div className="flex items-center justify-between mt-1">
-                <p className="font-semibold text-green-600 bg-green-50 px-2 py-1 rounded-lg">
-                  {product.price} RWF
-                </p>
-                <div className="flex items-center text-sm text-gray-500">
-                  <Star className="w-4 h-4 fill-current text-yellow-400 mr-1" />
-                  4.{Math.floor(Math.random() * 9) + 1}
+                <p className="font-semibold text-green-600 bg-green-50 px-2 py-1 rounded-lg">{product.price} RWF</p>
+                <div className="flex items-center text-sm text-gray-500 gap-2">
+                  <Star className="w-4 h-4 fill-current text-yellow-400" />
+                  <span>4.{Math.floor(Math.random() * 9) + 1}</span>
+                  <Eye className="w-4 h-4 text-blue-400" />
+                  <span>{Math.floor(Math.random() * 100) + 50}</span>
                 </div>
               </div>
             </div>
@@ -394,8 +518,8 @@ const WeatherWidget = () => {
     <div className="bg-gradient-to-br from-blue-400 via-blue-500 to-blue-600 rounded-2xl p-6 text-white mb-6 w-full shadow-lg hover:shadow-xl transition-shadow duration-300 border border-blue-300">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h3 className="font-bold text-lg">Today's Farming Weather</h3>
-          <p className="text-blue-100 text-sm">Perfect for harvesting!</p>
+          <h3 className="font-bold text-lg">Today's Agricultural Weather</h3>
+          <p className="text-blue-100 text-sm">Optimal conditions for farming!</p>
         </div>
         <div className="relative">
           <Sun className="w-8 h-8 text-yellow-300 animate-pulse" />
@@ -412,49 +536,53 @@ const WeatherWidget = () => {
             <Droplets className="w-4 h-4" />
             <span>65% Humidity</span>
           </div>
-          <p className="text-blue-100">Great for outdoor work</p>
+          <p className="text-blue-100">Perfect for field activities</p>
         </div>
       </div>
     </div>
   )
 }
 
-// Enhanced Modal Component
-const Modal = ({ product, cooperative, onClose, onMakeOrder }) => {
+// Simplified Modal Component without order functionality
+const Modal = ({ product, cooperative, onClose }) => {
+
+
   if (!product || !cooperative) return null
 
-  // Debug version of handleContact function
-// Updated handleContact function for User model contact_phone field
-const handleContact = () => {
-  // The phone number should be in contact_phone field from User model
+
+
+
+  const handleContact = () => {
+    // The phone number should be in contact_phone field from User model
   const phoneNumber = cooperative?.contact_phone || cooperative?.user?.contact_phone
-  
+    
   if (!phoneNumber) {
     console.log("Cooperative object:", cooperative)
     console.log("Available fields:", Object.keys(cooperative || {}))
     alert("Contact phone number not available for this cooperative.")
     return
   }
-  
-  // Clean and format the phone number
+    
+    // Clean and format the phone number
   const cleanNumber = phoneNumber.toString().replace(/[\s\-\(\)]/g, '')
-  
-  // Format for Rwanda numbers
+    
+    // Format for Rwanda numbers
   let formattedNumber = cleanNumber
   if (cleanNumber.startsWith('0')) {
-    // Replace leading 0 with Rwanda country code
+      // Replace leading 0 with Rwanda country code
     formattedNumber = '250' + cleanNumber.substring(1)
   } else if (!cleanNumber.startsWith('250') && !cleanNumber.startsWith('+250')) {
-    // Add Rwanda country code if missing
+      // Add Rwanda country code if missing
     formattedNumber = '250' + cleanNumber
   }
-  
-  // Remove + if present for WhatsApp URL
+    
+    // Remove + if present for WhatsApp URL
   formattedNumber = formattedNumber.replace('+', '')
-  
+    
   const whatsappUrl = `https://wa.me/${formattedNumber}`
   window.open(whatsappUrl, "_blank")
 }
+
   return (
     <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex justify-center items-center z-50 p-4">
       <div className="bg-white rounded-3xl shadow-2xl w-full max-w-4xl max-h-[95vh] overflow-hidden animate-in slide-in-from-bottom-4 duration-300">
@@ -486,15 +614,14 @@ const handleContact = () => {
                   <Building2 className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-xl text-gray-900">
-                    {cooperative.name}
-                  </h3>
+                  <h3 className="font-bold text-xl text-gray-900">{cooperative.name}</h3>
                   <p className="text-green-600 flex items-center gap-1">
                     <CheckCircle className="w-4 h-4" />
-                    <span>Verified Farm</span>
+                    <span>Verified Cooperative</span>
                   </p>
                 </div>
               </div>
+
               <div className="flex items-center gap-6 text-sm text-gray-600">
                 <div className="flex items-center gap-1">
                   <MapPin className="w-4 h-4" />
@@ -506,6 +633,10 @@ const handleContact = () => {
                   <Star className="w-4 h-4 fill-current text-yellow-400" />
                   <span>4.{Math.floor(Math.random() * 9) + 1} rating</span>
                 </div>
+                <div className="flex items-center gap-1">
+                  <Eye className="w-4 h-4 text-blue-500" />
+                  <span>{Math.floor(Math.random() * 200) + 100} views</span>
+                </div>
               </div>
             </div>
 
@@ -513,19 +644,14 @@ const handleContact = () => {
             <div className="flex-1 overflow-y-auto p-6">
               {/* Product Details */}
               <div className="mb-6">
-                <h2 className="text-3xl font-bold text-gray-900 mb-2">
-                  {product.product_name}
-                </h2>
+                <h2 className="text-3xl font-bold text-gray-900 mb-2">{product.product_name}</h2>
                 <div className="flex items-center gap-4 mb-4">
                   <span className="text-4xl font-bold text-green-600 bg-green-50 px-3 py-1 rounded-xl">
                     {product.price} RWF
                   </span>
                   <div className="flex items-center gap-2 text-sm text-gray-600">
                     <Calendar className="w-4 h-4" />
-                    <span>
-                      Harvested{" "}
-                      {new Date(product.harvest_date).toLocaleDateString()}
-                    </span>
+                    <span>Harvested {new Date(product.harvest_date).toLocaleDateString()}</span>
                   </div>
                 </div>
                 <p className="text-gray-700 leading-relaxed mb-4">
@@ -550,39 +676,57 @@ const handleContact = () => {
                 </div>
               </div>
 
+              {/* Market Insights for Cooperatives */}
+              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-4 mb-6 border border-blue-100">
+                <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                  <BarChart3 className="w-4 h-4 text-blue-600" />
+                  Market Insights
+                </h4>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div className="flex items-center gap-2 text-gray-700">
+                    <TrendingUp className="w-4 h-4 text-green-600" />
+                    <span>High demand product</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-gray-700">
+                    <Award className="w-4 h-4 text-orange-600" />
+                    <span>Premium quality</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-gray-700">
+                    <Eye className="w-4 h-4 text-blue-600" />
+                    <span>{Math.floor(Math.random() * 300) + 100} monthly views</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-gray-700">
+                    <Heart className="w-4 h-4 text-red-500" />
+                    <span>{Math.floor(Math.random() * 50) + 20} interested buyers</span>
+                  </div>
+                </div>
+              </div>
+
               {/* Farm Specialization */}
               <div className="bg-gradient-to-r from-gray-50 to-green-50 rounded-2xl p-4 mb-6 border border-gray-100">
                 <h4 className="font-semibold text-gray-900 mb-2 flex items-center gap-2">
                   <Leaf className="w-4 h-4 text-green-600" />
-                  Farm Specialization
+                  Cooperative Specialization
                 </h4>
-                <p className="text-gray-700 text-sm">
-                  {cooperative.specialization}
-                </p>
+                <p className="text-gray-700 text-sm">{cooperative.specialization || "Sustainable agriculture and organic farming practices"}</p>
               </div>
 
-              {/* Enhanced Stats */}
+              {/* Enhanced Stats for Cooperatives */}
               <div className="grid grid-cols-3 gap-4 mb-6">
                 <div className="text-center p-3 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl border border-green-100">
                   <Package className="w-6 h-6 mx-auto mb-1 text-green-600" />
-                  <p className="text-2xl font-bold text-green-600">
-                    {Math.floor(Math.random() * 50) + 20}
-                  </p>
-                  <p className="text-xs text-gray-600">Products</p>
+                  <p className="text-2xl font-bold text-green-600">{Math.floor(Math.random() * 50) + 20}</p>
+                  <p className="text-xs text-gray-600">Similar Products</p>
                 </div>
                 <div className="text-center p-3 bg-gradient-to-br from-blue-50 to-sky-50 rounded-xl border border-blue-100">
                   <Users className="w-6 h-6 mx-auto mb-1 text-blue-600" />
-                  <p className="text-2xl font-bold text-blue-600">
-                    {Math.floor(Math.random() * 100) + 50}
-                  </p>
-                  <p className="text-xs text-gray-600">Happy Buyers</p>
+                  <p className="text-2xl font-bold text-blue-600">{Math.floor(Math.random() * 100) + 50}</p>
+                  <p className="text-xs text-gray-600">Network Reach</p>
                 </div>
                 <div className="text-center p-3 bg-gradient-to-br from-orange-50 to-yellow-50 rounded-xl border border-orange-100">
                   <Trophy className="w-6 h-6 mx-auto mb-1 text-orange-600" />
-                  <p className="text-2xl font-bold text-orange-600">
-                    {Math.floor(Math.random() * 10) + 5}
-                  </p>
-                  <p className="text-xs text-gray-600">Years Experience</p>
+                  <p className="text-2xl font-bold text-orange-600">{Math.floor(Math.random() * 10) + 5}</p>
+                  <p className="text-xs text-gray-600">Years Active</p>
                 </div>
               </div>
 
@@ -601,39 +745,35 @@ const handleContact = () => {
                   )}
                   <div className="flex items-center gap-2 text-gray-700">
                     <Mail className="w-4 h-4 text-green-600" />
-                    <span>
-                      {cooperative.name.toLowerCase().replace(/\s+/g, "")}
-                      @farm.rw
-                    </span>
+                    <span>{cooperative.name.toLowerCase().replace(/\s+/g, "")}@farm.rw</span>
                   </div>
                   <div className="flex items-center gap-2 text-gray-700">
                     <Globe className="w-4 h-4 text-green-600" />
-                    <span>Visit our farm location</span>
+                    <span>Visit cooperative profile</span>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Footer Actions */}
+            {/* Footer Actions for Cooperatives */}
             <div className="p-6 border-t border-gray-200 bg-gradient-to-r from-gray-50 to-green-50">
               <div className="flex gap-3">
                 <button
-                  className="flex-1 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white py-3 px-6 rounded-xl font-medium transition-all duration-200 transform hover:scale-[1.02] shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
-                  onClick={onMakeOrder}
-                >
+                onClick={handleContact}
+
+                className="flex-1 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white py-3 px-6 rounded-xl font-medium transition-all duration-200 transform hover:scale-[1.02] shadow-lg hover:shadow-xl flex items-center justify-center gap-2">
                   <MessageSquare className="w-5 h-5" />
-                  Make an Order
+                  Connect with Cooperative
                 </button>
-                <button
-                  onClick={handleContact}
-                  className="px-6 py-3 border-2 border-green-600 text-green-600 rounded-xl font-medium hover:bg-green-50 transition-colors flex items-center justify-center gap-2"
-                >
+                {/* <button
+
+                 className="px-6 py-3 border-2 border-green-600 text-green-600 rounded-xl font-medium hover:bg-green-50 transition-colors flex items-center justify-center gap-2">
                   <ExternalLink className="w-4 h-4" />
-                  Contact Cooperative
-                </button>
+                  View Profile
+                </button> */}
               </div>
               <p className="text-xs text-gray-500 text-center mt-3">
-                💚 Supporting local farmers and sustainable agriculture
+                🤝 Building cooperative networks and sustainable agriculture
               </p>
             </div>
           </div>
@@ -643,29 +783,23 @@ const handleContact = () => {
   )
 }
 
-const ProductListingPage = () => {
+const ProductDisplayCooperatives = () => {
+  
   const dispatch = useDispatch()
   const [selectedProduct, setSelectedProduct] = useState(null)
   const [selectedCooperative, setSelectedCooperative] = useState(null)
   const [cooperativeNames, setCooperativeNames] = useState({})
   const [searchTerm, setSearchTerm] = useState("")
   const [showSearch, setShowSearch] = useState(false)
-  const [showOrderModal, setShowOrderModal] = useState(false)
-  const [showCart, setShowCart] = useState(false)
   const [showCooperativeModal, setShowCooperativeModal] = useState(false)
   const [selectedCooperativeProfile, setSelectedCooperativeProfile] = useState(null)
 
   const products = useSelector((state) => state.product.products)
   const loading = useSelector((state) => state.product.loading)
   const error = useSelector((state) => state.product.error)
-  const cart = useSelector((state) => state.cart)
 
   useEffect(() => {
     dispatch(listProducts())
-    const userId = localStorage.getItem("user_id")
-    if (userId) {
-      dispatch(fetchCart(userId))
-    }
   }, [dispatch])
 
   useEffect(() => {
@@ -674,9 +808,7 @@ const ProductListingPage = () => {
       for (const product of products) {
         if (product.user && !names[product.user]) {
           try {
-            const response = await dispatch(
-              fetchCooperativeDetails(product.user)
-            ).unwrap()
+            const response = await dispatch(fetchCooperativeDetails(product.user)).unwrap()
             names[product.user] = response.name || "Farm Community"
           } catch (error) {
             console.error(`Failed to fetch cooperative name:`, error)
@@ -693,9 +825,7 @@ const ProductListingPage = () => {
 
   const handleViewProduct = async (product) => {
     try {
-      const cooperativeData = await dispatch(
-        fetchCooperativeDetails(product.user)
-      ).unwrap()
+      const cooperativeData = await dispatch(fetchCooperativeDetails(product.user)).unwrap()
       setSelectedProduct(product)
       setSelectedCooperative(cooperativeData)
     } catch (error) {
@@ -705,9 +835,7 @@ const ProductListingPage = () => {
 
   const handleCooperativeClick = async (cooperativeId) => {
     try {
-      const cooperativeData = await dispatch(
-        fetchCooperativeDetails(cooperativeId)
-      ).unwrap()
+      const cooperativeData = await dispatch(fetchCooperativeDetails(cooperativeId)).unwrap()
       setSelectedCooperativeProfile(cooperativeData)
       setShowCooperativeModal(true)
     } catch (error) {
@@ -715,81 +843,34 @@ const ProductListingPage = () => {
     }
   }
 
-  const handleAddToCart = async (product) => {
-    const userId = localStorage.getItem("user_id")
-    if (!userId) return alert("Please log in first")
 
-    try {
-      await dispatch(
-        addToCart({ userId, productId: product.id, quantity: 1 })
-      ).unwrap()
-      await dispatch(fetchCart(userId))
-      alert(`${product.product_name} added to cart! 🛒`)
-    } catch (err) {
-      if (err?.error?.includes("cooperative")) {
-        alert("You can only add products from one cooperative at a time.")
-      } else {
-        alert("Failed to add to cart.")
-        console.error("Add to cart error:", err)
-      }
-    }
+
+  // const handleViewProfileFromModal = (cooperative) => {
+  //   setSelectedCooperativeProfile(cooperative)
+  //   setShowCooperativeModal(true)
+  // }
+
+
+
+  const handleCloseCooperativeModal = () => {
+    setShowCooperativeModal(false)
+    setSelectedCooperativeProfile(null)
   }
 
-  const handleUpdateQuantity = async (itemId, quantity) => {
-    const userId = localStorage.getItem("user_id")
-    try {
-      await dispatch(updateCartItem({ itemId, quantity })).unwrap()
-      await dispatch(fetchCart(userId))
-    } catch (error) {
-      console.error("Update quantity error:", error)
-    }
-  }
 
-  const handleRemoveItem = async (itemId) => {
-    const userId = localStorage.getItem("user_id")
-    try {
-      await dispatch(removeFromCart(itemId)).unwrap()
-      await dispatch(fetchCart(userId))
-    } catch (error) {
-      console.error("Remove item error:", error)
-    }
-  }
-
-  const handleCheckout = async () => {
-    const userId = localStorage.getItem("user_id")
-    const cooperativeId =
-      selectedCooperative?.id || cart.items[0]?.product?.user
-
-    try {
-      await dispatch(checkoutCart({ userId, cooperativeId })).unwrap()
-      await dispatch(fetchCart(userId))
-      alert("🎉 Order placed successfully!")
-      setShowCart(false)
-    } catch (error) {
-      alert("❌ Failed to place order.")
-      console.error("Checkout error:", error)
-    }
-  }
 
   const handleCloseModal = () => {
+    
     setSelectedProduct(null)
     setSelectedCooperative(null)
-    setShowOrderModal(false)
   }
 
   const filteredProducts = products.filter(
-    (product) =>
-      !searchTerm ||
-      product.product_name.toLowerCase().includes(searchTerm.toLowerCase())
+    (product) => !searchTerm || product.product_name.toLowerCase().includes(searchTerm.toLowerCase()),
   )
 
   const uniqueCooperatives = Array.from(
-    new Map(
-      products.map((p) => [
-        p.user,
-        { name: cooperativeNames[p.user], id: p.user },
-      ])
-    ).values()
+    new Map(products.map((p) => [p.user, { name: cooperativeNames[p.user], id: p.user }])).values(),
   )
 
   if (loading === "loading") {
@@ -797,7 +878,7 @@ const ProductListingPage = () => {
       <div className="flex items-center justify-center h-screen bg-gradient-to-br from-green-50 to-emerald-50">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-green-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600 text-lg">Loading fresh harvests...</p>
+          <p className="text-gray-600 text-lg">Loading agricultural marketplace...</p>
         </div>
       </div>
     )
@@ -807,9 +888,7 @@ const ProductListingPage = () => {
     return (
       <div className="text-center p-8 bg-gradient-to-br from-red-50 to-pink-50 min-h-screen flex items-center justify-center">
         <div className="bg-white rounded-2xl shadow-lg p-8 border border-red-100">
-          <p className="text-red-600 mb-4 text-lg">
-            Oops! Couldn't load the farm feed.
-          </p>
+          <p className="text-red-600 mb-4 text-lg">Oops! Couldn't load the cooperative marketplace.</p>
           <button
             onClick={() => dispatch(listProducts())}
             className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-3 rounded-xl hover:from-green-600 hover:to-emerald-700 transition-all duration-200 shadow-lg"
@@ -823,11 +902,11 @@ const ProductListingPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50">
-      {/* Enhanced Header */}
+      {/* Enhanced Header for Cooperatives */}
       <div className="sticky top-0 bg-white/80 backdrop-blur-md shadow-sm border-b border-gray-200 z-30">
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
           <h1 className="text-xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
-            🌾 Farm Feed
+            🌾 Cooperative Marketplace
           </h1>
           <div className="flex items-center gap-3">
             <button
@@ -836,9 +915,11 @@ const ProductListingPage = () => {
             >
               <Search className="w-5 h-5 text-gray-600" />
             </button>
-            <CartIcon cart={cart} onClick={() => setShowCart(true)} />
             <button className="p-2 hover:bg-green-100 rounded-full transition-all duration-200 hover:scale-110">
               <Filter className="w-5 h-5 text-gray-600" />
+            </button>
+            <button className="p-2 hover:bg-green-100 rounded-full transition-all duration-200 hover:scale-110">
+              <BarChart3 className="w-5 h-5 text-gray-600" />
             </button>
           </div>
         </div>
@@ -848,7 +929,7 @@ const ProductListingPage = () => {
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search fresh harvests..."
+              placeholder="Search cooperative products..."
               className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200"
               autoFocus
             />
@@ -856,18 +937,7 @@ const ProductListingPage = () => {
         )}
       </div>
 
-      {/* Enhanced Cart Modal */}
-      <EnhancedCartModal
-        cart={cart}
-        showCart={showCart}
-        setShowCart={setShowCart}
-        onUpdateQuantity={handleUpdateQuantity}
-        onRemoveItem={handleRemoveItem}
-        onCheckout={handleCheckout}
-        BASE_URL={BASE_URL}
-      />
-
-      {/* Simplified Cooperative Profile Modal */}
+      {/* Enhanced Cooperative Profile Modal */}
       {showCooperativeModal && selectedCooperativeProfile && (
         <CooperativeProfileModal
           cooperative={selectedCooperativeProfile}
@@ -880,12 +950,10 @@ const ProductListingPage = () => {
       )}
 
       <main className="max-w-7xl mx-auto px-4 py-6">
-        <FarmStories
-          cooperatives={uniqueCooperatives}
-          onStoryClick={(coop) => handleCooperativeClick(coop.id)}
-        />
+        <FarmStories cooperatives={uniqueCooperatives} onStoryClick={(coop) => handleCooperativeClick(coop.id)} />
         <TrendingSection products={products} onViewMore={handleViewProduct} />
         <WeatherWidget />
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredProducts.map((product) => (
             <FarmPost
@@ -895,18 +963,17 @@ const ProductListingPage = () => {
               cooperativeId={product.user}
               BASE_URL={BASE_URL}
               onViewMore={handleViewProduct}
-              onAddToCart={handleAddToCart}
               onCooperativeClick={handleCooperativeClick}
+
             />
           ))}
         </div>
+
         {filteredProducts.length === 0 && (
           <div className="text-center py-12">
             <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
-              <p className="text-gray-500 text-lg mb-2">
-                No fresh harvests found. Try adjusting your search.
-              </p>
-              <p className="text-gray-400">🌱 New products are added daily!</p>
+              <p className="text-gray-500 text-lg mb-2">No products found in the cooperative network.</p>
+              <p className="text-gray-400">🌱 Connect with more cooperatives to expand the marketplace!</p>
             </div>
           </div>
         )}
@@ -917,20 +984,12 @@ const ProductListingPage = () => {
           product={selectedProduct}
           cooperative={selectedCooperative}
           onClose={handleCloseModal}
-          onMakeOrder={() => setShowOrderModal(true)}
-        />
-      )}
+          // onViewProfile={handleViewProfileFromModal}
 
-      {showOrderModal && selectedProduct && selectedCooperative && (
-        <OrderModal
-          product={selectedProduct}
-          cooperative={selectedCooperative}
-          currentUser={{ id: localStorage.getItem("user_id") }}
-          onClose={() => setShowOrderModal(false)}
         />
       )}
     </div>
   )
 }
 
-export default ProductListingPage
+export default ProductDisplayCooperatives

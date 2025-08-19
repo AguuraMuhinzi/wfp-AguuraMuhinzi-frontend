@@ -68,6 +68,8 @@ const AcademyDashboard = () => {
     { name: 'ORDERS', icon: <FiGrid />, path: '/aca_dashboard/acad_orders' },
     { name: 'SMART MARKET', icon: <FiTrendingUp />, path: '/aca_dashboard/acad_prediction' },
     { name: 'ANALYTICS', icon: <FiMessageCircle />, path: '/aca_dashboard/analytics' },
+    { name: 'NOTIFICATIONS', icon: <FiBell />, path: '/aca_dashboard/notifications' },
+    { name: 'Contact Us', icon: <FiMessageCircle />, path: '/aca_dashboard/contact_us' },
     { name: 'NOTIFICATIONS', icon: <FiBell />, path: '/aca_dashboard/acadNotification' },
     { name: 'LOGOUT', icon: <FiLogOut />, path: '/aca_dashboard/logout' },
   ];
