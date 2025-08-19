@@ -208,15 +208,13 @@ export const updateAcademyDetails = createAsyncThunk(
     try {
       const userId = data.userId || data.user_id || localStorage.getItem('user_id');
       
-      // Create a copy of the data object to avoid modifying the original
       const dataToSend = { ...data };
-      
-      // Remove user_id from the data sent to the API if it exists
+    
       if (dataToSend.user_id) {
         delete dataToSend.user_id;
       }
       
-      const response = await axiosInstance.put(`academy-details/${userId}/`, dataToSend);
+      const response = await axiosInstance.put(`academy-details/update/${userId}/`, dataToSend);
       return response.data;
     } catch (error) {
       const errorMessage = 

@@ -31,6 +31,8 @@ import {
   Package,
   X,
   Star,
+  LogOut,
+  HomeIcon,
 } from "lucide-react"
 import OrderModal from "../../pages/orders/createOrder"
 import { EnhancedCartModal, CartIcon } from "../../pages/orders/cart"
@@ -41,6 +43,9 @@ import {
   removeFromCart,
   checkoutCart,
 } from "../../Redux/Slices/order/cartSlice"
+// import { HomeIcon } from "react-icons/fa"
+import { useNavigate } from "react-router-dom";
+
 
 const BASE_URL = process.env.REACT_APP_API_BASE_URL
 
@@ -783,6 +788,42 @@ const ProductListingPage = () => {
       product.product_name.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
+
+const navigate = useNavigate();
+
+const handleBackToDashboard = () => {
+  // Try to get user info from localStorage
+  const userInfoString = localStorage.getItem("userInfo");
+  let userRole = null;
+  
+  if (userInfoString) {
+    try {
+      // Parse the JSON string to get the user object
+      const userInfo = JSON.parse(userInfoString);
+      userRole = userInfo.role;
+    } catch (error) {
+      console.error("Error parsing user info:", error);
+    }
+  }
+  
+  // If parsing failed or userInfo not found, try direct role access
+  if (!userRole) {
+    userRole = localStorage.getItem("role");
+  }
+
+  // Navigate based on role
+  if (userRole === 'academy') {
+    navigate('/aca_dashboard');
+  } else if (userRole === 'cooperative') {
+    navigate('/dashboard');
+  } else if (userRole === 'admin') {
+    navigate('/admin-dashboard');
+  } else {
+    // Default fallback if role is not set or recognized
+    navigate("/dashboard");
+  }
+};
+
   const uniqueCooperatives = Array.from(
     new Map(
       products.map((p) => [
@@ -840,6 +881,19 @@ const ProductListingPage = () => {
             <button className="p-2 hover:bg-green-100 rounded-full transition-all duration-200 hover:scale-110">
               <Filter className="w-5 h-5 text-gray-600" />
             </button>
+            <button 
+            onClick={() => { localStorage.clear(); window.location.href = '/login'; }}
+            className="p-2 hover:bg-green-100 rounded-full transition-all duration-200 hover:scale-110">
+              <LogOut className="w-5 h-5 text-gray-600" />
+            </button>
+            <button 
+  onClick={handleBackToDashboard}
+  className="flex items-center gap-2 px-3 py-2 hover:bg-green-100 rounded-lg transition-all duration-200 text-gray-600 hover:text-green-600"
+  title="Back to Dashboard"
+>
+  <HomeIcon className="w-4 h-4" />
+  <span className="font-medium">Back to Dashboard</span>
+</button>
           </div>
         </div>
         {showSearch && (

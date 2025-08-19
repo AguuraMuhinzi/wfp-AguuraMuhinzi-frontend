@@ -3,6 +3,7 @@ import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { listProducts } from "../../Redux/Slices/product/product"
 import { fetchCooperativeDetails } from "../../Redux/Slices/cooperative/coop_details"
+import { useNavigate } from "react-router-dom";
 import {
   Heart,
   MessageSquare,
@@ -18,6 +19,7 @@ import {
   Camera,
   Search,
   Filter,
+  FaBackward,
   X,
   Star,
   TrendingUp,
@@ -35,6 +37,7 @@ import {
   TrendingDown,
   BarChart3,
   Clock,
+  HomeIcon,
 } from "lucide-react"
 
 const BASE_URL = process.env.REACT_APP_API_BASE_URL
@@ -843,7 +846,41 @@ const ProductDisplayCooperatives = () => {
     }
   }
 
-
+  const navigate = useNavigate();
+  
+  const handleBackToDashboard = () => {
+    // Try to get user info from localStorage
+    const userInfoString = localStorage.getItem("userInfo");
+    let userRole = null;
+    
+    if (userInfoString) {
+      try {
+        // Parse the JSON string to get the user object
+        const userInfo = JSON.parse(userInfoString);
+        userRole = userInfo.role;
+      } catch (error) {
+        console.error("Error parsing user info:", error);
+      }
+    }
+    
+    // If parsing failed or userInfo not found, try direct role access
+    if (!userRole) {
+      userRole = localStorage.getItem("role");
+    }
+  
+    // Navigate based on role
+    if (userRole === 'academy') {
+      navigate('/aca_dashboard');
+    } else if (userRole === 'cooperative') {
+      navigate('/dashboard');
+    } else if (userRole === 'admin') {
+      navigate('/admin-dashboard');
+    } else {
+      // Default fallback if role is not set or recognized
+      navigate("/dashboard");
+    }
+  };
+  
 
   // const handleViewProfileFromModal = (cooperative) => {
   //   setSelectedCooperativeProfile(cooperative)
@@ -918,9 +955,14 @@ const ProductDisplayCooperatives = () => {
             <button className="p-2 hover:bg-green-100 rounded-full transition-all duration-200 hover:scale-110">
               <Filter className="w-5 h-5 text-gray-600" />
             </button>
-            <button className="p-2 hover:bg-green-100 rounded-full transition-all duration-200 hover:scale-110">
-              <BarChart3 className="w-5 h-5 text-gray-600" />
-            </button>
+              <button 
+  onClick={handleBackToDashboard}
+  className="flex items-center gap-2 px-3 py-2 hover:bg-green-100 rounded-lg transition-all duration-200 text-gray-600 hover:text-green-600"
+  title="Back to Dashboard"
+>
+  <HomeIcon className="w-4 h-4" />
+  <span className="font-medium">Back to Dashboard</span>
+</button>
           </div>
         </div>
         {showSearch && (

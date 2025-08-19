@@ -525,7 +525,7 @@ const InsertProductForm = ({ onClose }) => {
               type="file"
               name="image"
               onChange={handleImageChange}
-              accept="image/*"
+             accept="image/jpeg, image/png, image/gif, image/webp, image/svg+xml, image/*"
               className="w-full border-2 border-dashed border-emerald-300 rounded-xl p-6 focus:outline-none focus:border-emerald-500 transition-all duration-300 bg-emerald-50/50 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-emerald-600 file:text-white hover:file:bg-emerald-700 file:cursor-pointer"
             />
             <div className="absolute top-2 right-2 text-emerald-500">

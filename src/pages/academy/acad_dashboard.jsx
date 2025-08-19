@@ -38,7 +38,17 @@ const AcademyDashboard = () => {
   });
 
   const userId = localStorage.getItem('user_id');
-
+const formatDate = (value) => {
+  if (!value) return 'Unknown';
+  const d = new Date(value);
+  if (isNaN(d)) return 'Unknown';
+  return d.toLocaleDateString('en-GB', {
+    year: 'numeric',
+    month: 'long',   // 'short' -> Jan, 'long' -> January
+    day: '2-digit',
+    timeZone: 'Africa/Kigali',
+  });
+};
   useEffect(() => {
     if (userId) {
       dispatch(getUserById(userId));
@@ -68,7 +78,6 @@ const AcademyDashboard = () => {
     { name: 'ORDERS', icon: <FiGrid />, path: '/aca_dashboard/acad_orders' },
     { name: 'SMART MARKET', icon: <FiTrendingUp />, path: '/aca_dashboard/acad_prediction' },
     { name: 'ANALYTICS', icon: <FiMessageCircle />, path: '/aca_dashboard/analytics' },
-    { name: 'NOTIFICATIONS', icon: <FiBell />, path: '/aca_dashboard/notifications' },
     { name: 'Contact Us', icon: <FiMessageCircle />, path: '/aca_dashboard/contact_us' },
     { name: 'NOTIFICATIONS', icon: <FiBell />, path: '/aca_dashboard/acadNotification' },
     { name: 'LOGOUT', icon: <FiLogOut />, path: '/aca_dashboard/logout' },
@@ -113,12 +122,12 @@ const AcademyDashboard = () => {
                       </span>
                       <span className="text-green-600">✉</span>
                     </div>
-                    <div className="flex items-center mb-1">
-                      <span className="mr-2">📅 Joined:</span>
-                      <span>{user?.date_joined || 'Unknown'}</span>
+                      <div className="flex items-center mb-1">
+                    <span className="mr-2">📅 Joined:</span>
+                    <span>{formatDate(user?.date_joined)}</span>
                     </div>
                     <div className="flex items-center">
-                      <span className="mr-2">📍 Location:</span>
+                      <span className="mr-2">📍Location:</span>
                       <span>
                         {[
                           academyDetails?.province,
