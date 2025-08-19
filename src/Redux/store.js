@@ -11,6 +11,7 @@ import budgetReducer from './Slices/predictions/budget_slice';
 import commodityTrendReducer  from './Slices/predictions/harvest_plan';
 import reportReducer from './Slices/reports/report_slice';
 import priceUploadReducer from './Slices/price_upload/price_upload_slice';
+import notificationReducer from './Slices/notifications/notification_slice';
 const store = configureStore({
   reducer: {
     user: userReducer,
@@ -25,6 +26,7 @@ const store = configureStore({
     commodityTrend: commodityTrendReducer,
     reports: reportReducer,
     priceUpload: priceUploadReducer,
+    notifications: notificationReducer,
   },
 });
 

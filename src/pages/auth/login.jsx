@@ -78,7 +78,7 @@ function Login() {
                             </button>
                             
                             {error && (
-                                <p className="mt-4 text-sm text-red-600 text-center">{error.message || 'Login failed. Try again.'}</p>
+                                <p className="mt-4 text-sm text-red-600 text-center">{error || 'Login failed. Try again.'}</p>
                             )}
                         </div>
                     </form>

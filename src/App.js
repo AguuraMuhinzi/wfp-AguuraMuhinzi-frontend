@@ -35,10 +35,13 @@ import AdminUsers from './pages/admin/admin_users';
 import AdminAnalytics from './pages/admin/admin_analytics';
 import AdminProgramReachReport from './pages/admin/admin_program_reach_report';
 import AcademyFinancialReport from './pages/admin/academy_financial_report';
+
 import CooperativesPage from './pages/academy/cooperatives_page';
 import ProductDisplayCooperatives from './pages/cooperative/product_display';
 // import newProduct from './pages/product/newProduct'
 import ContactUsPage from './pages/academy/contact_us';
+import CopNotification from './pages/cooperative/cop_notifications';
+import AcadNotification from './pages/academy/acad_notifications';
 function App() {
     return (
         <Router>
@@ -77,6 +80,7 @@ function App() {
                         <Route path="report" element={<CoopReport/>}/>
                         <Route path="analytics" element={<CopAnalytics/>}/>
                         <Route path="contact_us" element={<ContactUsPage />} />
+                        <Route path="copNotification" element={<CopNotification/>}/>
 
                     </Route>
 
@@ -90,12 +94,9 @@ function App() {
                       <Route path="analytics" element={<AcadAnalytics/>}/>
                       <Route path="cooperatives_page" element={<CooperativesPage/>}/>
                       <Route path="contact_us" element={<ContactUsPage />} />
-                    
-                       
-
-                    <Route path="overview" element={<Overview_acad/>}/>
-                      
-
+                      <Route path="overview" element={<Overview_acad/>}/>
+                      <Route path="overview" element={<Overview_acad/>}/>
+                      <Route path="acadNotification" element={<AcadNotification/>}/>
                       
                       </Route>
                       <Route path="/admin-dashboard" element={<AdminDashboard />}>

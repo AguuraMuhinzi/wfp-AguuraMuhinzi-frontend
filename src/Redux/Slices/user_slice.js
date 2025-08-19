@@ -215,10 +215,16 @@ const userSlice = createSlice({
 
       })
       .addCase(login.rejected, (state, action) => {
-        state.isLoading = false;
-        state.isAuthenticated = false;
-        state.error = action.payload;
-      })
+  state.isLoading = false;
+  state.isAuthenticated = false;
+  const p = action.payload;
+  // handle both { error: '...' } and { message: '...' } and plain string
+  state.error =
+    (typeof p === 'string' && p) ||
+    p?.message ||
+    p?.error ||
+    'Failed to login.';
+})
 
       .addCase(getUserById.pending, (state) => {
         state.isLoading = true;
